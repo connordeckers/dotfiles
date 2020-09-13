@@ -1,0 +1,9 @@
+configuration {
+	display-drun: "Apps";
+	display-window: "Window";
+	show-icons: true;
+	combi-modi: "ssh,window,drun";
+	modi: "combi";
+	padding: 10;
+	theme: "~/.config/rofi/themes/slate.rasi";
+}

@@ -1,0 +1,10 @@
+
+[Default Applications]
+inode/directory=nemo.desktop
+x-scheme-handler/mailspring=mailspring.desktop
+x-scheme-handler/mailto=mailspring.desktop
+application/pdf=FoxitReader.desktop
+application/ppdf=FoxitReader.desktop
+application/xfdf=FoxitReader.desktop
+application/fdf=FoxitReader.desktop
+x-scheme-handler/postman=postman.desktop
