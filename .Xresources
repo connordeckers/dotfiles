@@ -1,6 +1,4 @@
-##### THIS FILE IS BEING CURRENTLY MANAGED BY URXVTCONFIG #####
-##### CHANGES DONE TO THIS FILE MANUALLY MAY AFFECT THE FUNCTIONALITY ######
-##### PROCEED WITH CAUTION! #####
+Xterm.termName: xterm-256color
 
 ! special colors
 *.foreground:  #a7a7a7
@@ -39,7 +37,7 @@ URxvt*transparent:       false
 URxvt*depth: 32
 URxvt.background: [95]#1e1e1e
 
-URxvt.font: xft:Fira Code:size=11
+URxvt.font: xft:Fira Code:size=11,xft:Source Code Pro,Source Code Pro Semibold:size=12,xft:Noto Mono:size=12
 URxvt.letterSpace: 0
 URxvt.internalBorder: 5
 URxvt.cursorBlink: true

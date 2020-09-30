@@ -1,0 +1,30 @@
+[global_config]
+  tab_position = hidden
+  title_hide_sizetext = True
+  title_transmit_fg_color = "#a7a7a7"
+  title_transmit_bg_color = "#1e1e1e"
+  title_inactive_fg_color = "#a7a7a7"
+  title_inactive_bg_color = "#5f5a60"
+[keybindings]
+[profiles]
+  [[default]]
+    icon_bell = False
+    background_color = "#1e1e1e"
+    cursor_shape = ibeam
+    cursor_color = "#a7a7a7"
+    foreground_color = "#a7a7a7"
+    show_titlebar = False
+    scrollbar_position = hidden
+    scrollback_infinite = True
+    palette = "#1e1e1e:#cf6a4c:#8f9d6a:#f9ee98:#7587a6:#9b859d:#afc4db:#a7a7a7:#5f5a60:#cf6a4c:#8f9d6a:#f9ee98:#7587a6:#9b859d:#afc4db:#ffffff"
+    borderless = True
+[layouts]
+  [[default]]
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+      profile = default
+    [[[window0]]]
+      type = Window
+      parent = ""
+[plugins]

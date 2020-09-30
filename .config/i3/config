@@ -10,7 +10,8 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 set $mod Mod4
 set $altmod Mod1
-set $term urxvt
+set $term konsole
+set $media spotify
 
 set $bs bindsym
 
@@ -54,7 +55,9 @@ floating_modifier $mod
 
 # start a terminal
 $bs $mod+Escape exec $term
-$bs $mod+Return	[instance="dropdown"] scratchpad show; move position center
+$bs $mod+Return [instance="dropdown"] scratchpad show, move position center
+$bs $mod+$altmod+m move scratchpad, floating enable, move position center, scratchpad show
+$bs $mod+$altmod+Shift+m scratchpad show
 
 # kill focused window
 $bs $mod+Shift+q kill
@@ -64,7 +67,6 @@ $bs $mod+s exec --no-startup-id rofi -show drun -config ~/.config/rofi/clipboard
 $bs $mod+Tab exec --no-startup-id rofi -show window -config ~/.config/rofi/clipboard.rasi
 $bs $mod+space exec --no-startup-id rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}' -config ~/.config/rofi/clipboard.rasi
 $bs $mod+period exec --no-startup-id rofi -modi 1pass:rofi-1pass -show 1pass -config ~/.config/rofi/clipboard.rasi
-
 
 # change focus
 # $bs $mod+j focus left
@@ -213,14 +215,11 @@ for_window [class="^.*"] border pixel 0
 for_window [class="Pavucontrol"] floating enable
 for_window [class="(?i)mpv"] floating enable
 for_window [class="mpv"] sticky enable
-for_window [class="Arandr"] floating enable
-for_window [class="Arandr"] resize set 500 500
+for_window [class="Arandr"] floating enable, resize set 500 500
 for_window [title="Open With"] floating enable resize set 800 600,  move position center
-for_window [instance="dropdown"] floating enable
-for_window [instance="dropdown"] resize set 1200 600
-for_window [instance="dropdown"] move position center
-for_window [instance="dropdown"] move scratchpad
-for_window [instance="dropdown"] sticky enable
+for_window [instance="dropdown"] floating enable, resize set 1200 600, move position center, move scratchpad, sticky enable
+for_window [class="Spotify"] floating enable, resize set 1200 600, move position center, move scratchpad, sticky enable
+
 #for_window [instance="newsboat"] move $ws4
 #for_window [instance="newsboat"] move position up
 #for_window [instance="calcurse"] move $ws4
@@ -228,19 +227,20 @@ for_window [instance="dropdown"] sticky enable
 for_window [class="^.*"] gaps inner all set 5
 for_window [class="^.*"] smart_gaps on
 
+$bs $mod+Shift+p [class="Spotify"] scratchpad show, move position center
 
 set $ps --no-startup-id
 
 ################
 # Applications #
 ################
-exec_always --no-startup-id $term -name dropdown
-exec_always $ps $HOME/.config/polybar/launch.sh
 exec_always $ps $HOME/.screenlayout/layout.sh
 exec_always $ps feh --bg-scale $HOME/.local/share/backgrounds/1nOMtD0.png
 exec_always $ps pulseeffects --gapplication-service
+exec_always $ps $HOME/.config/polybar/launch.sh
 exec_always $ps eval $(ssh-agent -s)
 exec $ps flameshot
+exec_always $ps $term --name dropdown
 exec $ps killall compton & compton
 
 #######################

@@ -117,3 +117,5 @@ alias paste="xclip -selection c -o"
 
 # Add 1password completions to zsh
 eval "$(op completion zsh)"; compdef _op op
+
+export function brightness() { for screen in $(xrandr | grep " connected" | cut -f1 -d " "); do xrandr --output $screen --brightness $1; done; }
