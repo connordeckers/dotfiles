@@ -1,8 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-
-# Add the local node_modules/bin path to $PATH
-export PATH=$PATH:./node_modules/.bin
+export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH:./node_modules/.bin
 
 # Path to your oh-my-zsh installation.
 #export ZSH="/home/connor/.oh-my-zsh"
@@ -72,9 +69,12 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git colorize copyfile cp gulp history jsontools npm ubuntu vscode zsh_reload)
+plugins=(command-not-found common-aliases sudo git colorize copyfile cp gulp history jsontools npm ubuntu vscode zsh_reload fast-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
+
+# Add command-not-found hooks
+# source /usr/share/doc/pkgfile/command-not-found.zsh
 
 # User configuration
 
@@ -102,20 +102,21 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 echo -e -n "\x1b[\x35 q" # changes to blinking bar
-xset +fp /home/connordeckers/.local/share/fonts
-xset fp rehash
 
-PATH="/home/connordeckers/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/connordeckers/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/connordeckers/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/home/connordeckers/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/connordeckers/perl5"; export PERL_MM_OPT;
+consumption () {
+ sudo du -cha --max-depth=1 $1 | grep -E "^[0-9\.]*[MG]"
+}
 
-export function mkcd() { mkdir -p $1 && cd $1 }
 alias copy="xclip -selection c"
 alias paste="xclip -selection c -o"
-
-# Add 1password completions to zsh
-eval "$(op completion zsh)"; compdef _op op
+alias mm="cd $MM"
+alias exp="nautilus"
+alias npm="pnpm"
 
 export function brightness() { for screen in $(xrandr | grep " connected" | cut -f1 -d " "); do xrandr --output $screen --brightness $1; done; }
+export LC_ALL=en_US.UTF-8
+claim () { sudo chown -R $USER:$USER $1 }
+mkcd () { mkdir -p $1 && cd $1 }
+efisign () { sudo sbsign --key /secureboot-efi/MOK.priv --cert /secureboot-efi/MOK.pem --output $1 $1 }
+
+eval $(thefuck --alias)
