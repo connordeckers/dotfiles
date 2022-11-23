@@ -1,9 +1,7 @@
 [".oh-my-zsh"]
-    type = "archive"
-    url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
-    exact = true
-    stripComponents = 1
-    refreshPeriod = "168h"
+    type = "git-repo"
+    url = "https://github.com/ohmyzsh/ohmyzsh.git"
+    refreshPeriod = "8h"
 
 [".oh-my-zsh/plugins/zsh-autosuggestions"]
     type = "archive"
@@ -27,8 +25,6 @@
     refreshPeriod = "168h"
 
 [".local/share/nvim/site/pack/packer/start/packer.nvim"]
-    type = "archive"
-    url = "https://github.com/wbthomason/packer.nvim/archive/master.tar.gz"
-    exact = true
-    stripComponents = 1
-    refreshPeriod = "168h"
+    type = "git-repo"
+    url = "https://github.com/wbthomason/packer.nvim.git"
+    refreshPeriod = "8h"

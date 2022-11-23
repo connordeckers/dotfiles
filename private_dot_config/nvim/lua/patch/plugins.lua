@@ -189,5 +189,11 @@ return require 'patch.utils.bootstrap'.bootstrap_packer(function(use)
 		"RRethy/nvim-base16"
 	}
 
+
+	---------------------------
+	--  Syntax and formats
+	---------------------------
 	use 'isobit/vim-caddyfile'
+	use 'alker0/chezmoi.vim'
+
 end)
