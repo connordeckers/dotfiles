@@ -1,0 +1,31 @@
+# Add a few well-known user bin paths
+export N_PREFIX=$HOME/.npm
+export EDITOR='nvim'
+
+GOPATH=$(go env GOPATH)/bin
+
+path=( 
+	./node_modules/.bin
+	$GOPATH
+	$HOME/.local/bin
+	$HOME/bin
+	/usr/local/bin
+	$N_PREFIX/bin
+	$HOME/.local/share/pnpm
+	$PNPM_HOME
+	$path
+)
+
+# Lets record my personal github. It's used enough, after all.
+export GH=github.com/connordeckers
+
+export PAGER='nvim'
+export MANPAGER='nvim +Man!'
+export MANWIDTH=999
+
+# Set up fuzzyfinder so that it ignores things in .git and node_modules
+export FZF_DEFAULT_COMMAND='rg --files --follow'
+
+PROJECT_PATHS=(~/dev/utas ~/dev/remote/utas ~/dev)
+
+export PATH
