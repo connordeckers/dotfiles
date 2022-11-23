@@ -69,4 +69,4 @@ hash dircolors &>/dev/null && eval "$(dircolors -p | \
 # Load nodenv automatically by appending
 # the following to your profile:
 hash nodenv &>/dev/null && eval "$(nodenv init -)"
-hash atuin &>/dev/null && eval "$(atuin init zsh)"
+#hash atuin &>/dev/null && eval "$(atuin init zsh)"
