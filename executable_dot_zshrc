@@ -1,29 +1,72 @@
-# Add a few well-known user bin paths
-export N_PREFIX=$HOME/.npm
-export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:$N_PREFIX/bin:$PATH
+# .zshrc common
+#
+# These features are common across systems,
+# and are not tied to specific systems (beyond installed plugins)
 
-# Add some programming tools (Node, Rust and Golang) to the path as well
-export PATH=$PATH:./node_modules/.bin:$(go env GOPATH)/bin
+# Path to your oh-my-zsh installation.
+#export ZSH="/home/connor/.oh-my-zsh"
+export ZSH=$HOME/.oh-my-zsh
+fpath+=~/.zfunc
 
-export PATH=$PATH:$HOME/.emacs.d/bin
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME=""
 
-# Lets record my personal github. It's used enough, after all.
-export GH=github.com/connordeckers
+# Some custom functionality
+GIT_AUTO_FETCH_INTERVAL=30
 
-source ~/.zshrc-common
-if [[ -f ~/.zshrc-override ]]; then
-	source ~/.zshrc-override
-fi
+# Some Vi management
+VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+VI_MODE_SET_CURSOR=true
 
-export PNPM_HOME="/home/connor/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+  archlinux colorize command-not-found common-aliases
+  copyfile cp fast-syntax-highlighting git git-auto-fetch
+  git-escape-magic gulp history jsontools lol ng npm pj
+  sudo themes tmux vi-mode vscode zsh-autosuggestions
+)
+
+# Start tmux with the shell
+ZSH_TMUX_AUTOSTART=true
+
+# Create a new session per shell
+ZSH_TMUX_AUTOCONNECT=false
+
+# Enforce unicode in tmux
+ZSH_TMUX_UNICODE=true
+
+# Source the main .oh-my-zsh scripts
+source $ZSH/oh-my-zsh.sh
+
+# changes to blinking bar
+echo -e -n "\x1b[\x35 q" 
+
+# Import my custom methods
+source $HOME/.zsh/functions.zsh
+
+# Import my custom aliases
+source $HOME/.zsh/aliases.zsh
+
+# If we have a custom config file for this device, import it.
+HOST_SPECIFIC_CONFIG="$HOME/.zsh/hosts/$(hostname).zsh"
+if [ -f $HOST_SPECIFIC_CONFIG ]; then source $HOST_SPECIFIC_CONFIG; fi
+
+# Set up the powerline prompt styling
+if [ "$TERM" != "linux" ]; then install_powerline_precmd; fi
+
+# Remove directory background colours to ensure that values are readable
+eval "$(dircolors -p | \
+    sed 's/ 4[0-9];/ 01;/; s/;4[0-9];/;01;/g; s/;4[0-9] /;01 /' | \
+    dircolors /dev/stdin)"
 
 # Load nodenv automatically by appending
 # the following to your profile:
-
-eval "$(nodenv init -)"
-
-export MANPAGER='nvim +Man!'
-export MANWIDTH=999
-
-eval "$(atuin init zsh)"
+hash nodenv &>/dev/null && eval "$(nodenv init -)"
+hash atuin &>/dev/null && eval "$(atuin init zsh)"

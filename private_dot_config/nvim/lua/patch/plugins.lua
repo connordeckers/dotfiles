@@ -137,6 +137,16 @@ return require 'patch.utils.bootstrap'.bootstrap_packer(function(use)
 	}
 
 	---------------------------
+	--    Task management
+	---------------------------
+
+	use 'Shatur/neovim-tasks'
+	use {
+		'BenGH28/neo-runner.nvim',
+		run = ":UpdateRemotePlugins"
+	}
+
+	---------------------------
 	--          Misc
 	---------------------------
 
@@ -178,4 +188,6 @@ return require 'patch.utils.bootstrap'.bootstrap_packer(function(use)
 		"sainnhe/gruvbox-material",
 		"RRethy/nvim-base16"
 	}
+
+	use 'isobit/vim-caddyfile'
 end)

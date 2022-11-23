@@ -1,6 +1,7 @@
 local theme = require 'telescope.themes'
 local patch_telescope = require 'patch.telescope'
 local swap = require 'swap-buffers'.swap_buffers
+local cpp_utils = require 'patch.language-features.c++'
 
 local comment = require 'Comment.api'
 local commentcfg = {
@@ -155,7 +156,21 @@ local normalmaps = {
 
 	-- Show all telescope builtins
 	["<leader>sw"] = require 'winshift'.cmd_winshift,
-	["<leader>ss"] = function() require 'winshift'.cmd_winshift('swap') end
+	["<leader>ss"] = function() require 'winshift'.cmd_winshift('swap') end,
+
+
+	-------------------------------
+	-- Language-specific bindings
+	-------------------------------
+
+	-- Build current file, and run if successful
+	["<leader>rr"] = cpp_utils.build_and_run,
+
+	-- Build current file, but don't run it
+	["<leader>rb"] = cpp_utils.compile,
+
+	-- Run last compiled file
+	["<leader>rc"] = cpp_utils.run,
 }
 
 

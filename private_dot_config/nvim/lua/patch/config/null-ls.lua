@@ -26,4 +26,9 @@ local sources = {
 	formatting.prettier.with({ filetypes = prettier_filetypes, timeout = 5000 })
 }
 
-null_ls.setup({ sources = sources })
+null_ls.setup({ 
+	sources = sources, 
+	on_init = function(new_client, _) 
+		new_client.offset_encoding = 'utf-32' 
+	end 
+})

@@ -64,3 +64,6 @@ require 'patch.config.trouble'
 require 'patch.config.scrollbar'
 
 require 'patch.config.winshift'
+
+--- Task runner
+require 'patch.config.tasks'

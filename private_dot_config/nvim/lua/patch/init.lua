@@ -7,4 +7,5 @@ require 'patch.keybinds'
 require 'patch.colors'
 require 'patch.diagnostics.custom'
 
+require 'patch.utils.override-notify'
 --require 'patch.utils.reload'

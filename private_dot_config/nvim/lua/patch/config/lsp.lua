@@ -24,6 +24,9 @@ local default_servers = {
 	--  npm i -g cssmodules-language-server
 	["cssmodules_ls"] = {},
 
+	-- C++
+	["clangd"] = {},
+
 	-- Diagnostic language server integrate with linters
 	["diagnosticls"] = {},
 
@@ -37,32 +40,7 @@ local default_servers = {
 
 	-- Typescript
 	--  npm install -g typescript typescript-language-server
-	["tsserver"] = {
-	  settings = {
-			typescript = {
-				inlayHints = {
-					includeInlayParameterNameHints = 'all',
-					includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-					includeInlayFunctionParameterTypeHints = true,
-					includeInlayVariableTypeHints = true,
-					includeInlayPropertyDeclarationTypeHints = true,
-					includeInlayFunctionLikeReturnTypeHints = true,
-					includeInlayEnumMemberValueHints = true,
-				}
-			},
-			javascript = {
-				inlayHints = {
-					includeInlayParameterNameHints = 'all',
-					includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-					includeInlayFunctionParameterTypeHints = true,
-					includeInlayVariableTypeHints = true,
-					includeInlayPropertyDeclarationTypeHints = true,
-					includeInlayFunctionLikeReturnTypeHints = true,
-					includeInlayEnumMemberValueHints = true,
-				}
-			}
-		}
-	},
+	--["tsserver"] = {},
 	--[[ ["typescript"] = {
 		 [   disable_commands = true,
 		 [   disable_formatting = true,
@@ -78,6 +56,11 @@ local default_servers = {
 
 	-- Rust
 	["rust_analyzer"] = {},
+
+	-- Qt
+	["qmlls"] = {
+		cmd = { "qmlls6" }
+	},
 
 	-- Lua
 	-- ["sumneko_lua"] = {}
@@ -128,7 +111,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "<leader>rn", lsp.rename, opts)
 	vim.keymap.set("n", "<C-space>", lsp.code_action, opts)
 	vim.keymap.set("n", "gr", lsp.references, opts)
-	vim.keymap.set("n", "<leader>f", lsp.formatting, opts)
+	vim.keymap.set("n", "<leader>f", lsp.format, opts)
 
 	--[[ if client.supports_method("textDocument/documentHighlight") then
 		vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, { callback = lsp.document_highlight, buffer = bufnr })
