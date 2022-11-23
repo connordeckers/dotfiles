@@ -1,0 +1,49 @@
+[user]
+	name = Connor Deckers
+	email = dronnoc@gmail.com
+	signingkey = dronnoc@gmail.com
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main
+[alias]
+	unstage = restore --staged
+	revert-file = "!f() { git checkout HEAD -- $1; }; f"
+	changelog = "!BRANCH=$(git rev-parse --abbrev-ref HEAD); HASH=$(git log $BRANCH --merges --pretty=format:\"%h\" -n 1); git log $HASH^..$HASH --pretty=format:\"[%h] %an, %ar%n%B\""
+	update = !git fetch && git pull
+	;history = log --oneline --graph
+	history = log --format='%C(auto) %h %C(dim)(%an) %C(auto)%d %s %C(dim)[%ah]' --graph
+	;history = log --graph --decorate --pretty=format:"%C(yellow)%h%Creset %C(dim)(%ch)%Creset %C(bold green bold)%d%Creset %s %C(dim #818589)(%cn)%Creset"
+	merge-into = !git-merge-into
+	init-from = !git-clone-as-template 
+	release-to = !git-release-to
+[advice]
+	ignoredHook = false
+	addEmptyPathspec = false
+[push]
+	default = current
+[diff]
+	tool = vimdiff3
+[difftool "vimdiff3"]
+	path = nvim
+[mergetool "vimdiff3"]
+	path = nvim
+[merge]
+	tool = vimdiff3
+[url "git@github.com:"]
+	insteadOf = github:
+	insteadOf = gh:
+[url "git@gitlab.com:utas-digital-futures/"]
+	insteadOf = utas:
+[url "universitytasmania@vs-ssh.visualstudio.com:v3/universitytasmania/"]
+	insteadOf = devops:
+[credential]
+	helper = 
+	helper = /usr/share/git-credential-manager-core/git-credential-manager-core
+	credentialStore = gpg
+[credential "https://dev.azure.com"]
+	useHttpPath = true
+; [commit]
+; 	gpgsign = true
+[color]
+	ui = auto

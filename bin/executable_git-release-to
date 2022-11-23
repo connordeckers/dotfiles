@@ -1,0 +1,65 @@
+#!/bin/bash 
+CURR=$(git rev-parse --abbrev-ref HEAD)
+MSG=$(git log -n 1 --format="Latest feature: %s%nMerging into QA: $(date)")
+
+OPTIONS=$(getopt -l "push,use-default-message,verbose" -o "pdv" -- "$@")
+
+eval set -- "$OPTIONS"
+
+DO_PUSH=false
+CHANGE_MSG=true
+VERBOSE=false
+
+while true; do
+	case "$1" in
+		-v|--verbose) VERBOSE=true;;
+		-p|--push) DO_PUSH=true;;
+		-d|--use-default-message) CHANGE_MSG=false;;
+		--)
+			shift
+			break;;
+	esac
+	shift
+done
+
+echo "🔃 Merging $CURR into $# branches"
+
+verbose_only() {
+	# Conditionally dump our data silently
+	if $VERBOSE; then 
+		"$@"; 
+	else 
+		"$@" &>/dev/null; 
+	fi
+}
+
+for branch in "$@"; do
+	echo "  📦 Merging $CURR into $branch..."
+	verbose_only git checkout "$branch"
+ 	verbose_only git fetch
+ 	verbose_only git pull
+	
+	if [ $? -ne 0 ]; then 
+		echo " ⚠️ Error merging branch $CURR into $branch."
+		echo " ⚠️ Aborting process."
+		exit 1;
+	fi
+
+	if $CHANGE_MSG; then
+		git merge "$CURR" --quiet -e -m "$MSG"
+	else 
+		verbose_only git merge "$CURR" --quiet -m "$MSG"
+	fi
+
+	verbose_only git checkout "$CURR"
+
+	if ! $DO_PUSH; then
+		echo "  📦 Changes ready to push from $branch to origin/$branch";
+	fi
+done
+
+if $DO_PUSH; then
+	echo "  📤 Pushing changes from local branches to origin...";
+	verbose_only git push origin $@
+	echo "  ✔️ Changes pushed!";
+fi

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+KEY=".homeencrypt.key.txt"
+DECRYPT_KEY="$KEY.age"
+
+if [ ! -f "${HOME}/${KEY}" ]; then
+		age --decrypt --output "${HOME}/${KEY}" "{{ .chezmoi.sourceDir }}/${DECRYPT_KEY}"
+		chmod 600 "${HOME}/${KEY}"
+fi

@@ -1,0 +1,10 @@
+alias copy="clip.exe"
+alias paste="clip.exe -p"
+# alias copy="xclip -selection c"
+# alias paste="xclip -selection c -o"
+alias vim="nvim"
+# alias npm="pnpm"
+
+alias netw="ip -4 -br -c addr"
+
+PROJECT_PATHS=(~/dev/utas ~/dev/remote/utas ~/dev)
