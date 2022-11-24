@@ -11,11 +11,11 @@ return require 'patch.utils.bootstrap'.bootstrap_packer(function(use)
 	use "ggandor/lightspeed.nvim"
 
 	use "mhinz/vim-startify"
-
 	use "petertriho/nvim-scrollbar"
-
 	use "Kasama/nvim-custom-diagnostic-highlight"
 
+	use "fladson/vim-kitty"
+	
 	use 'sindrets/winshift.nvim'
 	use 'sindrets/diffview.nvim'
 	-- Clipboard history
