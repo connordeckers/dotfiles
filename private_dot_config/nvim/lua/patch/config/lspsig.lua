@@ -38,8 +38,7 @@ local signature_config = {
 	fix_pos = false,
 
 	-- virtual hint enable
-	hint_enable = false,
-	hint_prefix = "🔍️ ",
+	hint_enable = true,
 	hint_scheme = "String",
 
 	-- how your parameter will be highlight

@@ -106,6 +106,7 @@ require 'patch.utils'.safe_setup("dressing", {
 			override = function(conf)
 				-- This is the config that will be passed to nvim_open_win.
 				-- Change values here to customize the layout
+
 				return conf
 			end,
 		},

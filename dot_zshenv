@@ -4,6 +4,8 @@ export EDITOR='nvim'
 
 GOPATH=$(go env GOPATH)/bin
 
+export PNPM_HOME="/home/connor/.local/share/pnpm"
+
 path=( 
 	./node_modules/.bin
 	$GOPATH

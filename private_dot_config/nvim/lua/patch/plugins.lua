@@ -17,7 +17,7 @@ return require 'patch.utils.bootstrap'.bootstrap_packer(function(use)
 	use "Kasama/nvim-custom-diagnostic-highlight"
 
 	use 'sindrets/winshift.nvim'
-
+	use 'sindrets/diffview.nvim'
 	-- Clipboard history
 	--[[ use { ]]
 	--[[ 	"connordeckers/neoclip", ]]
