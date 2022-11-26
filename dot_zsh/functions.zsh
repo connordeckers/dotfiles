@@ -1,9 +1,24 @@
+zmodload zsh/datetime
+
+function preexec() {
+	__TIMER=$EPOCHREALTIME
+}
+
 ## Set up the powerline-go bar
 powerline_precmd() {
-	MODULES_LEFT="ssh,host,cwd"
-	MODULES_RIGHT="git"
+	MODULES_LEFT="ssh,host,cwd,vi-mode"
+	MODULES_RIGHT="exit,duration,git"
 	CWD_MODE="fancy"
-	THEME="gruvbox"
+	THEME="default"
+
+	## Handle timer
+	local __ERRCODE=$?
+	local __DURATION=0
+
+	if [ -n $__TIMER ]; then 
+		local __ERT=$EPOCHREALTIME
+		__DURATION="$(($__ERT - ${__TIMER:-__ERT}))"
+	fi
 
 	ARGS=(
 		"-east-asian-width"
@@ -14,10 +29,14 @@ powerline_precmd() {
 		"-modules $MODULES_LEFT"
 		"-modules-right $MODULES_RIGHT"
 		"-theme $THEME"
+		"-duration $__DURATION"
+		"-error $__ERRCODE"
 	)
 
 	#echo "powerline-go$(printf " %s" "${ARGS[@]}")"
 	eval $(powerline-go$(printf " %s" "${ARGS[@]}") -eval)
+
+	unset __TIMER
 }
 
 

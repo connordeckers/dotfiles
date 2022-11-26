@@ -1,10 +1,15 @@
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.opt.termguicolors = true
-vim.cmd([[ colorscheme gruvbox-material ]])
---vim.cmd([[ colorscheme base16-onedark ]])
-vim.cmd([[ highlight clear SignColumn ]])
-vim.cmd([[ highlight EndOfBuffer guifg=bg ]])
-vim.cmd([[ highlight NvimTreeWinSeparator guifg=bg ]])
-vim.cmd([[ highlight NvimTreeStatusLine guibg=bg ]])
+
+-- vim.cmd [[ colorscheme gruvbox-material ]]
+vim.cmd [[ colorscheme base16-onedark ]]
+
+vim.cmd [[ highlight clear SignColumn ]]
+vim.cmd [[ highlight EndOfBuffer guifg=bg ]]
+vim.cmd [[ highlight NvimTreeWinSeparator guifg=bg ]]
+vim.cmd [[ highlight NvimTreeStatusLine guibg=bg ]]
 
 -- TextEdit might fail if hidden is not set.
 vim.opt.hidden = true
@@ -21,7 +26,7 @@ vim.opt.cmdheight = 1
 vim.opt.updatetime = 300
 
 -- Don't pass messages to |ins-completion-menu|.
-vim.cmd([[ set shortmess+=c ]])
+vim.opt.shortmess:append { c = true }
 
 -- Set tabstop size
 local tabsize = 2
@@ -29,14 +34,14 @@ vim.opt.tabstop = tabsize
 vim.opt.shiftwidth = tabsize
 
 -- Highlight yanked text for 250ms
-vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-	pattern = "*",
-	callback = function()
-		vim.highlight.on_yank({
-			higroup = (vim.fn["hlexists"]("HighlightedyankRegion") > 0 and "HighlightedyankRegion" or "IncSearch"),
-			timeout = 250,
-		})
-	end,
+vim.api.nvim_create_autocmd({ 'TextYankPost' }, {
+  pattern = '*',
+  callback = function()
+    vim.highlight.on_yank {
+      higroup = (vim.fn['hlexists'] 'HighlightedyankRegion' > 0 and 'HighlightedyankRegion' or 'IncSearch'),
+      timeout = 250,
+    }
+  end,
 })
 
 --Save undo history
@@ -51,7 +56,7 @@ vim.opt.updatetime = 500
 vim.opt.timeoutlen = 500
 
 -- Yank to/from the system clipboard by default
-vim.opt.clipboard = "unnamedplus"
+vim.opt.clipboard = 'unnamedplus'
 
 -- Use more natural splitting
 vim.opt.splitbelow = true

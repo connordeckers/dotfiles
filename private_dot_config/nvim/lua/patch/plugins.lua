@@ -1,199 +1,189 @@
-return require 'patch.utils.bootstrap'.bootstrap_packer(function(use)
-	-- Packer can manage itself
-	use "wbthomason/packer.nvim"
+return require('patch.utils.bootstrap').bootstrap_packer(function(use)
+  -- Packer can manage itself
+  use 'wbthomason/packer.nvim'
 
-	use "christoomey/vim-tmux-navigator"
+  -- Sync navigation with tmux
+  use 'christoomey/vim-tmux-navigator'
 
-	-- Help things go faster, because who wouldn't love to save up to 40ms on launc?
-	--[[ use "lewis6991/impatient.nvim" ]]
+  -- Lightspeed navigation!
+  use 'ggandor/lightspeed.nvim'
 
-	-- Lightspeed navigation!
-	use "ggandor/lightspeed.nvim"
+  use 'mhinz/vim-startify'
+  use 'petertriho/nvim-scrollbar'
+  use 'Kasama/nvim-custom-diagnostic-highlight'
 
-	use "mhinz/vim-startify"
-	use "petertriho/nvim-scrollbar"
-	use "Kasama/nvim-custom-diagnostic-highlight"
+  use 'fladson/vim-kitty'
 
-	use "fladson/vim-kitty"
-	
-	use 'sindrets/winshift.nvim'
-	use 'sindrets/diffview.nvim'
-	-- Clipboard history
-	--[[ use { ]]
-	--[[ 	"connordeckers/neoclip", ]]
-	--[[ 	requires = { { 'tami5/sqlite.lua', module = 'sqlite' } }, ]]
-	--[[ } ]]
+  use 'sindrets/winshift.nvim'
+  use 'sindrets/diffview.nvim'
+  -- Clipboard history
+  --[[ use { ]]
+  --[[ 	"connordeckers/neoclip", ]]
+  --[[ 	requires = { { 'tami5/sqlite.lua', module = 'sqlite' } }, ]]
+  --[[ } ]]
 
-	use "kylechui/nvim-surround"
+  use 'kylechui/nvim-surround'
 
-	use "caenrique/swap-buffers.nvim"
+  use 'caenrique/swap-buffers.nvim'
 
-	use "cshuaimin/ssr.nvim"
+  use 'cshuaimin/ssr.nvim'
 
-	--use 'norcalli/nvim-colorizer.lua'
+  ---------------------------
+  --       Telescope
+  ---------------------------
 
-	--use 'glepnir/dashboard-nvim'
+  -- Telescope and its peripheries
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'kyazdani42/nvim-web-devicons',
+      'nvim-telescope/telescope-symbols.nvim',
+      --[[ "nvim-telescope/telescope-file-browser.nvim", ]]
+      --[[ "nvim-telescope/telescope-project.nvim", ]]
+      'benfowler/telescope-luasnip.nvim',
+    },
+  }
 
-	--[[ use 'axelvc/template-string.nvim' ]]
+  -- Make things PRETTY
+  use 'stevearc/dressing.nvim'
 
-	---------------------------
-	--       Telescope
-	---------------------------
+  ---------------------------
+  --      Tree Sitter
+  ---------------------------
 
-	-- Telescope and its peripheries
-	use {
-		"nvim-telescope/telescope.nvim",
-		requires = {
-			"nvim-lua/plenary.nvim",
-			"kyazdani42/nvim-web-devicons",
-			"nvim-telescope/telescope-symbols.nvim",
-			--[[ "nvim-telescope/telescope-file-browser.nvim", ]]
-			--[[ "nvim-telescope/telescope-project.nvim", ]]
-			"benfowler/telescope-luasnip.nvim",
-		}
-	}
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    run = ':TSUpdate',
+    requires = {
+      'windwp/nvim-ts-autotag',
 
-	-- Make things PRETTY
-	use 'stevearc/dressing.nvim'
+      -- Auto pair braces
+      'windwp/nvim-autopairs',
 
-	---------------------------
-	--      Tree Sitter
-	---------------------------
+      --"p00f/nvim-ts-rainbow",
 
-	use {
-		"nvim-treesitter/nvim-treesitter",
-		run = ":TSUpdate",
-		requires = {
-			"windwp/nvim-ts-autotag",
+      'ThePrimeagen/refactoring.nvim',
 
-			-- Auto pair braces
-			"windwp/nvim-autopairs",
+      -- Some additional treesitter functionality
+      'nvim-treesitter/nvim-treesitter-textobjects',
+      'theHamsta/nvim-treesitter-pairs',
+      'JoosepAlviste/nvim-ts-context-commentstring',
+      --[[ "nvim-treesitter/nvim-treesitter-refactor", ]]
+      'nvim-treesitter/playground',
+      'nvim-treesitter/tree-sitter-lua',
+    },
+  }
 
-			--"p00f/nvim-ts-rainbow",
+  use {
+    'williamboman/mason.nvim',
+    'williamboman/mason-lspconfig.nvim',
+    'neovim/nvim-lspconfig',
+  }
 
-			"ThePrimeagen/refactoring.nvim",
+  use {
+    'jose-elias-alvarez/typescript.nvim',
+    'ray-x/lsp_signature.nvim',
+  }
 
-			-- Some additional treesitter functionality
-			"nvim-treesitter/nvim-treesitter-textobjects",
-			"theHamsta/nvim-treesitter-pairs",
-			"JoosepAlviste/nvim-ts-context-commentstring",
-			--[[ "nvim-treesitter/nvim-treesitter-refactor", ]]
-			"nvim-treesitter/playground",
-			"nvim-treesitter/tree-sitter-lua",
-		}
-	}
+  -- Debug Adaptor Protocol
 
-	use {
-		'williamboman/mason.nvim',
-    "williamboman/mason-lspconfig.nvim",
-		"neovim/nvim-lspconfig",
-	}
+  use 'mfussenegger/nvim-dap'
 
-	use {
-		"jose-elias-alvarez/typescript.nvim",
-		"ray-x/lsp_signature.nvim"
-	}
+  use 'folke/trouble.nvim'
 
-	-- Debug Adaptor Protocol
+  -- Autocompletion plugin
+  use {
+    'hrsh7th/nvim-cmp',
+    requires = {
+      -- LSP source for nvim-cmp
+      'hrsh7th/cmp-nvim-lsp',
 
-	use 'mfussenegger/nvim-dap'
+      -- Use completions from the buffer
+      'hrsh7th/cmp-buffer',
 
-	use 'folke/trouble.nvim'
+      -- Use completions from the path
+      'hrsh7th/cmp-path',
 
-	-- Autocompletion plugin
-	use {
-		"hrsh7th/nvim-cmp",
-		requires = {
-			-- LSP source for nvim-cmp
-			"hrsh7th/cmp-nvim-lsp",
+      -- Add completions to the cmdline
+      'hrsh7th/cmp-cmdline',
 
-			-- Use completions from the buffer
-			"hrsh7th/cmp-buffer",
+      -- Snippet engines
+      'saadparwaiz1/cmp_luasnip',
+    },
+  }
 
-			-- Use completions from the path
-			"hrsh7th/cmp-path",
+  -- Snippets
+  use {
+    'L3MON4D3/LuaSnip',
+    requires = { 'honza/vim-snippets' },
+  }
 
-			-- Add completions to the cmdline
-			"hrsh7th/cmp-cmdline",
+  -- Add prettier support
+  use {
+    'jose-elias-alvarez/null-ls.nvim',
+    requires = {
+      --'MunifTanjim/prettier.nvim',
+      'nvim-lua/plenary.nvim',
+    },
+  }
 
-			-- Snippet engines
-			"saadparwaiz1/cmp_luasnip",
-		}
-	}
+  ---------------------------
+  --    Task management
+  ---------------------------
 
-	-- Snippets
-	use {
-		"L3MON4D3/LuaSnip",
-		requires = { "honza/vim-snippets" }
-	}
+  use 'Shatur/neovim-tasks'
+  use {
+    'BenGH28/neo-runner.nvim',
+    run = ':UpdateRemotePlugins',
+  }
 
-	-- Add prettier support
-	use {
-		'jose-elias-alvarez/null-ls.nvim',
-		requires = {
-			--'MunifTanjim/prettier.nvim',
-			"nvim-lua/plenary.nvim",
-		}
-	}
+  ---------------------------
+  --          Misc
+  ---------------------------
 
-	---------------------------
-	--    Task management
-	---------------------------
+  -- Commenting tool
+  use 'numtostr/comment.nvim'
 
-	use 'Shatur/neovim-tasks'
-	use {
-		'BenGH28/neo-runner.nvim',
-		run = ":UpdateRemotePlugins"
-	}
+  -- File explorer
+  use 'kyazdani42/nvim-tree.lua'
 
-	---------------------------
-	--          Misc
-	---------------------------
+  -- Rooter changes the working directory to the project root when you open a file or directory.
+  use 'airblade/vim-rooter'
 
-	-- Commenting tool
-	use 'numtostr/comment.nvim'
+  -- Notifications!
+  use 'rcarriga/nvim-notify'
 
-	-- File explorer
-	use "kyazdani42/nvim-tree.lua"
+  -- Install lualine and tabline
+  use {
+    'nvim-lualine/lualine.nvim',
+    --requires = { "kdheepak/tabline.nvim" }
+  }
 
-	-- Rooter changes the working directory to the project root when you open a file or directory.
-	use "airblade/vim-rooter"
+  use 'romgrk/barbar.nvim'
 
-	-- Notifications!
-	use 'rcarriga/nvim-notify'
+  -- Some tpope features
+  --use "tpope/vim-surround"
+  use 'tpope/vim-obsession'
+  use 'tpope/vim-fugitive'
 
-	-- Install lualine and tabline
-	use {
-		"nvim-lualine/lualine.nvim",
-		--requires = { "kdheepak/tabline.nvim" }
-	}
+  use {
+    'lewis6991/gitsigns.nvim',
+    requires = { 'nvim-lua/plenary.nvim' },
+  }
 
-	use 'romgrk/barbar.nvim'
+  -- Improve the slash-search functionality
+  use 'junegunn/vim-slash'
 
-	-- Some tpope features
-	--use "tpope/vim-surround"
-	use "tpope/vim-obsession"
-	use "tpope/vim-fugitive"
+  -- Themes
+  use {
+    'sainnhe/gruvbox-material',
+    'RRethy/nvim-base16',
+  }
 
-	use {
-		"lewis6991/gitsigns.nvim",
-		requires = { "nvim-lua/plenary.nvim" }
-	}
-
-	-- Improve the slash-search functionality
-	use "junegunn/vim-slash"
-
-	-- Themes
-	use {
-		"sainnhe/gruvbox-material",
-		"RRethy/nvim-base16"
-	}
-
-
-	---------------------------
-	--  Syntax and formats
-	---------------------------
-	use 'isobit/vim-caddyfile'
-	use 'alker0/chezmoi.vim'
-
+  ---------------------------
+  --  Syntax and formats
+  ---------------------------
+  use 'isobit/vim-caddyfile'
+  use 'alker0/chezmoi.vim'
 end)
