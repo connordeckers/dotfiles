@@ -1,7 +1,6 @@
 require 'patch.settings'
 
 require 'patch.plugins'
-require 'patch.config'
 require 'patch.keybinds'
 
 require 'patch.colors'

@@ -2,11 +2,13 @@ local theme = require 'telescope.themes'
 local patch_telescope = require 'patch.telescope'
 local swap = require('swap-buffers').swap_buffers
 local cpp_utils = require 'patch.language-features.c++'
-
 local comment = require 'Comment.api'
-
+local tmux = require 'tmux-navigator.controls'
 local tb = require 'telescope.builtin'
+
 local leader = ' '
+
+local as_dropdown = theme.get_dropdown {}
 
 vim.g.mapleader = leader
 vim.g.maplocalleader = leader
@@ -43,10 +45,10 @@ local normalmaps = {
   -- Pane management
   -------------------
 
-  ['<C-h>'] = '<C-w>h', -- Move left
-  ['<C-j>'] = '<C-w>j', -- Move down
-  ['<C-k>'] = '<C-w>k', -- Move up
-  ['<C-l>'] = '<C-w>l', -- Move right
+  ['<C-h>'] = tmux.navigate.left, -- Move left
+  ['<C-j>'] = tmux.navigate.down, -- Move down
+  ['<C-k>'] = tmux.navigate.up, -- Move up
+  ['<C-l>'] = tmux.navigate.right, -- Move right
 
   -- Zoom in on a panel
   ['<C-w>z'] = '<C-w>_<C-w><bar>',
@@ -112,15 +114,17 @@ local normalmaps = {
 
   -- Show diagnostics
   ['<leader>td'] = function()
-    tb.diagnostics(theme.get_dropdown {})
+    tb.diagnostics(as_dropdown)
   end,
 
   -- Show config files
-  ['<leader>tp'] = patch_telescope.project_files,
+  ['<leader>tp'] = function()
+    patch_telescope.project_files(as_dropdown)
+  end,
 
   -- Show config files
   ['<leader>ta'] = function()
-    patch_telescope.angular(theme.get_dropdown {})
+    patch_telescope.angular(as_dropdown)
   end,
 
   -----------------------

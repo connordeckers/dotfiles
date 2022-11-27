@@ -126,7 +126,7 @@ local on_attach = function(client, bufnr)
       group = lspFormatAUGroup,
       buffer = bufnr,
       callback = function()
-        require('patch/utils/format').format_buffer(bufnr)
+        require('patch.utils.format').format_buffer(bufnr)
       end,
     })
   end

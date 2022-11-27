@@ -1,39 +1,63 @@
-return require('patch.utils.bootstrap').bootstrap_packer(function(use)
+local ok, packer = pcall(require, 'packer')
+if not ok then
+  error 'Packer not installed or configured. Please try again.'
+end
+
+local function defer(path)
+  require(path)
+end
+
+packer.startup(function(use)
+  local function add(conf)
+    use { conf[1], config = defer(conf[2]) }
+  end
+
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  -- Sync navigation with tmux
-  -- use 'christoomey/vim-tmux-navigator'
-
   -- Lightspeed navigation!
-  use 'ggandor/lightspeed.nvim'
+  add { 'ggandor/lightspeed.nvim', 'patch.config.lightspeed' }
 
+  -- Adds a dashboard to neovim.
   use 'mhinz/vim-startify'
-  use 'petertriho/nvim-scrollbar'
+
+  -- Adds a nicer scrollbar
+  add { 'petertriho/nvim-scrollbar', 'patch.config.scrollbar' }
+
+  -- TODO: Is this still needed?
   use 'Kasama/nvim-custom-diagnostic-highlight'
 
+  -- Better syntax highlighting for kitty.conf files.
   use 'fladson/vim-kitty'
 
-  use 'sindrets/winshift.nvim'
-  use 'sindrets/diffview.nvim'
-  -- Clipboard history
-  --[[ use { ]]
-  --[[ 	"connordeckers/neoclip", ]]
-  --[[ 	requires = { { 'tami5/sqlite.lua', module = 'sqlite' } }, ]]
-  --[[ } ]]
+  -- Allows the windows to be shifted with ease.
+  add { 'sindrets/winshift.nvim', 'patch.config.winshift' }
 
+  -- A prettier diff-view
+  use 'sindrets/diffview.nvim'
+
+  -- Sync navigation with tmux
   use {
     'connordeckers/tmux-navigator.nvim',
     config = function()
-      require('tmux-navigator').setup { enable = true }
+      require 'patch.config.tmux-navigator'
     end,
   }
 
-  use 'kylechui/nvim-surround'
+  -- Surround text with other text. Neat!
+  add { 'kylechui/nvim-surround', 'patch.config.surround' }
 
+  -- TODO: What's this do again?
   use 'caenrique/swap-buffers.nvim'
 
+  -- Better, easier, structural renaming.
   use 'cshuaimin/ssr.nvim'
+
+  ---------------------------
+  --     Requirements
+  ---------------------------
+
+  use 'nvim-lua/plenary.nvim'
 
   ---------------------------
   --       Telescope
@@ -42,18 +66,16 @@ return require('patch.utils.bootstrap').bootstrap_packer(function(use)
   -- Telescope and its peripheries
   use {
     'nvim-telescope/telescope.nvim',
+    config = defer 'patch.config.telescope',
     requires = {
-      'nvim-lua/plenary.nvim',
       'kyazdani42/nvim-web-devicons',
       'nvim-telescope/telescope-symbols.nvim',
-      --[[ "nvim-telescope/telescope-file-browser.nvim", ]]
-      --[[ "nvim-telescope/telescope-project.nvim", ]]
       'benfowler/telescope-luasnip.nvim',
     },
   }
 
   -- Make things PRETTY
-  use 'stevearc/dressing.nvim'
+  add { 'stevearc/dressing.nvim', 'patch.config.dressing' }
 
   ---------------------------
   --      Tree Sitter
@@ -62,13 +84,12 @@ return require('patch.utils.bootstrap').bootstrap_packer(function(use)
   use {
     'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
+    config = defer 'patch.config.treesitter',
     requires = {
       'windwp/nvim-ts-autotag',
 
       -- Auto pair braces
-      'windwp/nvim-autopairs',
-
-      --"p00f/nvim-ts-rainbow",
+      { 'windwp/nvim-autopairs', config = defer 'patch.config.autopairs' },
 
       'ThePrimeagen/refactoring.nvim',
 
@@ -76,32 +97,28 @@ return require('patch.utils.bootstrap').bootstrap_packer(function(use)
       'nvim-treesitter/nvim-treesitter-textobjects',
       'theHamsta/nvim-treesitter-pairs',
       'JoosepAlviste/nvim-ts-context-commentstring',
-      --[[ "nvim-treesitter/nvim-treesitter-refactor", ]]
       'nvim-treesitter/playground',
       'nvim-treesitter/tree-sitter-lua',
     },
   }
 
-  use {
-    'williamboman/mason.nvim',
-    'williamboman/mason-lspconfig.nvim',
-    'neovim/nvim-lspconfig',
-  }
+  use 'williamboman/mason-lspconfig.nvim'
+  add { 'williamboman/mason.nvim', 'patch.config.mason' }
+  add { 'neovim/nvim-lspconfig', 'patch.config.lsp' }
 
-  use {
-    'jose-elias-alvarez/typescript.nvim',
-    'ray-x/lsp_signature.nvim',
-  }
+  use 'jose-elias-alvarez/typescript.nvim'
+  add { 'ray-x/lsp_signature.nvim', 'patch.config.lspsig' }
 
   -- Debug Adaptor Protocol
-
   use 'mfussenegger/nvim-dap'
 
-  use 'folke/trouble.nvim'
+  -- Diagnostics that are pretty
+  add { 'folke/trouble.nvim', 'patch.config.trouble' }
 
   -- Autocompletion plugin
   use {
     'hrsh7th/nvim-cmp',
+    config = defer 'patch.config.cmp',
     requires = {
       -- LSP source for nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
@@ -124,22 +141,18 @@ return require('patch.utils.bootstrap').bootstrap_packer(function(use)
   use {
     'L3MON4D3/LuaSnip',
     requires = { 'honza/vim-snippets' },
+    config = defer 'patch.config.snippets',
   }
 
-  -- Add prettier support
-  use {
-    'jose-elias-alvarez/null-ls.nvim',
-    requires = {
-      --'MunifTanjim/prettier.nvim',
-      'nvim-lua/plenary.nvim',
-    },
-  }
+  -- Add better lsp support
+  add { 'jose-elias-alvarez/null-ls.nvim', 'patch.config.null-ls' }
 
   ---------------------------
   --    Task management
   ---------------------------
 
-  use 'Shatur/neovim-tasks'
+  add { 'Shatur/neovim-tasks', 'patch.config.tasks' }
+
   use {
     'BenGH28/neo-runner.nvim',
     run = ':UpdateRemotePlugins',
@@ -150,34 +163,29 @@ return require('patch.utils.bootstrap').bootstrap_packer(function(use)
   ---------------------------
 
   -- Commenting tool
-  use 'numtostr/comment.nvim'
+  add { 'numtostr/comment.nvim', 'patch.config.comments' }
 
   -- File explorer
-  use 'kyazdani42/nvim-tree.lua'
+  add { 'kyazdani42/nvim-tree.lua', 'patch.config.nvimtree' }
 
   -- Rooter changes the working directory to the project root when you open a file or directory.
   use 'airblade/vim-rooter'
 
   -- Notifications!
-  use 'rcarriga/nvim-notify'
+  -- Adds popup notification support
+  add { 'rcarriga/nvim-notify', 'patch.config.nvim-notify' }
 
-  -- Install lualine and tabline
-  use {
-    'nvim-lualine/lualine.nvim',
-    --requires = { "kdheepak/tabline.nvim" }
-  }
+  -- Install status line support
+  add { 'nvim-lualine/lualine.nvim', 'patch.config.lualine' }
 
-  use 'romgrk/barbar.nvim'
+  -- Install tab line support
+  add { 'romgrk/barbar.nvim', 'patch.config.tabline' }
 
   -- Some tpope features
-  --use "tpope/vim-surround"
   use 'tpope/vim-obsession'
   use 'tpope/vim-fugitive'
 
-  use {
-    'lewis6991/gitsigns.nvim',
-    requires = { 'nvim-lua/plenary.nvim' },
-  }
+  add { 'lewis6991/gitsigns.nvim', 'patch.config.gitsigns' }
 
   -- Improve the slash-search functionality
   use 'junegunn/vim-slash'

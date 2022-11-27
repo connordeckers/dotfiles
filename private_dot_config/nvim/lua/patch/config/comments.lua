@@ -27,7 +27,7 @@ require('patch.utils').safe_setup('Comment', {
   --mappings = false,
 
   ---Pre-hook, called before commenting the line
-  ---@param ctx CommentCtx
+  ---@type fun(ctx:CommentCtx):any|nil
   pre_hook = nil,
   -- pre_hook = function(ctx)
   -- Only calculate commentstring for tsx filetypes
