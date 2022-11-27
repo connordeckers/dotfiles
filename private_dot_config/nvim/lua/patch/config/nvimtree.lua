@@ -53,7 +53,7 @@ require('patch.utils').safe_setup('nvim-tree', {
     adaptive_size = true,
 
     -- Configuration options for floating windows
-    float = { enable = false },
+    float = { enable = true },
 
     mappings = {
       list = {
@@ -62,6 +62,9 @@ require('patch.utils').safe_setup('nvim-tree', {
 
         -- Collapse a directory by navigating left
         { key = 'h', action = 'close_node' },
+
+        -- Enter a directory
+        -- { key = 'L', action = 'cwd' }
       },
     },
   },
