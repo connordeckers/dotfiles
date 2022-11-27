@@ -62,9 +62,9 @@ if [ -f $HOST_SPECIFIC_CONFIG ]; then source $HOST_SPECIFIC_CONFIG; fi
 if [ "$TERM" != "linux" ]; then install_powerline_precmd; fi
 
 # Remove directory background colours to ensure that values are readable
-hash dircolors &>/dev/null && eval "$(dircolors -p | \
-    sed 's/ 4[0-9];/ 01;/; s/;4[0-9];/;01;/g; s/;4[0-9] /;01 /' | \
-    dircolors /dev/stdin)"
+#hash dircolors &>/dev/null && eval "$(dircolors -p | \
+#    sed 's/ 4[0-9];/ 01;/; s/;4[0-9];/;01;/g; s/;4[0-9] /;01 /' | \
+#    dircolors /dev/stdin)"
 
 # Load nodenv automatically by appending
 # the following to your profile:
