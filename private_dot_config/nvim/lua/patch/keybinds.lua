@@ -13,15 +13,13 @@ vim.g.maplocalleader = leader
 
 local opts = { noremap = true, silent = true }
 
-local use_tmux_overrides = true
-
 local normalmaps = {
   -- Toggle file tree
   ['<leader>n'] = require('nvim-tree').toggle,
 
   -- Save the file
   ['<leader>w'] = function()
-    vim.api.nvim_command 'write'
+    vim.api.nvim_command 'update'
   end,
 
   -- Toggle line numbers

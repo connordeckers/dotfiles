@@ -27,30 +27,40 @@ require('patch.utils').safe_setup('Comment', {
   --mappings = false,
 
   ---Pre-hook, called before commenting the line
-  ---@param ctx Ctx
-  pre_hook = function(ctx)
-    -- Only calculate commentstring for tsx filetypes
-    --if vim.bo.filetype == 'typescript' or vim.bo.filetype == 'javascript' then
-    local utils = require 'ts_context_commentstring.utils'
-    local inter = require 'ts_context_commentstring.internal'
-    local comment_utils = require 'Comment.utils'
+  ---@param ctx CommentCtx
+  pre_hook = nil,
+  -- pre_hook = function(ctx)
+  -- Only calculate commentstring for tsx filetypes
+  --if vim.bo.filetype == 'typescript' or vim.bo.filetype == 'javascript' then
+  -- local utils = require 'ts_context_commentstring.utils'
+  -- local inter = require 'ts_context_commentstring.internal'
+  --[[ local comment_utils = require 'comment.utils' ]]
 
-    -- Determine whether to use linewise or blockwise commentstring
-    local type = ctx.ctype == comment_utils.ctype.line and '__default' or '__multiline'
+  -- Determine whether to use linewise or blockwise commentstring
+  -- local type = ctx.ctype == comment_utils.ctype.linewise and '__default' or '__multiline'
 
-    -- Determine the location where to calculate commentstring from
-    local location = nil
-    if ctx.ctype == comment_utils.ctype.block then
-      location = utils.get_cursor_location()
-    elseif ctx.cmotion == comment_utils.cmotion.v or ctx.cmotion == comment_utils.cmotion.V then
-      location = utils.get_visual_start_location()
-    end
+  -- Determine the location where to calculate commentstring from
+  -- local location = nil
+  -- if ctx.ctype == comment_utils.ctype.blockwise then
+  -- location = utils.get_cursor_location()
+  -- elseif ctx.cmotion == comment_utils.cmotion.v or ctx.cmotion == comment_utils.cmotion.V then
+  -- location = utils.get_visual_start_location()
+  -- end
 
-    return inter.calculate_commentstring { key = type, location = location }
-    --end
-  end,
+  -- require 'notify'(vim.inspect {
+  -- ctx.ctype,
+  -- ctx.cmotion,
+  -- location,
+  -- ctx.ctype == comment_utils.ctype.blockwise,
+  -- ctx.cmotion == comment_utils.cmotion.v,
+  -- ctx.cmotion == comment_utils.cmotion.V,
+  -- })
+
+  -- return inter.calculate_commentstring { key = type, location = location }
+  --end
+  -- end,
 
   ---Post-hook, called after commenting is done
-  ---@type fun(ctx: Ctx)
+  ---@type fun(ctx: CommentCtx)
   post_hook = nil,
 })

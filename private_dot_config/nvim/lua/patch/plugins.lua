@@ -3,7 +3,7 @@ return require('patch.utils.bootstrap').bootstrap_packer(function(use)
   use 'wbthomason/packer.nvim'
 
   -- Sync navigation with tmux
-  use 'christoomey/vim-tmux-navigator'
+  -- use 'christoomey/vim-tmux-navigator'
 
   -- Lightspeed navigation!
   use 'ggandor/lightspeed.nvim'
@@ -21,6 +21,13 @@ return require('patch.utils.bootstrap').bootstrap_packer(function(use)
   --[[ 	"connordeckers/neoclip", ]]
   --[[ 	requires = { { 'tami5/sqlite.lua', module = 'sqlite' } }, ]]
   --[[ } ]]
+
+  use {
+    'connordeckers/tmux-navigator.nvim',
+    config = function()
+      require('tmux-navigator').setup { enable = true }
+    end,
+  }
 
   use 'kylechui/nvim-surround'
 
