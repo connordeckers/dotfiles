@@ -8,3 +8,4 @@ require 'patch.diagnostics.custom'
 
 require 'patch.utils.commands'
 require 'patch.utils.override-notify'
+-- require 'patch.config.custom-diagnostics'

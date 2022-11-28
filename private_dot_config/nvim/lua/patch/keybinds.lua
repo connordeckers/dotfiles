@@ -41,6 +41,10 @@ local normalmaps = {
   -- Diagnostics
   ['<Leader>tr'] = require('trouble').toggle,
 
+  -- Better hover definitions
+  ['K'] = require('hover').hover,
+  ['gK'] = require('hover').hover_select,
+
   -------------------
   -- Pane management
   -------------------

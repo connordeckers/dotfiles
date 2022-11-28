@@ -101,7 +101,7 @@ local on_attach = function(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   vim.keymap.set('n', 'gD', lsp.declaration, opts)
   vim.keymap.set('n', 'gd', lsp.definition, opts)
-  vim.keymap.set('n', 'K', lsp.hover, opts)
+  -- vim.keymap.set('n', 'K', lsp.hover, opts)
   vim.keymap.set('n', 'gi', lsp.implementation, opts)
   -- vim.keymap.set("n", "<C-K>", lsp.signature_help, opts)
   vim.keymap.set('n', '<leader>wa', lsp.add_workspace_folder, opts)

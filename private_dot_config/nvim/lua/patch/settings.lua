@@ -67,3 +67,13 @@ vim.opt.number = true
 
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
+
+-- Show strikethrough and undercurl correctly in some particular terminal environments
+vim.cmd [[
+	if &term =~ 'xterm\|kitty\|alacritty\|tmux'
+			let &t_Ts = "\e[9m"   " Strikethrough
+			let &t_Te = "\e[29m"
+			let &t_Cs = "\e[4:3m" " Undercurl
+			let &t_Ce = "\e[4:0m"
+	endif
+]]

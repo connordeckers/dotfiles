@@ -181,6 +181,7 @@ packer.startup(function(use)
   use 'tpope/vim-fugitive'
 
   add { 'lewis6991/gitsigns.nvim', 'patch.config.gitsigns' }
+  add { 'lewis6991/hover.nvim', 'patch.config.hover' }
 
   -- Improve the slash-search functionality
   use 'junegunn/vim-slash'
