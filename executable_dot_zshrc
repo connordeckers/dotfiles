@@ -42,6 +42,8 @@ ZSH_TMUX_AUTOCONNECT=false
 # Enforce unicode in tmux
 ZSH_TMUX_UNICODE=true
 
+# DONT automatically change to using `screen`.
+ZSH_TMUX_FIXTERM=false
 # Source the main .oh-my-zsh scripts
 source $ZSH/oh-my-zsh.sh
 
