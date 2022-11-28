@@ -25,8 +25,7 @@ packer.startup(function(use)
   -- Adds a nicer scrollbar
   add { 'petertriho/nvim-scrollbar', 'patch.config.scrollbar' }
 
-  -- TODO: Is this still needed?
-  use 'Kasama/nvim-custom-diagnostic-highlight'
+  add { 'Kasama/nvim-custom-diagnostic-highlight', 'patch.config.custom-diagnostics' }
 
   -- Better syntax highlighting for kitty.conf files.
   use 'fladson/vim-kitty'
@@ -43,7 +42,7 @@ packer.startup(function(use)
   -- Surround text with other text. Neat!
   add { 'kylechui/nvim-surround', 'patch.config.surround' }
 
-  -- TODO: What's this do again?
+  -- Swap buffers with each other
   use 'caenrique/swap-buffers.nvim'
 
   -- Better, easier, structural renaming.
@@ -190,6 +189,7 @@ packer.startup(function(use)
   use {
     'sainnhe/gruvbox-material',
     'RRethy/nvim-base16',
+    'navarasu/onedark.nvim',
   }
 
   ---------------------------
@@ -197,6 +197,4 @@ packer.startup(function(use)
   ---------------------------
   use 'isobit/vim-caddyfile'
   use 'alker0/chezmoi.vim'
-
-  use 'navarasu/onedark.nvim'
 end)

@@ -3,20 +3,6 @@ vim.g.loaded_netrwPlugin = 1
 
 vim.opt.termguicolors = true
 
-local theme = require 'onedark'
-theme.setup {
-  style = 'dark',
-  transparent = false,
-  code_style = {
-    comments = 'italic',
-    keywords = 'italic',
-    functions = 'none',
-    strings = 'none',
-    variables = 'none',
-  },
-}
-theme.load()
-
 -- vim.cmd [[ colorscheme base16-onedark ]]
 
 vim.cmd [[ highlight clear SignColumn ]]

@@ -64,7 +64,7 @@ require('patch.utils').safe_setup('nvim-tree', {
         { key = 'h', action = 'close_node' },
 
         -- Enter a directory
-        -- { key = 'L', action = 'cwd' }
+        { key = 'L', action = 'cd' },
       },
     },
   },
