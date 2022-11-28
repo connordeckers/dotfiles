@@ -19,7 +19,8 @@ packer.startup(function(use)
   add { 'ggandor/lightspeed.nvim', 'patch.config.lightspeed' }
 
   -- Adds a dashboard to neovim.
-  use 'mhinz/vim-startify'
+  -- use 'mhinz/vim-startify'
+  -- add { 'glepnir/dashboard-nvim', 'patch.config.dashboard' }
 
   -- Adds a nicer scrollbar
   add { 'petertriho/nvim-scrollbar', 'patch.config.scrollbar' }
@@ -37,12 +38,7 @@ packer.startup(function(use)
   use 'sindrets/diffview.nvim'
 
   -- Sync navigation with tmux
-  use {
-    'connordeckers/tmux-navigator.nvim',
-    config = function()
-      require 'patch.config.tmux-navigator'
-    end,
-  }
+  add { 'connordeckers/tmux-navigator.nvim', 'patch.config.tmux-navigator' }
 
   -- Surround text with other text. Neat!
   add { 'kylechui/nvim-surround', 'patch.config.surround' }
@@ -201,4 +197,6 @@ packer.startup(function(use)
   ---------------------------
   use 'isobit/vim-caddyfile'
   use 'alker0/chezmoi.vim'
+
+  use 'navarasu/onedark.nvim'
 end)

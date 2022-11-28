@@ -22,14 +22,6 @@
 	addEmptyPathspec = false
 [push]
 	default = current
-[diff]
-	tool = vimdiff3
-[difftool "vimdiff3"]
-	path = nvim
-[mergetool "vimdiff3"]
-	path = nvim
-[merge]
-	tool = vimdiff3
 [url "git@github.com:"]
 	insteadOf = github:
 	insteadOf = gh:
@@ -43,7 +35,5 @@
 	credentialStore = gpg
 [credential "https://dev.azure.com"]
 	useHttpPath = true
-; [commit]
-; 	gpgsign = true
 [color]
 	ui = auto

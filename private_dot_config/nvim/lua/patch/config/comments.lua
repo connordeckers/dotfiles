@@ -12,7 +12,7 @@ require('patch.utils').safe_setup('Comment', {
   sticky = true,
 
   --- Disable baked in mappings; we'll configure it ourselves in keybinds.lua
-  mappings = false,
+  -- mappings = false,
 
   ---Lines to be ignored while comment/uncomment.
   ---Could be a regex string or a function that returns a regex string.
