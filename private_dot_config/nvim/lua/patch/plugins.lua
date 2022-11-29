@@ -104,9 +104,17 @@ packer.startup(function(use)
     },
   }
 
-  use 'williamboman/mason-lspconfig.nvim'
-  add { 'williamboman/mason.nvim', 'patch.config.mason' }
-  add { 'neovim/nvim-lspconfig', 'patch.config.lsp' }
+  -- Add better lsp support
+  use {
+    'neovim/nvim-lspconfig',
+    requires = {
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+      'jose-elias-alvarez/null-ls.nvim',
+      'jayp0521/mason-null-ls.nvim',
+    },
+    config = defer 'patch.config.lsp',
+  }
 
   use 'jose-elias-alvarez/typescript.nvim'
   add { 'ray-x/lsp_signature.nvim', 'patch.config.lspsig' }
@@ -145,9 +153,6 @@ packer.startup(function(use)
     requires = { 'honza/vim-snippets' },
     config = defer 'patch.config.snippets',
   }
-
-  -- Add better lsp support
-  add { 'jose-elias-alvarez/null-ls.nvim', 'patch.config.null-ls' }
 
   ---------------------------
   --    Task management

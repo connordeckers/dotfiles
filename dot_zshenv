@@ -5,6 +5,7 @@ export EDITOR='nvim'
 GOPATH=$(go env GOPATH)/bin
 
 export PNPM_HOME="/home/connor/.local/share/pnpm"
+export CLANG_FORMAT="/opt/clang-format-static"
 
 path=( 
 	./node_modules/.bin
@@ -15,6 +16,7 @@ path=(
 	$N_PREFIX/bin
 	$HOME/.local/share/pnpm
 	$PNPM_HOME
+	$CLANG_FORMAT
 	$path
 )
 
