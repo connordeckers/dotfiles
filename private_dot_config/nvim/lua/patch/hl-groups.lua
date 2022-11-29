@@ -3,7 +3,13 @@ local augroup = vim.api.nvim_create_augroup('patch/hl_augrp', {})
 
 local function define_additional_tokens()
   -- Create an "unused" highlight style
-  vim.cmd [[ hi! UnusedToken cterm=undercurl,italic,bold gui=undercurl,italic,bold guifg=#5c6370 ]]
+  vim.cmd [[ hi! UnusedToken cterm=italic,bold,strikethrough gui=italic,bold,strikethrough guifg=#5c6370 ]]
+
+  -- Fix the floating dialog quirks
+  vim.cmd [[
+		hi! link FloatBorder Float
+		hi! link NormalFloat Normal
+	]]
 end
 
 vim.api.nvim_create_autocmd('ColorScheme', {

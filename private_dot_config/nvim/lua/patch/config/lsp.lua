@@ -3,60 +3,28 @@ if not ok then
   return
 end
 
-local default_servers = {
-  -- Angular
-  --  npm install -g @angular/language-server
-  ['angularls'] = {},
-  --["angularls"] = require 'patch.config.lsp-overrides'.angular(),
+local with_defaults = {
+  'angularls',
+  'bashls',
+  'cssls',
+  'html',
+  'jsonls',
+  'cssmodules_ls',
+  'clangd',
+  'diagnosticls',
+  'dockerls',
+  'emmet_ls',
+  'vimls',
+  'yamlls',
+  'rust_analyzer',
+}
 
-  -- Bash
-  --  npm i -g bash-language-server
-  ['bashls'] = {},
+local default_config = {}
+for _, key in pairs(with_defaults) do
+  default_config[key] = {}
+end
 
-  -- CSS, ESLint, HTML and JSON
-  --  npm i -g vscode-langservers-extracted cssmodules-language-server
-  ['cssls'] = {},
-  -- ["eslint"] = {},
-  ['html'] = {},
-  ['jsonls'] = {},
-
-  -- CSS Modules
-  --  npm i -g cssmodules-language-server
-  ['cssmodules_ls'] = {},
-
-  -- C++
-  ['clangd'] = {},
-
-  -- Diagnostic language server integrate with linters
-  ['diagnosticls'] = {},
-
-  -- Docker
-  --  npm install -g dockerfile-language-server-nodejs
-  ['dockerls'] = {},
-
-  -- Emmet support
-  --  npm install -g emmet-ls
-  ['emmet_ls'] = {},
-
-  -- Typescript
-  --  npm install -g typescript typescript-language-server
-  --["tsserver"] = {},
-  --[[ ["typescript"] = {
-		 [   disable_commands = true,
-		 [   disable_formatting = true,
-		 [ }, ]]
-
-  -- VimL
-  --  npm install -g vim-language-server
-  ['vimls'] = {},
-
-  -- YAML
-  --  npm i -g yaml-language-server
-  ['yamlls'] = {},
-
-  -- Rust
-  ['rust_analyzer'] = {},
-
+local extended_config = {
   -- Qt
   ['qmlls'] = {
     cmd = { 'qmlls6' },
@@ -89,36 +57,41 @@ local default_servers = {
 
 -- if you want to set up formatting on save, you can use this as a callback
 local lspFormatAUGroup = vim.api.nvim_create_augroup('LspFormatting', {})
+local lsp = vim.lsp.buf
+
+local lsp_keymaps = {
+  ['gD'] = lsp.declaration,
+  ['gd'] = lsp.definition,
+  ['K'] = lsp.hover,
+  ['gi'] = lsp.implementation,
+  -- ["<C-K>"] = lsp.signature_help,
+  ['<leader>wa'] = lsp.add_workspace_folder,
+  ['<leader>wr'] = lsp.remove_workspace_folder,
+  ['<leader>wl'] = function()
+    print(vim.inspect(lsp.list_workspace_folders()))
+  end,
+  ['gT'] = lsp.type_definition,
+  ['<leader>rn'] = lsp.rename,
+  ['<C-space>'] = lsp.code_action,
+  ['gr'] = lsp.references,
+  ['<leader>f'] = lsp.format,
+}
 
 -- Mappings.
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
-  local opts = { noremap = true, silent = true, buffer = bufnr }
-  local lsp = vim.lsp.buf
-
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  vim.keymap.set('n', 'gD', lsp.declaration, opts)
-  vim.keymap.set('n', 'gd', lsp.definition, opts)
-  -- vim.keymap.set('n', 'K', lsp.hover, opts)
-  vim.keymap.set('n', 'gi', lsp.implementation, opts)
-  -- vim.keymap.set("n", "<C-K>", lsp.signature_help, opts)
-  vim.keymap.set('n', '<leader>wa', lsp.add_workspace_folder, opts)
-  vim.keymap.set('n', '<leader>wr', lsp.remove_workspace_folder, opts)
-  vim.keymap.set('n', '<leader>wl', function()
-    print(vim.inspect(lsp.list_workspace_folders()))
-  end, opts)
-  vim.keymap.set('n', 'gT', lsp.type_definition, opts)
-  vim.keymap.set('n', '<leader>rn', lsp.rename, opts)
-  vim.keymap.set('n', '<C-space>', lsp.code_action, opts)
-  vim.keymap.set('n', 'gr', lsp.references, opts)
-  vim.keymap.set('n', '<leader>f', lsp.format, opts)
+  local opts = { noremap = true, silent = true, buffer = bufnr }
+  for map, action in pairs(lsp_keymaps) do
+    vim.keymap.set('n', map, action, opts)
+  end
 
-  --[[ if client.supports_method("textDocument/documentHighlight") then
-		vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, { callback = lsp.document_highlight, buffer = bufnr })
-		vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, { callback = lsp.clear_references, buffer = bufnr })
-	end ]]
+  if client.supports_method 'textDocument/documentHighlight' then
+    vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, { callback = lsp.document_highlight, buffer = bufnr })
+    vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, { callback = lsp.clear_references, buffer = bufnr })
+  end
 
   if client.supports_method 'textDocument/formatting' then
     vim.api.nvim_clear_autocmds { group = lspFormatAUGroup, buffer = bufnr }
@@ -132,61 +105,26 @@ local on_attach = function(client, bufnr)
   end
 end
 
+local handlers = {
+  ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' }),
+}
+
 -- Add additional capabilities supported by nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local req = require('patch.utils').safe_require
-req('cmp_nvim_lsp', function(nlsp)
-  capabilities = nlsp.default_capabilities(capabilities)
-end)
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+local default_server_opts = { on_attach = on_attach, capabilities = capabilities, handlers = handlers }
 
 require('typescript').setup {
   disable_commands = true,
   disable_formatting = true,
   debug = false,
-  server = {},
+  go_to_source_definition = { fallback = true },
+  server = default_server_opts,
 }
 
+local default_servers = vim.tbl_deep_extend('force', {}, default_config, extended_config)
+
 for lsp, config in pairs(default_servers) do
-  local default = { on_attach = on_attach, capabilities = capabilities }
-  local opts = vim.tbl_deep_extend('force', default, config)
+  local opts = vim.tbl_deep_extend('force', default_server_opts, config)
 
   lspconfig[lsp].setup(opts)
 end
-
--- require "patch.utils".safe_setup("nvim-lsp-installer", {
--- 	-- A list of servers to automatically install. Example: { "rust_analyzer", "sumneko_lua" }
--- 	ensure_installed = { "sumneko_lua", "diagnosticls" },
--- 	ui = {
--- 		icons = {
--- 			-- The list icon to use for installed servers.
--- 			server_installed = "✓",
--- 			-- The list icon to use for servers that are pending installation.
--- 			server_pending = "➜",
--- 			-- The list icon to use for servers that are not installed.
--- 			server_uninstalled = "✗",
--- 		},
--- 		keymaps = {
--- 			-- Keymap to expand a server in the UI
--- 			toggle_server_expand = "<CR>",
--- 			-- Keymap to install the server under the current cursor position
--- 			install_server = "i",
--- 			-- Keymap to reinstall/update the server under the current cursor position
--- 			update_server = "u",
--- 			-- Keymap to check for new version for the server under the current cursor position
--- 			check_server_version = "c",
--- 			-- Keymap to update all installed servers
--- 			update_all_servers = "U",
--- 			-- Keymap to check which installed servers are outdated
--- 			check_outdated_servers = "C",
--- 			-- Keymap to uninstall a server
--- 			uninstall_server = "X",
--- 		},
--- 	},
-
--- 	-- The directory in which to install all servers.
--- 	install_root_dir = require "nvim-lsp-installer.core.path".concat({ vim.fn.stdpath("data"), "lsp_servers" }),
-
--- 	-- Limit for the maximum amount of servers to be installed at the same time. Once this limit is reached, any further
--- 	-- servers that are requested to be installed will be put in a queue.
--- 	max_concurrent_installers = 4,
--- })

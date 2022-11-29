@@ -7,8 +7,10 @@ require('hover').setup {
     require 'hover.providers.man'
     require 'hover.providers.dictionary'
   end,
+
   preview_opts = {
-    border = nil,
+    border = 'rounded',
+    focusable = false,
   },
   -- Whether the contents of a currently open hover window should be moved
   -- to a :h preview-window when pressing the hover keymap.

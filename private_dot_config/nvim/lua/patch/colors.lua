@@ -1,7 +1,3 @@
-vim.cmd [[
-	highlight LspDiagnosticsUnusedHint cterm=strikethrough gui=strikethrough ctermfg=14 guifg=#545862
-]]
-
 local theme = require 'onedark'
 theme.setup {
   style = 'dark',

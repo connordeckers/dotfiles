@@ -9,7 +9,7 @@ highlight.setup {
   handler_name = 'kasama/nvim-custom-diagnostic-highlight',
 
   -- The Highlight group to set at the diagnostic
-  highlight_group = 'UnusedToken2',
+  highlight_group = 'UnusedToken',
 
   -- Lua patterns to be tested against the diagnostic message. Overrides default behavior
   patterns_override = {

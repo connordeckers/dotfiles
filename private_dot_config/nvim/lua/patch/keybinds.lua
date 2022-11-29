@@ -42,8 +42,20 @@ local normalmaps = {
   ['<Leader>tr'] = require('trouble').toggle,
 
   -- Better hover definitions
-  ['K'] = require('hover').hover,
-  ['gK'] = require('hover').hover_select,
+  -- ['K'] = function()
+  --   local ok, mod = pcall(require, 'hover')
+  --   if not ok then
+  --     return nil
+  --   end
+  --   mod.hover()
+  -- end,
+  -- ['gK'] = function()
+  --   local ok, mod = pcall(require, 'hover')
+  --   if not ok then
+  --     return nil
+  --   end
+  --   mod.hover_select()
+  -- end,
 
   -------------------
   -- Pane management

@@ -4,7 +4,14 @@ if not ok then
 end
 
 local function defer(path)
-  require(path)
+  local function try()
+    local _, isok = pcall(require, path)
+    return isok
+  end
+
+  local _
+  _ = try() or packer.sync()
+  _ = try() or vim.notify('Error loading ' .. path)
 end
 
 packer.startup(function(use)
