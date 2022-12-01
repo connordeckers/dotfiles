@@ -1,5 +1,5 @@
 vim.diagnostic.config {
-  underline = false,
+  underline = true,
   virtual_text = false,
   float = {
     show_header = true,

@@ -34,7 +34,7 @@ plugins=(
 )
 
 # Start tmux with the shell
-ZSH_TMUX_AUTOSTART=true
+ZSH_TMUX_AUTOSTART=false
 
 # Create a new session per shell
 ZSH_TMUX_AUTOCONNECT=false
@@ -72,3 +72,5 @@ if [ "$TERM" != "linux" ]; then install_powerline_precmd; fi
 # the following to your profile:
 hash nodenv &>/dev/null && eval "$(nodenv init -)"
 #hash atuin &>/dev/null && eval "$(atuin init zsh)"
+
+_launch_tmux

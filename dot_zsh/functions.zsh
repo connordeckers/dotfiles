@@ -110,3 +110,10 @@ on_file_change() {
 clean_path() {
   export PATH=$(echo $PATH | sed 's|:|\n|g' | awk '!x[$0]++' | sed ':a; N; $!ba; s|\n|:|g')
 }
+
+_launch_tmux() {
+	# Autostart if not already in tmux and enabled.
+	if [[ -z "$TMUX" && -z "$INSIDE_EMACS" && -z "$EMACS" && -z "$VIM" ]]; then
+			_zsh_tmux_plugin_run
+	fi
+}

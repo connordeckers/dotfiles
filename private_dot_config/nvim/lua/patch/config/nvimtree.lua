@@ -47,6 +47,11 @@ require('patch.utils').safe_setup('nvim-tree', {
   -- such as dressing.nvim or telescope-ui-select.nvim
   select_prompts = true,
 
+  -- Hide dotfiles by default.
+  filters = {
+    dotfiles = true,
+  },
+
   -- Window / buffer setup.
   view = {
     -- Resize the window on each draw based on the longest line.

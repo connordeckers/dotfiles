@@ -21,6 +21,7 @@ local lsp_hover_float_config = { border = 'rounded' }
 
 -- Format the document on write
 local formatOnSave = true
+local format_timeout = 2500
 
 -- Highlight the token under the cursor on cursor-hold
 local highlightTokenUnderCursor = true
@@ -38,7 +39,6 @@ local typescript_setup = {
   disable_formatting = true,
   debug = false,
   go_to_source_definition = { fallback = true },
-  server = default_server_opts,
 }
 
 -- The filetypes that prettier will run against
@@ -62,7 +62,7 @@ local sources = {
   -- Code actions
   require 'patch.code-actions.typescript',
   -- null.builtins.code_actions.cspell,
-  null.builtins.code_actions.eslint_d,
+  -- null.builtins.code_actions.eslint_d,
   null.builtins.code_actions.gitsigns,
 
   -- Diagnostics
@@ -73,7 +73,7 @@ local sources = {
   null.builtins.diagnostics.cppcheck,
   null.builtins.diagnostics.cpplint,
   null.builtins.diagnostics.editorconfig_checker,
-  null.builtins.diagnostics.eslint_d,
+  -- null.builtins.diagnostics.eslint_d,
   null.builtins.diagnostics.gitlint,
   null.builtins.diagnostics.hadolint, -- Dockerfile helper
 
@@ -148,7 +148,9 @@ local lsp_keymaps = {
   ['<leader>rn'] = lsp.rename,
   ['<C-space>'] = lsp.code_action,
   ['gr'] = lsp.references,
-  ['<leader>f'] = lsp.format,
+  ['<leader>f'] = function()
+    lsp.format { timeout_ms = format_timeout }
+  end,
   -- ["<C-K>"] = lsp.signature_help,
   -- ['<leader>wa'] = lsp.add_workspace_folder,
   -- ['<leader>wr'] = lsp.remove_workspace_folder,
@@ -200,7 +202,7 @@ local default_server_opts = { on_attach = on_attach, capabilities = capabilities
 -- Nothing particularly interesting, despite being
 -- kinda important.
 
-require('typescript').setup(typescript_setup)
+require('typescript').setup(vim.tbl_deep_extend('force', typescript_setup, { server = default_server_opts }))
 
 mason.setup(mason_config)
 mason_lspconf.setup(mason_lspconf_config)

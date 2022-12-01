@@ -3,28 +3,44 @@ require('patch.utils').safe_setup('Comment', {
   ---@type boolean|fun():boolean
   padding = true,
 
-  --- Trim left and right sides of block comments before inserting
-  trim = false,
-
   ---Whether the cursor should stay at its position
   ---NOTE: This only affects NORMAL mode mappings and doesn't work with dot-repeat
   ---@type boolean
   sticky = true,
 
-  --- Disable baked in mappings; we'll configure it ourselves in keybinds.lua
-  -- mappings = false,
-
   ---Lines to be ignored while comment/uncomment.
   ---Could be a regex string or a function that returns a regex string.
   ---Example: Use '^$' to ignore empty lines
   ---@type string|fun():string
-  -- ignore = nil,
-  ignore = '^$',
+  ignore = nil,
+  -- ignore = '^$',
 
   ---Create basic (operator-pending) and extended mappings for NORMAL + VISUAL mode
   ---NOTE: If `mappings = false` then the plugin won't create any mappings
   ---@type boolean|table
-  --mappings = false,
+  mappings = {
+    --- TODO: @ConnorDeckers
+    --- Map these to native Lua methods instead of passing through Vimscript
+
+    basic = true,
+    extra = true,
+  },
+
+  toggler = {
+    line = '<leader>ci',
+    block = '<leader>bi',
+  },
+
+  opleader = {
+    line = '<leader>c',
+    block = '<leader>b',
+  },
+
+  extra = {
+    above = '<leader>cO',
+    below = '<leader>co',
+    eol = '<leader>cA',
+  },
 
   ---Pre-hook, called before commenting the line
   ---@type fun(ctx:CommentCtx):any|nil

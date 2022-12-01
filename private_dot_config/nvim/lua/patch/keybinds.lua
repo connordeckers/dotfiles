@@ -172,26 +172,61 @@ local normal_visual = {
   -- Comment mappings
   -----------------------
 
-  -- Toggle linewise-comment on the current line
-  ['<leader>cc'] = comment.toggle.linewise.current,
+  -- -- Toggle linewise-comment on the current line
+  -- ['<leader>ci'] = comment.toggle.linewise.current,
 
-  -- Toggle blockwise-comment on the current line
-  ['<leader>cs'] = comment.toggle.blockwise.current,
+  -- -- Toggle blockwise-comment on the current line
+  -- ['<leader>cb'] = comment.toggle.blockwise.current,
 
-  -- Just straight comment/uncomment; no toggle here
-  ['<leader>ci'] = comment.comment.linewise.current,
-  ['<leader>cu'] = comment.uncomment.linewise.current,
+  -- -- Just straight comment/uncomment; no toggle here
+  -- ['<leader>cc'] = comment.comment.linewise.current,
+  -- ['<leader>cu'] = comment.uncomment.linewise.current,
 
-  ['<leader>cC'] = comment.comment.blockwise.current,
-  ['<leader>cU'] = comment.uncomment.blockwise.current,
+  -- ['<leader>cC'] = comment.comment.blockwise.current,
+  -- ['<leader>cU'] = comment.uncomment.blockwise.current,
 }
+
+-- api.toggle.linewise(motion, config?)
+-- api.toggle.linewise.current(motion?, config?)
+-- api.toggle.linewise.count(count, config?)
+
+-- api.toggle.blockwise(motion, config?)
+-- api.toggle.blockwise.current(motion?, config?)
+-- api.toggle.blockwise.count(count, config?)
+
+-- Toggle current line (linewise) using C-/
+vim.keymap.set('n', '<leader>ci', comment.toggle.linewise.current)
+
+-- Toggle current line (blockwise) using C-\
+vim.keymap.set('n', '<leader>cb', comment.toggle.blockwise.current)
+
+-- Toggle lines (linewise) with dot-repeat support
+-- Example: <leader>gc3j will comment 4 lines
+vim.keymap.set('n', '<leader>gc', comment.call('toggle.linewise', 'g@'), { expr = true })
+
+-- Toggle lines (blockwise) with dot-repeat support
+-- Example: <leader>gb3j will comment 4 lines
+vim.keymap.set('n', '<leader>gb', comment.call('toggle.blockwise', 'g@'), { expr = true })
+
+local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
+
+-- Toggle selection (linewise)
+vim.keymap.set('x', '<leader>ci', function()
+  vim.api.nvim_feedkeys(esc, 'nx', false)
+  comment.toggle.linewise(vim.fn.visualmode())
+end)
+
+-- Toggle selection (blockwise)
+vim.keymap.set('x', '<leader>cb', function()
+  vim.api.nvim_feedkeys(esc, 'nx', false)
+  comment.toggle.blockwise(vim.fn.visualmode())
+end)
 
 local M = {}
 local function yank_comment_paste() end
 local function insert_jsdoc_comment()
   if vim.bo.filetype == 'typescript' then
     comment.comment.blockwise.current {
-      sticky = true,
       move_cursor_to = 'between',
       pre_hook = function()
         return '/** %s */'
