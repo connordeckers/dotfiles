@@ -1,4 +1,7 @@
-require('patch.utils').safe_setup('lualine', {
+local lualine = require 'lualine'
+local navic = require 'nvim-navic'
+
+lualine.setup {
   options = {
     icons_enabled = true,
     theme = 'onedark',
@@ -24,9 +27,16 @@ require('patch.utils').safe_setup('lualine', {
     lualine_y = {},
     lualine_z = {},
   },
-  tabline = {},
+  tabline = {
+    lualine_a = { 'buffers' },
+    lualine_b = {},
+    lualine_c = {},
+    lualine_x = {},
+    lualine_y = { { navic.get_location, cond = navic.is_available } },
+    lualine_z = {},
+  },
   extensions = {},
-})
+}
 
 vim.cmd [[
     set guioptions-=e

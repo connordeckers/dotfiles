@@ -2,7 +2,7 @@ local severity = vim.diagnostic.severity
 require('patch.utils').safe_setup('nvim-tree', {
   -- Will automatically open the tree when running setup if startup buffer is
   -- a directory, is empty or is unnamed. nvim-tree window will be focused.
-  open_on_setup = true,
+  open_on_setup = false,
 
   -- Changes how files within the same directory are sorted.
   -- Can be one of `name`, `case_sensitive`, `modification_time`, `extension` or a
@@ -58,7 +58,7 @@ require('patch.utils').safe_setup('nvim-tree', {
     adaptive_size = true,
 
     -- Configuration options for floating windows
-    float = { enable = true },
+    float = { enable = false },
 
     mappings = {
       list = {

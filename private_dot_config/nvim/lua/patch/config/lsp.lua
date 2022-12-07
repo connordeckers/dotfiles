@@ -1,4 +1,4 @@
-local packages = { 'lspconfig', 'mason', 'mason-lspconfig', 'null-ls' }
+local packages = { 'lspconfig', 'mason', 'mason-lspconfig', 'null-ls', 'nvim-navic' }
 
 -- Make sure we can safely load in our packages.
 for _, pkg in pairs(packages) do
@@ -13,6 +13,7 @@ local lspconfig = require 'lspconfig'
 local mason = require 'mason'
 local mason_lspconf = require 'mason-lspconfig'
 local null = require 'null-ls'
+local navic = require 'nvim-navic'
 
 -- Start configuring various LSP related items --
 
@@ -170,6 +171,11 @@ local on_attach = function(client, bufnr)
   local opts = { noremap = true, silent = true, buffer = bufnr }
   for map, action in pairs(lsp_keymaps) do
     vim.keymap.set('n', map, action, opts)
+  end
+
+  -- Add support for the symbol path
+  if client.server_capabilities.documentSymbolProvider then
+    navic.attach(client, bufnr)
   end
 
   -- Add the autocommands for highlighting under the cursor

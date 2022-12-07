@@ -92,21 +92,15 @@ local normalmaps = {
   end,
 
   -- Next tab
-  ['<Tab>'] = function()
-    vim.api.nvim_command 'BufferNext'
-  end,
+  ['<Tab>'] = ':bnext<CR>',
 
   -- Previous tab
-  ['<S-Tab>'] = function()
-    vim.api.nvim_command 'BufferPrevious'
-  end,
+  ['<S-Tab>'] = ':bprevious<CR>',
 
-  ['<Leader>q'] = function()
-    vim.api.nvim_command 'BufferClose'
-  end,
+  ['<Leader>q'] = ':bdelete<CR>',
 
   ['<C-p>'] = function()
-    vim.api.nvim_command 'BufferPick'
+    require('telescope.builtin').buffers(as_dropdown)
   end,
 
   -----------------------
