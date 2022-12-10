@@ -1,10 +1,9 @@
+local tb = require 'telescope.builtin'
 local theme = require 'telescope.themes'
 local patch_telescope = require 'patch.telescope'
-local swap = require('swap-buffers').swap_buffers
 local cpp_utils = require 'patch.language-features.c++'
 local comment = require 'Comment.api'
 local tmux = require 'tmux-navigator.controls'
-local tb = require 'telescope.builtin'
 
 local leader = ' '
 
@@ -17,7 +16,9 @@ local opts = { noremap = true, silent = true }
 
 local normalmaps = {
   -- Toggle file tree
-  ['<leader>n'] = require('nvim-tree').toggle,
+  ['<leader>n'] = function()
+    require('nvim-tree').toggle()
+  end,
 
   -- Save the file
   ['<leader>w'] = function()
@@ -39,23 +40,9 @@ local normalmaps = {
   ['<Leader>fa'] = 'za',
 
   -- Diagnostics
-  ['<Leader>tr'] = require('trouble').toggle,
-
-  -- Better hover definitions
-  -- ['K'] = function()
-  --   local ok, mod = pcall(require, 'hover')
-  --   if not ok then
-  --     return nil
-  --   end
-  --   mod.hover()
-  -- end,
-  -- ['gK'] = function()
-  --   local ok, mod = pcall(require, 'hover')
-  --   if not ok then
-  --     return nil
-  --   end
-  --   mod.hover_select()
-  -- end,
+  ['<Leader>tr'] = function()
+    require('trouble').toggle()
+  end,
 
   -------------------
   -- Pane management
@@ -70,16 +57,16 @@ local normalmaps = {
   ['<C-w>z'] = '<C-w>_<C-w><bar>',
 
   ['<C-w><C-h>'] = function()
-    swap 'h'
+    require('swap-buffers').swap_buffers 'h'
   end,
   ['<C-w><C-j>'] = function()
-    swap 'j'
+    require('swap-buffers').swap_buffers 'j'
   end,
   ['<C-w><C-k>'] = function()
-    swap 'k'
+    require('swap-buffers').swap_buffers 'k'
   end,
   ['<C-w><C-l>'] = function()
-    swap 'l'
+    require('swap-buffers').swap_buffers 'l'
   end,
 
   -------------------
@@ -99,28 +86,32 @@ local normalmaps = {
 
   ['<Leader>q'] = ':bdelete<CR>',
 
-  ['<C-p>'] = function()
-    require('telescope.builtin').buffers(as_dropdown)
-  end,
-
   -----------------------
-  -- Telescope mappings
+  -- Telescope mapipings
   -----------------------
 
   -- Show all telescope builtins
-  ['<leader>t'] = tb.builtin,
+  ['<leader>tb'] = function()
+    return tb.builtin()
+  end,
 
   -- Show file finder
-  ['<leader>tf'] = tb.find_files,
+  ['<leader>tf'] = function()
+    tb.find_files()
+  end,
   ['<leader>th'] = function()
     tb.find_files { hidden = true }
   end,
 
   -- Show grep finder
-  ['<leader>tg'] = tb.live_grep,
+  ['<leader>tg'] = function()
+    tb.live_grep()
+  end,
 
   -- Show document symbols
-  ['<leader>ts'] = tb.symbols,
+  ['<leader>ts'] = function()
+    tb.symbols()
+  end,
 
   -- Show diagnostics
   ['<leader>td'] = function()
@@ -137,12 +128,29 @@ local normalmaps = {
     patch_telescope.angular(as_dropdown)
   end,
 
+  -- Grep current string under cursor within workspace
+  ['<leader>ff'] = function()
+    tb.grep_string()
+  end,
+
+  -- List registers
+  ['"'] = function()
+    tb.registers(as_dropdown)
+  end,
+
+  -- List open buffers
+  ['<C-p>'] = function()
+    tb.buffers(as_dropdown)
+  end,
+
   -----------------------
   -- Winshift mappings
   -----------------------
 
   -- Show all telescope builtins
-  ['<leader>sw'] = require('winshift').cmd_winshift,
+  ['<leader>sw'] = function()
+    require('winshift').cmd_winshift()
+  end,
   ['<leader>ss'] = function()
     require('winshift').cmd_winshift 'swap'
   end,
@@ -202,6 +210,12 @@ vim.keymap.set('n', '<leader>gc', comment.call('toggle.linewise', 'g@'), { expr 
 -- Example: <leader>gb3j will comment 4 lines
 vim.keymap.set('n', '<leader>gb', comment.call('toggle.blockwise', 'g@'), { expr = true })
 
+vim.keymap.set('', '<C-Up>', '<C-y>', { noremap = true })
+vim.keymap.set('', '<C-Down>', '<C-e>', { noremap = true })
+
+vim.keymap.set('i', '<C-Up>', '<C-O><C-y>', { noremap = true })
+vim.keymap.set('i', '<C-Down>', '<C-O><C-e>', { noremap = true })
+
 local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
 
 -- Toggle selection (linewise)
@@ -244,8 +258,32 @@ function M.reload_keybinds()
   vim.keymap.set({ 'n', 'v' }, 'H', '^', { silent = true, remap = true })
   vim.keymap.set({ 'n', 'v' }, 'L', '$', { silent = true, remap = true })
 
-  -- Begin inserting content from a system call at cursor
-  vim.keymap.set({ 'i' }, '<C-e>', "<C-R>=trim(system(''))<left><left><left>")
+  vim.keymap.set({ 'i' }, '<C-e>', function()
+    -- Ask for prompt value, run as system call
+    local utils = require 'patch.utils.string-utils'
+    local insertCursorAfter = true
+
+    local bufnr = vim.api.nvim_get_current_buf()
+    local pos = vim.api.nvim_win_get_cursor(0)
+
+    local row = pos[1] - 1
+    local col = pos[2]
+
+    vim.ui.input({ prompt = 'System command: ', completion = 'shellcmd' }, function(result)
+      if result == nil then
+        return
+      end
+
+      local lines = utils.split(vim.fn.trim(vim.fn.system(result)), '\n')
+      vim.api.nvim_buf_set_text(bufnr, row, col, row, col, lines)
+
+      if insertCursorAfter then
+        vim.api.nvim_win_set_cursor(0, { row + #lines, col + string.len(lines[#lines]) })
+      else
+        vim.api.nvim_win_set_cursor(0, { row + 1, col })
+      end
+    end)
+  end)
 
   -- Insert blank comment in Insert mode
   vim.keymap.set({ 'i' }, '<C-c>', insert_jsdoc_comment, { silent = true })
