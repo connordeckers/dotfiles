@@ -4,6 +4,7 @@ local patch_telescope = require 'patch.telescope'
 local cpp_utils = require 'patch.language-features.c++'
 local comment = require 'Comment.api'
 local tmux = require 'tmux-navigator.controls'
+local tscomment = require 'patch.utils.treesitter-commenting'
 
 local leader = ' '
 
@@ -42,6 +43,17 @@ local normalmaps = {
   -- Diagnostics
   ['<Leader>tr'] = function()
     require('trouble').toggle()
+  end,
+
+  ['<leader>df'] = function()
+    tscomment.insert.before.fn ''
+  end,
+
+  ['<leader>cd'] = function()
+    local my_name = vim.fn.system('git config user.name'):gsub('%s+', '')
+    local date = os.date '%Y%m%d'
+
+    tscomment.insert.before.fn(string.format('TODO @%s %s - ', my_name, date))
   end,
 
   -------------------
@@ -126,6 +138,10 @@ local normalmaps = {
   -- Show config files
   ['<leader>ta'] = function()
     patch_telescope.angular(as_dropdown)
+  end,
+
+  ['<leader>tn'] = function()
+    require('telescope').extensions.notify.notify(as_dropdown)
   end,
 
   -- Grep current string under cursor within workspace

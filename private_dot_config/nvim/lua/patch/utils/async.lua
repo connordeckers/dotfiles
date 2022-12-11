@@ -6,7 +6,7 @@
 --#################### Async Region ####################
 --#################### ############ ####################
 
-local co = coroutine
+local co = co
 
 -- use with wrap
 local pong = function(func, callback)
