@@ -271,21 +271,15 @@ use {
     local sources = {
       -- Code actions
       require 'patch.code-actions.typescript',
-      -- null.builtins.code_actions.cspell,
-      -- null.builtins.code_actions.eslint_d,
       null.builtins.code_actions.gitsigns,
 
       -- Diagnostics
-      -- null.builtins.diagnostics.cspell,
       null.builtins.diagnostics.cmake_lint,
       null.builtins.diagnostics.codespell,
       null.builtins.diagnostics.commitlint,
-      null.builtins.diagnostics.cppcheck,
       null.builtins.diagnostics.cpplint,
-      null.builtins.diagnostics.editorconfig_checker,
-      -- null.builtins.diagnostics.eslint_d,
       null.builtins.diagnostics.gitlint,
-      null.builtins.diagnostics.hadolint, -- Dockerfile helper
+      null.builtins.diagnostics.hadolint,
 
       -- Completion
       null.builtins.completion.tags,

@@ -163,10 +163,10 @@ local normalmaps = {
   -- Winshift mappings
   -----------------------
 
-  -- Show all telescope builtins
   ['<leader>sw'] = function()
     require('winshift').cmd_winshift()
   end,
+
   ['<leader>ss'] = function()
     require('winshift').cmd_winshift 'swap'
   end,
@@ -183,6 +183,14 @@ local normalmaps = {
 
   -- Run last compiled file
   ['<leader>rc'] = cpp_utils.run,
+
+  -------------------------------
+  --  Misc bindings
+  -------------------------------
+
+  ['<leader>sb'] = function()
+    require('patch.plugins.utilities.scratch').toggle()
+  end,
 }
 
 local normal_visual = {

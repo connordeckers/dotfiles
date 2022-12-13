@@ -4,7 +4,6 @@ local use = packer.use
 -- Telescope and its peripheries
 use {
   'nvim-telescope/telescope.nvim',
-  module_pattern = { 'telescope', 'telescope.*' },
   requires = {
     'nvim-lua/plenary.nvim',
     'kyazdani42/nvim-web-devicons',
