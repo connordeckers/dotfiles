@@ -11,6 +11,3 @@ encryption = "age"
     command = "nvim"
     args = ["-d", "{{ .Destination }}", "{{ .Target }}", "{{ .Source }}"]
 
-[git]
-    autoCommit = true
-    autoPush = true
