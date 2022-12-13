@@ -7,7 +7,10 @@ GOPATH=$(go env GOPATH)/bin
 export PNPM_HOME="/home/connor/.local/share/pnpm"
 export CLANG_FORMAT="/opt/clang-format-static"
 
+export BOB_NVIM_BASE="$HOME/.local/share/neovim/bin"
+
 path=( 
+	$BOB_NVIM_BASE
 	./node_modules/.bin
 	$GOPATH
 	$HOME/.local/bin
