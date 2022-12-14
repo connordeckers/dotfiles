@@ -27,11 +27,17 @@ VI_MODE_SET_CURSOR=true
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  archlinux colorize command-not-found common-aliases
-  copyfile cp fast-syntax-highlighting git git-auto-fetch
-  git-escape-magic gulp history jsontools lol ng npm pj
-  sudo themes tmux vi-mode vscode zsh-autosuggestions
+	archlinux common-aliases git-escape-magic pj rsync
+	sudo systemd tmux vi-mode zsh-autosuggestions
+
+	fast-syntax-highlighting
+
 )
+
+# Archived plugins
+# colorize, command-not-found fast-syntax-highlighting
+# git-auto-fetch git gulp jsontools lol
+# copyfile cp history ng npm themes vscode
 
 # Start tmux with the shell
 ZSH_TMUX_AUTOSTART=false
@@ -72,5 +78,9 @@ if [ "$TERM" != "linux" ]; then install_powerline_precmd; fi
 # the following to your profile:
 hash nodenv &>/dev/null && eval "$(nodenv init -)"
 #hash atuin &>/dev/null && eval "$(atuin init zsh)"
+
+# Hash holding paths that shouldn't be grepped (globbed) – blacklist for slow disks, mounts, etc.:
+typeset -gA FAST_BLIST_PATTERNS
+FAST_BLIST_PATTERNS[/mnt/c/*]=1
 
 _launch_tmux

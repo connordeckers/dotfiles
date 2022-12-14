@@ -7,7 +7,7 @@ local use = packer.use
 
 use {
   'anuvyklack/hydra.nvim',
-  -- disable = true,
+  disable = true,
   requires = {
     -- For Git hydra
     'lewis6991/gitsigns.nvim',
@@ -21,7 +21,7 @@ use {
     'anuvyklack/windows.nvim',
   },
   config = function()
-    -- require 'patch.plugins.utilities.hydras.window-mgmt'
+    require 'patch.plugins.utilities.hydras.window-mgmt'
     require 'patch.plugins.utilities.hydras.git'
   end,
 }

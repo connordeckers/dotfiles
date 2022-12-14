@@ -8,6 +8,9 @@ use {
     local hlgrp = require 'patch.hl-groups'
 
     highlight.setup {
+      -- Whether to register the handler automatically
+      register_handler = true,
+
       -- The name of the handler to be registered (has no effect if register_handler = false)
       handler_name = 'patch/diagnostics-hl',
 

@@ -105,8 +105,102 @@ local lspservers_default_configs = {
   'rust_analyzer',
 }
 
+--[[ local emmet_options = {
+  options = {
+    -- Tag case: lower, upper or '' (keep as-is)
+    ['output.tagCase'] = 'lower',
+
+    -- Attribute name case: lower, upper or '' (keep as-is)
+    ['output.attributeCase'] = 'lower',
+
+    -- Attribute value quotes: 'single' or 'double'
+    ['output.attributeQuotes'] = 'double',
+
+    -- Enable output formatting (indentation and line breaks)
+    ['output.format'] = true,
+
+    -- When enabled, automatically adds inner line breaks for leaf (e.g. without children) nodes
+    ['output.formatLeafNode'] = true,
+
+    --
+    --   Produce compact notation of boolean attributes: attributes which doesn’t have value.
+    --   With this option enabled, outputs `<div contenteditable>` instead of
+    --   `<div contenteditable="contenteditable">`
+    --
+    ['output.compactBoolean'] = true,
+
+    -- Reverses attribute merging directions when resolving snippets
+    ['output.reverseAttributes'] = true,
+
+    -- Style of self-closing tags: html (`<br>`), xml (`<br/>`) or xhtml (`<br />`)
+    ['output.selfClosingStyle'] = 'html',
+
+    -- ////////////////////
+    -- // Markup options //
+    -- ////////////////////
+
+    --
+    --   Automatically update value of <a> element's href attribute
+    --   if inserting URL or email
+    --
+    ['markup.href'] = true,
+
+    -- ////////////////////////////////
+    -- // Element commenting options //
+    -- ////////////////////////////////
+
+    --
+    --   Enable/disable element commenting: generate comments before open and/or
+    --   after close tag
+    --
+    ['comment.enabled'] = true,
+
+    --
+    --   Template string for comment to be placed *after* closing tag.
+    --   Example: `\n<!-- /[#ID][.CLASS] -->`
+    --
+    ['comment.after'] = '\n<!-- /[#ID][.CLASS] -->',
+
+    -- /////////////////
+    -- // BEM options //
+    -- /////////////////
+
+    -- Enable/disable BEM addon
+    ['bem.enabled'] = true,
+
+    -- A string for separating elements in output class
+    -- ['bem.element'] = string,
+
+    -- A string for separating modifiers in output class
+    -- ['bem.modifier'] = string,
+
+    -- /////////////////
+    -- // JSX options //
+    -- /////////////////
+
+    -- Enable/disable JSX addon
+    ['jsx.enabled'] = true,
+
+    --    ////////////////////////
+    --    // Stylesheet options //
+    --    ////////////////////////
+
+    -- Use short hex notation where possible, e.g. `#000` instead of `#000000`
+    ['stylesheet.shortHex'] = false,
+
+    -- Output abbreviation as JSON object properties (for CSS-in-JS syntaxes)
+    ['stylesheet.json'] = true,
+
+    -- Use double quotes for JSON values
+    ['stylesheet.jsonDoubleQuotes'] = true,
+  },
+} ]]
+
 -- These LSP servers have additional configuration applied.
 local lspservers_extended_config = {
+  -- Emmet
+  -- ['emmet_ls'] = { filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'typescript' } },
+
   -- Qt
   ['qmlls'] = { cmd = { 'qmlls6' } },
 
