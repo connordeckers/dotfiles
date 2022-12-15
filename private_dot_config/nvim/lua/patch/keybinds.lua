@@ -91,12 +91,12 @@ local normalmaps = {
   end,
 
   -- Next tab
-  ['<Tab>'] = ':bnext<CR>',
+  ['<Tab>'] = ':BufferNext<CR>',
 
   -- Previous tab
-  ['<S-Tab>'] = ':bprevious<CR>',
+  ['<S-Tab>'] = ':BufferPrevious<CR>',
 
-  ['<Leader>q'] = ':bdelete<CR>',
+  ['<Leader>q'] = ':BufferClose<CR>',
 
   -----------------------
   -- Telescope mapipings
