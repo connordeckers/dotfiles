@@ -6,6 +6,8 @@ local comment = require 'Comment.api'
 local tmux = require 'tmux-navigator.controls'
 local tscomment = require 'patch.utils.treesitter-commenting'
 
+local tabline = require 'bufferline.functions'
+
 local leader = ' '
 
 local as_dropdown = theme.get_dropdown {}
@@ -16,6 +18,13 @@ vim.g.maplocalleader = leader
 local opts = { noremap = true, silent = true }
 
 local normalmaps = {
+  -- Clear clutter
+  ['<Esc>'] = function()
+    require('notify').dismiss() -- clear notifications
+    vim.cmd.nohlsearch() -- clear highlights
+    vim.cmd.echo() -- clear short-message
+  end,
+
   -- Toggle file tree
   ['<leader>n'] = function()
     require('nvim-tree').toggle()
@@ -23,7 +32,9 @@ local normalmaps = {
 
   -- Save the file
   ['<leader>w'] = function()
-    vim.api.nvim_command 'update'
+    -- Only write the file if it's actually changed.
+    -- Additionally, `++p` means "create directory if not exists"
+    vim.api.nvim_command 'update ++p'
   end,
 
   -- Toggle line numbers
@@ -91,12 +102,13 @@ local normalmaps = {
   end,
 
   -- Next tab
-  ['<Tab>'] = ':BufferNext<CR>',
+  ['<Tab>'] = tabline.next,
 
   -- Previous tab
-  ['<S-Tab>'] = ':BufferPrevious<CR>',
+  ['<S-Tab>'] = tabline.previous,
 
-  ['<Leader>q'] = ':BufferClose<CR>',
+  -- Close the current buffer
+  ['<Leader>q'] = tabline.close.this,
 
   -----------------------
   -- Telescope mapipings

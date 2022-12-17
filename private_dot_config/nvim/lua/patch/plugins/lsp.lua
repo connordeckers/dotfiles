@@ -95,7 +95,7 @@ LSPConfig = {
       'jsonls',
       'cssmodules_ls',
       'clangd',
-      'diagnosticls',
+      -- 'diagnosticls',
       'dockerls',
       'emmet_ls',
       'vimls',
@@ -275,7 +275,7 @@ use {
 
       -- Diagnostics
       null.builtins.diagnostics.cmake_lint,
-      null.builtins.diagnostics.codespell,
+      -- null.builtins.diagnostics.codespell,
       null.builtins.diagnostics.commitlint,
       null.builtins.diagnostics.cpplint,
       null.builtins.diagnostics.gitlint,
@@ -328,13 +328,13 @@ use {
     end
 
     -- Overwrite handlers for LSP entries
-    local handlers = {
-      ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, LSPConfig.ui.hover_float_config),
-    }
+    -- local handlers = {
+    --   ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, LSPConfig.ui.hover_float_config),
+    -- }
 
     -- Add additional capabilities supported by nvim-cmp
     local capabilities = cmp_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
-    local default_server_opts = { on_attach = on_attach, capabilities = capabilities, handlers = handlers }
+    local default_server_opts = { on_attach = on_attach, capabilities = capabilities } -- , handlers = handlers
 
     -- At this point, it's just spinning things up.
     -- Nothing particularly interesting, despite being
@@ -345,12 +345,7 @@ use {
     mason_lspconf.setup(LSPConfig.mason.lspconf_config)
     mason_null_ls.setup(LSPConfig.mason.null_ls_config)
 
-    null.setup {
-      sources = sources,
-      on_init = function(new_client, _)
-        new_client.offset_encoding = 'utf-32'
-      end,
-    }
+    null.setup { sources = sources }
 
     local default_config = {}
     for _, key in pairs(LSPConfig.lsp.default) do
@@ -368,6 +363,7 @@ use {
 
 use {
   'ray-x/lsp_signature.nvim',
+  disable = true,
   config = function()
     local lsp_signature = require 'lsp_signature'
     lsp_signature.setup {
@@ -650,7 +646,7 @@ use {
       sources = cmp.config.sources {
         { name = 'nvim_lsp' },
         --{ name = "nvim_lua" },
-        { name = 'nvim_lsp_signature_help' },
+        -- { name = 'nvim_lsp_signature_help' },
         { name = 'path' },
         --{ name = "buffer" },
         --{ name = "luasnip", max_item_count = 4 },
@@ -659,8 +655,11 @@ use {
       preselect = cmp.PreselectMode.Item,
     }
 
-    local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
-    cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done { map_char = { tex = '' } })
+    if not vim.g.autopair_confirm_attached then
+      local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
+      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done { map_char = { tex = '' } })
+      vim.g.autopair_confirm_attached = 1
+    end
 
     cmp.setup.filetype('gitcommit', {
       -- You can specify the `cmp_git` source if you were installed it.

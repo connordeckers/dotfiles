@@ -4,13 +4,11 @@ local use = packer.use
 -- Install status line support
 use {
   'nvim-lualine/lualine.nvim',
+  after = 'noice.nvim',
   requires = { 'SmiteshP/nvim-navic', 'kyazdani42/nvim-web-devicons', opt = true },
   config = function()
-    local lualine = require 'lualine'
-    -- local navic = require 'nvim-navic'
-
-    -- navic.setup { highlight = true }
-    lualine.setup {
+    local noice = require('noice').api.status
+    require('lualine').setup {
       options = {
         icons_enabled = true,
         theme = 'onedark',
@@ -24,8 +22,16 @@ use {
         lualine_a = { 'mode' },
         lualine_b = { 'branch', 'diff', 'diagnostics' },
         lualine_c = { { 'filename', path = 1, file_status = true } },
-        lualine_x = { 'filesize', 'filetype' },
-        lualine_y = {},
+        lualine_x = {
+          'filesize',
+          'filetype',
+        },
+        lualine_y = {
+          -- { noice.message.get_hl, cond = noice.message.has },
+          -- { noice.command.get_hl, cond = noice.command.has },
+          { noice.mode.get_hl, cond = noice.mode.has },
+          -- { noice.search.get_hl, cond = noice.search.has },
+        },
         lualine_z = { 'location' },
       },
       inactive_sections = {
@@ -36,14 +42,6 @@ use {
         lualine_y = {},
         lualine_z = {},
       },
-      -- winbar = {
-      --   lualine_a = {},
-      --   lualine_b = {},
-      --   lualine_c = {},
-      --   lualine_x = {},
-      --   lualine_y = {},
-      --   lualine_z = { { navic.get_location, cond = navic.is_available } },
-      -- },
       extensions = {},
     }
 
@@ -55,7 +53,9 @@ use {
 }
 
 use {
-  'romgrk/barbar.nvim',
+  -- 'romgrk/barbar.nvim',
+  'connordeckers/barbar.nvim',
+  -- '~/dev/personal/neovim-plugins/barbar.nvim',
   requires = { 'nvim-tree/nvim-web-devicons' },
   config = function()
     -- Set barbar's options
@@ -235,8 +235,5 @@ use {
         Object = '',
       },
     }
-
-    vim.api.nvim_set_hl(0, 'NavicSeparator', { link = 'Normal' })
-    vim.api.nvim_set_hl(0, 'BarbecueSeparator', { link = 'Normal' })
   end,
 }

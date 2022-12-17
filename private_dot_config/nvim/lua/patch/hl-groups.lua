@@ -1,22 +1,20 @@
-local hlgroup = vim.api.nvim_create_namespace 'patch/hl'
-local augroup = vim.api.nvim_create_augroup('patch/hl_augrp', {})
-
-local function define_additional_tokens()
+local highlights = {
   -- Create an "unused" highlight style
-  vim.cmd [[ hi! UnusedToken cterm=italic,bold,strikethrough gui=italic,bold,strikethrough guifg=#5c6370 ]]
+  ['UnusedToken'] = { italic = true, bold = true, strikethrough = true, underline = false, fg = '#5c6370' },
 
-  -- Fix the floating dialog quirks
-  vim.cmd [[
-		hi! link FloatBorder Float
-		hi! link NormalFloat Normal
-	]]
+  ['FloatBorder'] = { link = 'Float' },
+  ['NormalFloat'] = { link = 'Normal' },
+  ['NavicSeparator'] = { link = 'Normal' },
+  ['BarbecueSeparator'] = { link = 'Normal' },
+}
+
+local create_highlights = function()
+  for key, params in pairs(highlights) do
+    vim.api.nvim_set_hl(0, key, params)
+  end
 end
 
-vim.api.nvim_create_autocmd('ColorScheme', {
-  group = augroup,
-  callback = define_additional_tokens,
-})
+local augroup = vim.api.nvim_create_augroup('patch/hl_augrp', {})
+vim.api.nvim_create_autocmd('ColorScheme', { group = augroup, callback = create_highlights })
 
-vim.api.nvim_set_hl_ns(hlgroup)
-
-return hlgroup
+create_highlights()
