@@ -15,8 +15,48 @@ local as_dropdown = theme.get_dropdown {}
 vim.g.mapleader = leader
 vim.g.maplocalleader = leader
 
-local opts = { noremap = true, silent = true }
+local function yank_comment_paste() end
+local function insert_jsdoc_comment()
+  if vim.bo.filetype == 'typescript' then
+    comment.comment.blockwise.current {
+      move_cursor_to = 'between',
+      pre_hook = function()
+        return '/** %s */'
+      end,
+    }
+  else
+    comment.comment.linewise.current()
+  end
+end
 
+local function insert_from_shell()
+  -- Ask for prompt value, run as system call
+  local utils = require 'patch.utils.string-utils'
+  local insertCursorAfter = true
+
+  local bufnr = vim.api.nvim_get_current_buf()
+  local pos = vim.api.nvim_win_get_cursor(0)
+
+  local row = pos[1] - 1
+  local col = pos[2]
+
+  vim.ui.input({ prompt = 'System command: ', completion = 'shellcmd' }, function(result)
+    if result == nil then
+      return
+    end
+
+    local lines = utils.split(vim.fn.trim(vim.fn.system(result)), '\n')
+    vim.api.nvim_buf_set_text(bufnr, row, col, row, col, lines)
+
+    if insertCursorAfter then
+      vim.api.nvim_win_set_cursor(0, { row + #lines, col + string.len(lines[#lines]) })
+    else
+      vim.api.nvim_win_set_cursor(0, { row + 1, col })
+    end
+  end)
+end
+
+--- @type table<string, string | function | KeybindTable | KeybindTable[]>
 local normalmaps = {
   -- Clear clutter
   ['<Esc>'] = function()
@@ -46,7 +86,16 @@ local normalmaps = {
   ['<Leader><Leader>'] = ':%s/\\<<C-r>=expand("<cword>")<CR>\\>//g<Left><Left>',
 
   -- Format the file
-  ['<Leader>p'] = require('patch.utils.format').format_buffer,
+  ['<Leader>p'] = {
+    { mode = 'n', action = require('patch.utils.format').format_buffer },
+    {
+      mode = 'x',
+      action = function()
+        vim.lsp.buf.range_formatting {}
+      end,
+      options = { silent = true, buffer = true },
+    },
+  },
 
   -- Quickly fold code
   ['<Leader>fa'] = 'za',
@@ -66,6 +115,8 @@ local normalmaps = {
 
     tscomment.insert.before.fn(string.format('TODO @%s %s - ', my_name, date))
   end,
+
+  ['<leader>u'] = vim.cmd.UndotreeToggle,
 
   -------------------
   -- Pane management
@@ -200,136 +251,159 @@ local normalmaps = {
   --  Misc bindings
   -------------------------------
 
-  ['<leader>sb'] = function()
-    require('patch.plugins.utilities.scratch').toggle()
-  end,
-}
-
-local normal_visual = {
-  -----------------------
-  -- Comment mappings
-  -----------------------
-
-  -- -- Toggle linewise-comment on the current line
-  -- ['<leader>ci'] = comment.toggle.linewise.current,
-
-  -- -- Toggle blockwise-comment on the current line
-  -- ['<leader>cb'] = comment.toggle.blockwise.current,
-
-  -- -- Just straight comment/uncomment; no toggle here
-  -- ['<leader>cc'] = comment.comment.linewise.current,
-  -- ['<leader>cu'] = comment.uncomment.linewise.current,
-
-  -- ['<leader>cC'] = comment.comment.blockwise.current,
-  -- ['<leader>cU'] = comment.uncomment.blockwise.current,
-}
-
--- api.toggle.linewise(motion, config?)
--- api.toggle.linewise.current(motion?, config?)
--- api.toggle.linewise.count(count, config?)
-
--- api.toggle.blockwise(motion, config?)
--- api.toggle.blockwise.current(motion?, config?)
--- api.toggle.blockwise.count(count, config?)
-
--- Toggle current line (linewise) using C-/
-vim.keymap.set('n', '<leader>ci', comment.toggle.linewise.current)
-
--- Toggle current line (blockwise) using C-\
-vim.keymap.set('n', '<leader>cb', comment.toggle.blockwise.current)
-
--- Toggle lines (linewise) with dot-repeat support
--- Example: <leader>gc3j will comment 4 lines
-vim.keymap.set('n', '<leader>gc', comment.call('toggle.linewise', 'g@'), { expr = true })
-
--- Toggle lines (blockwise) with dot-repeat support
--- Example: <leader>gb3j will comment 4 lines
-vim.keymap.set('n', '<leader>gb', comment.call('toggle.blockwise', 'g@'), { expr = true })
-
-vim.keymap.set('', '<C-Up>', '<C-y>', { noremap = true })
-vim.keymap.set('', '<C-Down>', '<C-e>', { noremap = true })
-
-vim.keymap.set('i', '<C-Up>', '<C-O><C-y>', { noremap = true })
-vim.keymap.set('i', '<C-Down>', '<C-O><C-e>', { noremap = true })
-
-local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
-
--- Toggle selection (linewise)
-vim.keymap.set('x', '<leader>ci', function()
-  vim.api.nvim_feedkeys(esc, 'nx', false)
-  comment.toggle.linewise(vim.fn.visualmode())
-end)
-
--- Toggle selection (blockwise)
-vim.keymap.set('x', '<leader>cb', function()
-  vim.api.nvim_feedkeys(esc, 'nx', false)
-  comment.toggle.blockwise(vim.fn.visualmode())
-end)
-
-local M = {}
-local function yank_comment_paste() end
-local function insert_jsdoc_comment()
-  if vim.bo.filetype == 'typescript' then
-    comment.comment.blockwise.current {
-      move_cursor_to = 'between',
-      pre_hook = function()
-        return '/** %s */'
-      end,
-    }
-  else
-    comment.comment.linewise.current()
-  end
-end
-
-function M.reload_keybinds()
-  for map, action in pairs(normalmaps) do
-    vim.keymap.set('n', map, action, opts)
-  end
-
-  for map, action in pairs(normal_visual) do
-    vim.keymap.set({ 'n', 'v' }, map, action, opts)
-  end
-
-  -- Shift-H and Shift-L jump to beginning and end of line, respectively
-  vim.keymap.set({ 'n', 'v' }, 'H', '^', { silent = true, remap = true })
-  vim.keymap.set({ 'n', 'v' }, 'L', '$', { silent = true, remap = true })
-
-  vim.keymap.set({ 'i' }, '<C-e>', function()
-    -- Ask for prompt value, run as system call
-    local utils = require 'patch.utils.string-utils'
-    local insertCursorAfter = true
-
-    local bufnr = vim.api.nvim_get_current_buf()
-    local pos = vim.api.nvim_win_get_cursor(0)
-
-    local row = pos[1] - 1
-    local col = pos[2]
-
-    vim.ui.input({ prompt = 'System command: ', completion = 'shellcmd' }, function(result)
-      if result == nil then
-        return
-      end
-
-      local lines = utils.split(vim.fn.trim(vim.fn.system(result)), '\n')
-      vim.api.nvim_buf_set_text(bufnr, row, col, row, col, lines)
-
-      if insertCursorAfter then
-        vim.api.nvim_win_set_cursor(0, { row + #lines, col + string.len(lines[#lines]) })
-      else
-        vim.api.nvim_win_set_cursor(0, { row + 1, col })
-      end
-    end)
-  end)
+  -- Show the lua scratchpad
+  ['<leader>sb'] = require('patch.plugins.utilities.scratch').toggle,
 
   -- Insert blank comment in Insert mode
-  vim.keymap.set({ 'i' }, '<C-c>', insert_jsdoc_comment, { silent = true })
-  vim.keymap.set({ 'x' }, '<Leader>p', function()
-    vim.lsp.buf.range_formatting {}
-  end, { silent = true, buffer = true })
+  ['<C-c>'] = { mode = 'i', action = insert_jsdoc_comment, options = { silent = true } },
 
-  vim.keymap.set({ 'v' }, '<Leader>yp', yank_comment_paste, { silent = true })
+  -- Yank and paste
+  ['<Leader>yp'] = {
+    mode = 'v',
+    action = yank_comment_paste,
+    options = { silent = true },
+  },
+
+  -- Insert a value into the buffer from the shell
+  ['<C-e>'] = { mode = 'i', action = insert_from_shell },
+
+  -- When pasting over a word, delete the word under the selection into the blackhole buffer
+  -- This lets us keep our "primary" paste object in memory
+  ['p'] = { mode = 'x', action = '"_dP' },
+
+  -------------------------------
+  --  Comment management
+  -------------------------------
+  -- Toggle current line (linewise) using C-i
+  ['<leader>ci'] = {
+    { mode = 'n', action = comment.toggle.linewise.current },
+    {
+      mode = 'x',
+      action = function()
+        local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
+        vim.api.nvim_feedkeys(esc, 'nx', false)
+        comment.toggle.linewise(vim.fn.visualmode())
+      end,
+    },
+  },
+
+  -- Toggle current line (blockwise) using C-b
+  ['<leader>cb'] = {
+    { mode = 'n', action = comment.toggle.blockwise.current },
+    {
+      mode = 'x',
+      action = function()
+        local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
+        vim.api.nvim_feedkeys(esc, 'nx', false)
+        comment.toggle.blockwise(vim.fn.visualmode())
+      end,
+    },
+  },
+
+  -- Toggle lines (linewise) with dot-repeat support
+  -- Example: <leader>gc3j will comment 4 lines
+  ['<leader>gc'] = { mode = 'n', action = comment.call('toggle.linewise', 'g@'), options = { expr = true } },
+
+  -- Toggle lines (blockwise) with dot-repeat support
+  -- Example: <leader>gb3j will comment 4 lines
+  ['<leader>gb'] = { mode = 'n', action = comment.call('toggle.blockwise', 'g@'), options = { expr = true } },
+
+  -------------------------------
+  --  Scroll improvements
+  -------------------------------
+
+  ['<C-Up>'] = {
+    { mode = '', action = '<C-y>', options = { noremap = true } },
+    { mode = 'i', action = '<C-O><C-y>', options = { noremap = true } },
+  },
+
+  ['<C-Down>'] = {
+    { mode = '', action = '<C-e>', options = { noremap = true } },
+    { mode = 'i', action = '<C-O><C-e>', options = { noremap = true } },
+  },
+
+  -- When scrolling with half-page navigation, keep it fixed in the middle of the screen
+  ['<C-u>'] = { mode = 'n', action = '<C-u>zz' },
+  ['<C-d>'] = { mode = 'n', action = '<C-d>zz' },
+
+  -- Keep searches in the middle of the screen
+  ['n'] = { mode = 'n', action = 'nzzzv' },
+  ['N'] = { mode = 'n', action = 'Nzzzv' },
+
+  -------------------------------
+  --  Movement improvements
+  -------------------------------
+
+  -- Shift-H and Shift-L jump to beginning and end of line, respectively
+  ['H'] = { mode = { 'n', 'v' }, action = '^', options = { silent = true, remap = true } },
+  ['L'] = { mode = { 'n', 'v' }, action = '$', options = { silent = true, remap = true } },
+
+  ['J'] = {
+    { mode = 'n', action = 'mzJ`z' }, -- Join lines without moving cursor
+    { mode = 'v', action = ":m '>+1<CR>gv=gv" }, -- Move lines up and down in visual mode
+  },
+  ['K'] = { mode = { 'v' }, action = ":m '<-2<CR>gv=gv" },
+}
+
+local M = {}
+function M.reload_keybinds()
+  local function is_array(tbl)
+    return type(tbl) == 'table' and (#tbl > 0 or next(tbl) == nil)
+  end
+
+  local default_opts = { noremap = true, silent = true }
+
+  --- @param prop string | function | KeybindTable | KeybindTable[]
+  local function get_values(prop)
+    --- @type { mode: string[], action: function | string, options: KeybindOptions }[]
+    local responses = {}
+
+    if type(prop) == 'string' or type(prop) == 'function' then
+      table.insert(responses, { mode = { 'n' }, action = prop, options = default_opts })
+    end
+
+    if type(prop) == 'table' then
+      if is_array(prop) then
+        for _, p in pairs(prop) do
+          local mode = is_array(p.mode) and p.mode or { p.mode }
+          local options = vim.tbl_deep_extend('force', default_opts, p.options or {})
+          table.insert(responses, { mode = mode, action = p.action, options = options })
+        end
+      else
+        local mode = is_array(prop.mode) and prop.mode or { prop.mode }
+        local options = vim.tbl_deep_extend('force', default_opts, prop.options or {})
+        table.insert(responses, { mode = mode, action = prop.action, options = options })
+      end
+    end
+
+    return responses
+  end
+
+  for map, props in pairs(normalmaps) do
+    for _, param in pairs(get_values(props)) do
+      for _, mode in pairs(param.mode) do
+        vim.keymap.set(mode, map, param.action, param.options)
+      end
+    end
+  end
 end
 
 M.reload_keybinds()
+
+--- @class KeybindOptions
+--- @field silent? boolean
+--- @field expr? boolean
+--- @field replace_keycodes? boolean
+--- @field remap? boolean
+--- @field noremap? boolean
+--- @field buffer? boolean | number
+--- @field nowait? boolean | number
+--- @field script? boolean | number
+--- @field unique? boolean | number
+
+--- @class KeybindTable
+--- @field mode string | string[]
+--- @field action function | string
+--- @field options? KeybindOptions
 
 return M

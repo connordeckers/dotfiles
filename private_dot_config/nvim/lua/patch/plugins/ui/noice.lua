@@ -69,6 +69,8 @@ use {
           filter = {
             any = {
               { find = 'search hit' },
+              { find = 'Diagnosing' },
+              { find = 'Processing full semantic tokens' },
             },
           },
           opts = { skip = true },

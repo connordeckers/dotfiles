@@ -16,6 +16,7 @@ vim.opt.hidden = true
 -- Some servers have issues with backup files, see #649.
 vim.opt.backup = false
 vim.opt.writebackup = false
+vim.opt.swapfile = false
 
 -- Give more space for displaying messages.
 vim.opt.cmdheight = 1
@@ -45,6 +46,7 @@ vim.api.nvim_create_autocmd({ 'TextYankPost' }, {
 
 --Save undo history
 vim.opt.undofile = true
+vim.opt.undodir = vim.fn.stdpath 'data' .. '/undodir'
 
 --Case insensitive searching UNLESS /C or capital in search
 vim.opt.ignorecase = true
@@ -65,8 +67,11 @@ vim.opt.splitright = true
 vim.opt.signcolumn = 'number'
 vim.opt.number = true
 
-vim.opt.hlsearch = true
+vim.opt.hlsearch = false
 vim.opt.incsearch = true
+
+-- The minimum spacing before the buffer will scroll
+vim.opt.scrolloff = 10
 
 -- Show strikethrough and undercurl correctly in some particular terminal environments
 vim.cmd [[
