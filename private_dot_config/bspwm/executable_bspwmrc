@@ -1,0 +1,39 @@
+#! /bin/sh
+
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+bspc monitor DP-2 -d I II III IV V VI VII VIII IX X
+# bspc monitor DP-4 -d VI VII VIII IX X
+
+bspc config border_width         0
+bspc config window_gap         	 15 
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      false
+
+bspc rule -a scratchpad state=floating locked=on center=on hidden=on sticky=on rectangle=1200x600+0+0
+bspc rule -a Spotify state=floating locked=on center=on hidden=on sticky=on
+bspc rule -a zoom state=floating center=on follow=on border=off
+
+# bspc rule -a Gimp desktop='^8' state=floating follow=on
+# bspc rule -a Chromium desktop='^2'
+# bspc rule -a mplayer2 state=floating
+# bspc rule -a Kupfer.py focus=on
+# bspc rule -a Screenkey manage=off
+
+# for_window [class="Pavucontrol"] floating enable
+# for_window [class="(?i)mpv"] floating enable
+# for_window [class="mpv"] sticky enable
+# for_window [class="Arandr"] floating enable, resize set 500 500
+# for_window [title="Open With"] floating enable resize set 800 600,  move position center
+# for_window [title="dropdown"] floating enable, resize set 1200 600, move position center, move scratchpad, sticky enable
+# for_window [class="Spotify"] floating enable, resize set 1200 600, move position center, move scratchpad, sticky enable
+# 
+# for_window [class="zoom"] floating enable
+# for_window [class="zoom" title="Zoom - Licensed Account"] floating disable
+# for_window [class="zoom" title="Zoom Meeting"] floating disable
+
+# $bs $mod+Shift+p [class="Spotify"] scratchpad show, move position center
+
+~/.config/system-start/start.sh &>/dev/null

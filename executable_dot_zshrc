@@ -67,6 +67,8 @@ source $HOME/.zsh/functions.zsh
 # Import my custom aliases
 source $HOME/.zsh/aliases.zsh
 
+_launch_tmux
+
 # If we have a custom config file for this device, import it.
 HOST_SPECIFIC_CONFIG="$HOME/.zsh/hosts/$(hostname).zsh"
 if [ -f $HOST_SPECIFIC_CONFIG ]; then source $HOST_SPECIFIC_CONFIG; fi
@@ -87,8 +89,6 @@ hash nodenv &>/dev/null && eval "$(nodenv init -)"
 # Hash holding paths that shouldn't be grepped (globbed) – blacklist for slow disks, mounts, etc.:
 typeset -gA FAST_BLIST_PATTERNS
 FAST_BLIST_PATTERNS[/mnt/c/*]=1
-
-_launch_tmux
 
 # To customize prompt, run `p10k configure` or edit ~/.zsh/p10k.zsh.
 [[ ! -f ~/.zsh/p10k.zsh ]] || source ~/.zsh/p10k.zsh
