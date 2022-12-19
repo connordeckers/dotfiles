@@ -8,10 +8,11 @@ use {
   requires = { 'SmiteshP/nvim-navic', 'kyazdani42/nvim-web-devicons', opt = true },
   config = function()
     local noice = require('noice').api.status
+
     require('lualine').setup {
       options = {
         icons_enabled = true,
-        theme = 'onedark',
+        theme = 'rose-pine',
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         disabled_filetypes = { 'NvimTree' },
@@ -87,7 +88,9 @@ use {
       },
 
       -- Excludes buffers from the tabline
-      exclude_ft = {},
+      exclude_ft = {
+        'fugitive',
+      },
       exclude_name = {},
 
       -- Hide inactive buffers and file extensions. Other options are `current` and `visible`
@@ -139,6 +142,9 @@ use {
       -- Sets the name of unnamed buffers. By default format is "[Buffer X]"
       -- where X is the buffer number. But only a static string is accepted here.
       no_name_title = nil,
+
+      -- Use Rose Pine if it's installed and available
+      -- highlights = has_rose_pine and highlights or nil,
     }
   end,
 }

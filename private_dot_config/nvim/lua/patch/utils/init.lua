@@ -168,8 +168,12 @@ function M.pick_window()
 end
 
 function M.reload_config()
-  reload.reload_module 'patch'
+  for k, v in pairs(package.loaded) do
+    package.loaded[k] = nil
+  end
+
   require 'patch'
+  require('packer').compile()
 end
 
 return M

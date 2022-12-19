@@ -61,7 +61,13 @@ use {
       },
 
       ---@type NoiceConfigViews
-      views = {}, ---@see section on views
+      views = {
+        mini = {
+          win_options = {
+            winblend = 0, -- Make background transparent for nice acrylic finish
+          },
+        },
+      }, ---@see section on views
 
       ---@type NoiceRouteConfig[]
       routes = {

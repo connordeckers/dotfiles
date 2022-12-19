@@ -2,6 +2,9 @@ local highlights = {
   -- Create an "unused" highlight style
   ['UnusedToken'] = { italic = true, bold = true, strikethrough = true, underline = false, fg = '#5c6370' },
 
+  -- Provide a background colour for the notification backgrounds.
+  ['NotifyBackground'] = { bg = '#000000' },
+
   ['FloatBorder'] = { link = 'Float' },
   ['NormalFloat'] = { link = 'Normal' },
   ['NavicSeparator'] = { link = 'Normal' },

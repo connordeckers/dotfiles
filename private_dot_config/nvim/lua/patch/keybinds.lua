@@ -60,8 +60,7 @@ end
 local normalmaps = {
   -- Clear clutter
   ['<Esc>'] = function()
-    require('notify').dismiss() -- clear notifications
-    vim.cmd.nohlsearch() -- clear highlights
+    vim.cmd.noh() -- clear highlights
     vim.cmd.echo() -- clear short-message
   end,
 
@@ -71,11 +70,8 @@ local normalmaps = {
   end,
 
   -- Save the file
-  ['<leader>w'] = function()
-    -- Only write the file if it's actually changed.
-    -- Additionally, `++p` means "create directory if not exists"
-    vim.api.nvim_command 'update ++p'
-  end,
+  -- Only write the file if it's actually changed.
+  ['<leader>w'] = vim.cmd.update,
 
   -- Toggle line numbers
   ['<leader>l'] = function()
@@ -270,6 +266,9 @@ local normalmaps = {
   -- When pasting over a word, delete the word under the selection into the blackhole buffer
   -- This lets us keep our "primary" paste object in memory
   ['p'] = { mode = 'x', action = '"_dP' },
+
+  -- Open git view
+  ['<Leader>g'] = require('neogit').open,
 
   -------------------------------
   --  Comment management

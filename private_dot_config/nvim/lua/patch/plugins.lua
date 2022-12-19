@@ -17,7 +17,6 @@ require 'patch.plugins.lsp'
 require 'patch.plugins.ui'
 require 'patch.plugins.syntax'
 require 'patch.plugins.utilities'
-require 'patch.plugins.themes'
 
 if packer_was_bootstrapped then
   require('packer').sync()

@@ -3,8 +3,6 @@ vim.g.loaded_netrwPlugin = 1
 
 vim.opt.termguicolors = true
 
--- vim.cmd [[ colorscheme base16-onedark ]]
-
 vim.cmd [[ highlight clear SignColumn ]]
 vim.cmd [[ highlight EndOfBuffer guifg=bg ]]
 vim.cmd [[ highlight NvimTreeWinSeparator guifg=bg ]]
@@ -82,3 +80,6 @@ vim.cmd [[
 			let &t_Ce = "\e[4:0m"
 	endif
 ]]
+
+-- Hide the tildes without dicking around
+vim.opt.fillchars:append 'eob: '
