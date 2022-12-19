@@ -2,12 +2,3 @@ encryption = "age"
 [age]
     identity = "~/.homeencrypt.key.txt"
     recipient = "age1mr5s9cvf3qlmsecaf0ly8z9r7tjm3qzlwavulg6z89adhmkxxvrsevsykn"
-
-[diff]
-    command = "nvim"
-    args = ["-d", "{{ .Destination }}", "{{ .Target }}"]
-
-[merge]
-    command = "nvim"
-    args = ["-d", "{{ .Destination }}", "{{ .Target }}", "{{ .Source }}"]
-

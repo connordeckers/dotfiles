@@ -1,1 +1,2 @@
 .homeencrypt.key.txt.age
+.config/nvim/lua/patch/config

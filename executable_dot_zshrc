@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # .zshrc common
 #
 # These features are common across systems,
@@ -12,10 +19,10 @@ fpath+=~/.zfunc
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME=""
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Some custom functionality
-GIT_AUTO_FETCH_INTERVAL=30
+# GIT_AUTO_FETCH_INTERVAL=30
 
 # Some Vi management
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
@@ -29,9 +36,7 @@ VI_MODE_SET_CURSOR=true
 plugins=(
 	archlinux common-aliases git-escape-magic pj rsync
 	sudo systemd tmux vi-mode zsh-autosuggestions
-
 	fast-syntax-highlighting
-
 )
 
 # Archived plugins
@@ -67,7 +72,7 @@ HOST_SPECIFIC_CONFIG="$HOME/.zsh/hosts/$(hostname).zsh"
 if [ -f $HOST_SPECIFIC_CONFIG ]; then source $HOST_SPECIFIC_CONFIG; fi
 
 # Set up the powerline prompt styling
-if [ "$TERM" != "linux" ]; then install_powerline_precmd; fi
+# if [ "$TERM" != "linux" ]; then install_powerline_precmd; fi
 
 # Remove directory background colours to ensure that values are readable
 #hash dircolors &>/dev/null && eval "$(dircolors -p | \
@@ -84,3 +89,6 @@ typeset -gA FAST_BLIST_PATTERNS
 FAST_BLIST_PATTERNS[/mnt/c/*]=1
 
 _launch_tmux
+
+# To customize prompt, run `p10k configure` or edit ~/.zsh/p10k.zsh.
+[[ ! -f ~/.zsh/p10k.zsh ]] || source ~/.zsh/p10k.zsh
