@@ -67,7 +67,10 @@ source $HOME/.zsh/functions.zsh
 # Import my custom aliases
 source $HOME/.zsh/aliases.zsh
 
-_launch_tmux
+# Lets not launch it automatically in an SSH environment
+if [ -z $SSH_CLIENT ]; then
+	_launch_tmux
+fi
 
 # If we have a custom config file for this device, import it.
 HOST_SPECIFIC_CONFIG="$HOME/.zsh/hosts/$(hostname).zsh"
