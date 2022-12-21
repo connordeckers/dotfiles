@@ -1,8 +1,44 @@
 local packer = require 'packer'
 local use = packer.use
 
--- local banned_messages = { 'No information available', 'multiple different client offset_encodings' }
+-- Make it easier to use search functionality
+use 'junegunn/vim-slash'
 
+-- Make things PRETTY
+use {
+  'stevearc/dressing.nvim',
+  config = function()
+    require('dressing').setup {
+      input = {
+        -- Can be 'left', 'right', or 'center'
+        prompt_align = 'center',
+
+        -- These are passed to nvim_open_win
+        anchor = 'NW',
+        border = 'rounded',
+
+        -- 'editor' and 'win' will default to being centered
+        relative = 'cursor',
+
+        win_options = {
+          -- Window transparency (0-100)
+          -- This fixes the black background in float windows
+          winblend = 0,
+        },
+      },
+
+      select = {
+        -- Options for nui Menu
+        nui = { border = { style = 'rounded' } },
+
+        -- Options for built-in selector
+        builtin = { border = 'rounded' },
+      },
+    }
+  end,
+}
+
+-- local banned_messages = { 'No information available', 'multiple different client offset_encodings' }
 use {
   'folke/noice.nvim',
   requires = {
@@ -21,6 +57,7 @@ use {
         --- @type table<string, CmdlineFormat>
         format = {
           lua = { pattern = '^:%s*lua=?%s+', icon = '', lang = 'lua' },
+          input = {},
         },
       },
 
@@ -77,6 +114,7 @@ use {
               { find = 'search hit' },
               { find = 'Diagnosing' },
               { find = 'Processing full semantic tokens' },
+              { find = 'No information available' },
             },
           },
           opts = { skip = true },

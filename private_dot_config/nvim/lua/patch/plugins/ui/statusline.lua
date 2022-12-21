@@ -4,15 +4,16 @@ local use = packer.use
 -- Install status line support
 use {
   'nvim-lualine/lualine.nvim',
-  after = 'noice.nvim',
+  -- after = 'noice.nvim',
   requires = { 'SmiteshP/nvim-navic', 'kyazdani42/nvim-web-devicons', opt = true },
   config = function()
-    local noice = require('noice').api.status
+    -- local noice = require('noice').api.status
 
     require('lualine').setup {
       options = {
         icons_enabled = true,
-        theme = 'rose-pine',
+        theme = 'auto',
+        -- theme = 'rose-pine',
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         disabled_filetypes = { 'NvimTree' },
@@ -30,7 +31,7 @@ use {
         lualine_y = {
           -- { noice.message.get_hl, cond = noice.message.has },
           -- { noice.command.get_hl, cond = noice.command.has },
-          { noice.mode.get_hl, cond = noice.mode.has },
+          -- { noice.mode.get_hl, cond = noice.mode.has },
           -- { noice.search.get_hl, cond = noice.search.has },
         },
         lualine_z = { 'location' },

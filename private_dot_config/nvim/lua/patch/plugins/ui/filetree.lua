@@ -94,7 +94,7 @@ use {
         group_empty = true,
 
         -- Highlight icons and/or names for opened files.
-        highlight_opened_files = 'all',
+        -- highlight_opened_files = 'all',
 
         -- Configuration options for tree indent markers.
         indent_markers = { enable = true },

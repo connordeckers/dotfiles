@@ -70,7 +70,8 @@ LSPConfig = {
     keymaps = {
       ['gD'] = vim.lsp.buf.declaration,
       ['gd'] = vim.lsp.buf.definition,
-      ['K'] = vim.lsp.buf.hover,
+      -- ['K'] = vim.lsp.buf.hover,
+      ['K'] = require('noice.lsp').hover,
       ['gi'] = vim.lsp.buf.implementation,
       ['gT'] = vim.lsp.buf.type_definition,
       ['<leader>rn'] = vim.lsp.buf.rename,
@@ -644,12 +645,12 @@ use {
       },
 
       sources = cmp.config.sources {
+        { name = 'luasnip', max_item_count = 4 },
         { name = 'nvim_lsp' },
         --{ name = "nvim_lua" },
         -- { name = 'nvim_lsp_signature_help' },
         { name = 'path' },
         --{ name = "buffer" },
-        --{ name = "luasnip", max_item_count = 4 },
       },
 
       preselect = cmp.PreselectMode.Item,

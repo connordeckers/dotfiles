@@ -3,10 +3,17 @@ local highlights = {
   ['UnusedToken'] = { italic = true, bold = true, strikethrough = true, underline = false, fg = '#5c6370' },
 
   -- Provide a background colour for the notification backgrounds.
-  ['NotifyBackground'] = { bg = '#000000' },
+  ['NotifyBackground'] = { bg = '#FFFFFF' },
 
+  -- ['Float'] = { link = 'Normal' },
+  --
   ['FloatBorder'] = { link = 'Float' },
+  ['FloatTitle'] = { link = 'FloatBorder' },
   ['NormalFloat'] = { link = 'Normal' },
+
+  ['FloatShadow'] = { link = 'NormalFloat' },
+  ['FloatShadowThrough'] = { link = 'NormalFloat' },
+
   ['NavicSeparator'] = { link = 'Normal' },
   ['BarbecueSeparator'] = { link = 'Normal' },
 }

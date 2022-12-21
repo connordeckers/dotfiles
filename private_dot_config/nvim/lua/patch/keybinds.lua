@@ -40,7 +40,7 @@ local function insert_from_shell()
   local row = pos[1] - 1
   local col = pos[2]
 
-  vim.ui.input({ prompt = 'System command: ', completion = 'shellcmd' }, function(result)
+  vim.ui.input({ prompt = 'System command', completion = 'shellcmd' }, function(result)
     if result == nil then
       return
     end
