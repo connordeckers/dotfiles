@@ -208,6 +208,10 @@ local normalmaps = {
     tb.grep_string()
   end,
 
+  ['<leader>tj'] = function()
+    tb.jumplist(as_dropdown)
+  end,
+
   -- List registers
   ['"'] = function()
     tb.registers(as_dropdown)
