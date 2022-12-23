@@ -115,11 +115,22 @@ LSPConfig = {
           Lua = {
             diagnostics = {
               -- Get the language server to recognize the `vim` global
-              globals = { 'vim' },
+              globals = {
+                -- Neovim bindings
+                'vim',
+
+                -- AwesomeWM bindings
+                'awesome',
+                'client',
+                'screen',
+                'root',
+              },
             },
             workspace = {
               -- Make the server aware of Neovim runtime files
-              library = vim.api.nvim_get_runtime_file('', true),
+              library = vim.tbl_deep_extend('force', vim.api.nvim_get_runtime_file('', true), {
+                ['/usr/share/awesome/lib'] = true,
+              }),
 
               -- Don't check for third party tools
               checkThirdParty = false,

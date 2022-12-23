@@ -1,0 +1,63 @@
+# .zshrc config
+
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+fpath+=~/.zfunc
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Some Vim binding management
+# TODO: Can we customize keybindings?
+VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+VI_MODE_SET_CURSOR=true
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+	archlinux common-aliases git-escape-magic pj rsync
+	sudo systemd vi-mode zsh-autosuggestions fast-syntax-highlighting
+	# tmux 
+)
+# Source the main .oh-my-zsh scripts
+source $ZSH/oh-my-zsh.sh
+
+# changes to blinking bar
+echo -e -n "\x1b[\x35 q" 
+
+# Import my custom methods
+source $HOME/.zsh/functions.zsh
+
+# Import my custom aliases
+source $HOME/.zsh/aliases.zsh
+
+# Lets launch tmux automatically.
+_launch_tmux
+
+# If we have a custom config file for this device, import it.
+HOST_SPECIFIC_CONFIG="$HOME/.zsh/hosts/$(hostname).zsh"
+if [ -f $HOST_SPECIFIC_CONFIG ]; then source $HOST_SPECIFIC_CONFIG; fi
+
+# Remove directory background colours to ensure that values are readable
+hash dircolors &>/dev/null && eval "$(dircolors -p | \
+    sed 's/ 4[0-9];/ 01;/; s/;4[0-9];/;01;/g; s/;4[0-9] /;01 /' | \
+    dircolors /dev/stdin)"
+
+# Load nodenv automatically by appending the following to your profile:
+#hash nodenv &>/dev/null && eval "$(nodenv init -)"
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
+
+# To customize prompt, run `p10k configure` or edit ~/.zsh/p10k.zsh.
+[[ ! -f ~/.zsh/p10k.zsh ]] || source ~/.zsh/p10k.zsh

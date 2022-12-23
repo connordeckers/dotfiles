@@ -69,9 +69,34 @@ clean_path() {
   export PATH=$(echo $PATH | sed 's|:|\n|g' | awk '!x[$0]++' | sed ':a; N; $!ba; s|\n|:|g')
 }
 
+# CONFIGURATION VARIABLES
+# Automatically start tmux
+: ${ZSH_TMUX_AUTOSTART:=false}
+# Only autostart once. If set to false, tmux will attempt to
+# autostart every time your zsh configs are reloaded.
+: ${ZSH_TMUX_AUTOSTART_ONCE:=true}
+# Automatically close the terminal when tmux exits
+: ${ZSH_TMUX_AUTOQUIT:=$ZSH_TMUX_AUTOSTART}
+# Set the configuration path
+: ${ZSH_TMUX_CONFIG:=$HOME/.tmux.conf}
+
 _launch_tmux() {
 	# Autostart if not already in tmux and enabled.
-	if [[ -z "$TMUX" && -z "$INSIDE_EMACS" && -z "$EMACS" && -z "$VIM" ]]; then
-			_zsh_tmux_plugin_run
+	# Heavy inspiration taken from https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/tmux
+	if [ ! -z $TMUX ]; then return; fi
+	if [ ! -z $VIM ]; then return; fi
+	if [ ! -z $SSH_CLIENT ]; then return; fi
+
+	tmux_cmd=(command tmux)
+
+	if [[ -e "$ZSH_TMUX_CONFIG" ]]; then tmux_cmd+=(-f "$ZSH_TMUX_CONFIG"); fi
+	
+	tmux_cmd+=(new-session)
+	if [[ -n "$ZSH_TMUX_DEFAULT_SESSION_NAME" ]]; then 
+		tmux_cmd+=(-s $ZSH_TMUX_DEFAULT_SESSION_NAME) 
 	fi
+
+	$tmux_cmd
+
+  if [[ "$ZSH_TMUX_AUTOQUIT" == "true" ]]; then exit; fi
 }

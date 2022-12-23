@@ -1,38 +1,123 @@
+### Setup XDG env vars
+### See https://wiki.archlinux.org/title/XDG_Base_Directory for more information
+# XDG_CONFIG_HOME
+#     Where user-specific configurations should be written (analogous to /etc).
+#     Should default to $HOME/.config.
+
+XDG_CONFIG_HOME=$HOME/.config
+
+# XDG_CACHE_HOME
+#     Where user-specific non-essential (cached) data should be written (analogous to /var/cache).
+#     Should default to $HOME/.cache.
+
+XDG_CACHE_HOME=$HOME/.cache
+
+# XDG_DATA_HOME
+#     Where user-specific data files should be written (analogous to /usr/share).
+#     Should default to $HOME/.local/share.
+
+XDG_DATA_HOME=$HOME/.local/share
+
+# XDG_STATE_HOME
+#     Where user-specific state files should be written (analogous to /var/lib).
+#     Should default to $HOME/.local/state.
+
+XDG_STATE_HOME=$HOME/.local/state
+
+# XDG_RUNTIME_DIR
+#     Used for non-essential, user-specific data files such as sockets, named pipes, etc.
+#     Not required to have a default value; warnings should be issued if not set or equivalents provided.
+#     Must be owned by the user with an access mode of 0700.
+#     Filesystem fully featured by standards of OS.
+#     Must be on the local filesystem.
+#     May be subject to periodic cleanup.
+#     Modified every 6 hours or set sticky bit if persistence is desired.
+#     Can only exist for the duration of the user's login.
+#     Should not store large files as it may be mounted as a tmpfs.
+#     pam_systemd sets this to /run/user/$UID.
+
+### NON-STANDARD ###
+# XDG_BIN_HOME
+# 		Where user-created bin applications are stored.
+# 		This is a non-standard location, and is added for ease of use later on.
+
+XDG_BIN_HOME=$HOME/.local/bin
+
+###############################
+### Set up user env variables
+###############################
+
+#########################
+## Set up our preferred
+## 		applications
+#########################
+
+# Set our default editor
+export EDITOR=nvim
+
+# Our default terminal
+export TERM=kitty
+
+# Where we have linked our default wallpaper
+export BACKGROUND=~/Pictures/wallpapers/.wallpaper
+
+########################################
+# Set up our PATH entries, and
+# some useful additions surrounding it.
+########################################
+
 # Add a few well-known user bin paths
-export N_PREFIX=$HOME/.npm
-export EDITOR='nvim'
+export N_PREFIX=$XDG_DATA_HOME/.npm
 
-GOPATH=$(go env GOPATH)/bin
+# Where our PNPM information can live normally.
+export PNPM_HOME=$XDG_DATA_HOME/pnpm
 
-export PNPM_HOME="/home/connor/.local/share/pnpm"
-export CLANG_FORMAT="/opt/clang-format-static"
-
-export BOB_NVIM_BASE="$HOME/.local/share/neovim/bin"
+# Bob is a Neovim version manager.
+# Much lighter and faster than trying to manually compile,
+# plus allows symlink-driven switching between versions (such as stable/nightly).
+export BOB_NVIM_BASE=$XDG_DATA_HOME/neovim/bin
 
 path=( 
-	$BOB_NVIM_BASE
+	# Check the local node_modules binaries folder (if exists) first.
+	# 		This is insecure, but as a web dev, /significantly/ more practical
+	# 		than using npx or prefixing all calls with the node_modules path.
 	./node_modules/.bin
-	$GOPATH
-	$HOME/.local/bin
-	$HOME/bin
-	/usr/local/bin
+
+	# A known reference to where npm stores its globally installed packages.
+	# 		Having it stored within the users home directory means that `npm i -g` 
+	# 		doesn't require sudo priviledges
 	$N_PREFIX/bin
-	$HOME/.local/share/pnpm
+
+	# The location to find the Bob Neovim binary.
+	$BOB_NVIM_BASE
+
+	# Where to find the users own applications
+	$XDG_BIN_HOME
+
+	# Where PNPM is installed.
 	$PNPM_HOME
-	$CLANG_FORMAT
+
+	# The rest of the existing path
 	$path
 )
 
-# Lets record my personal github. It's used enough, after all.
+# Lets record my personal github. I use it enough, after all.
 export GH=github.com/connordeckers
 
+####
+# The idea behind this was to use a much more familiar pager
+# when navigating long information. However, this royally fucks
+# git diffs up, so more work is required.
+####
 # export PAGER='nvim'
-export MANPAGER='nvim +Man!'
-export MANWIDTH=999
+# export MANPAGER='nvim +Man!'
+# export MANWIDTH=999
 
 # Set up fuzzyfinder so that it ignores things in .git and node_modules
 export FZF_DEFAULT_COMMAND='rg --files --follow'
 
-PROJECT_PATHS=(~/dev/utas ~/dev/remote/utas ~/dev)
+# Where to find projects when using the `pj` command
+PROJECT_PATHS=(~/dev/personal ~/dev/utas ~/dev)
 
+# Export the path in standard POSIX format.
 export PATH
