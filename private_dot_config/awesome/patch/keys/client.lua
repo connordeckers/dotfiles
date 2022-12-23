@@ -46,6 +46,7 @@ local keys = {
     key = 'o',
     action = function(c)
       c:move_to_screen()
+      c:raise()
     end,
     description = 'move to screen',
     group = 'client',

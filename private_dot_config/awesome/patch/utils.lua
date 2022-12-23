@@ -47,6 +47,21 @@ function M.find_client(rules)
   return matching_clients
 end
 
+function M.hide_scratchpad()
+  -- Our scratchpad name.
+  -- Save it once, reference it everywhere!
+  local class = 'scratchpad'
+
+  -- Our existing scratchpad, if it exists. Nil otherwise.
+  local existing = table.unpack(M.find_client { instance = class })
+
+  -- If we have an existing scratchpad
+  if existing then
+    -- Toggle the hidden status of the scratchpad
+    existing.hidden = true
+  end
+end
+
 function M.scratchpad()
   -- Our scratchpad name.
   -- Save it once, reference it everywhere!
