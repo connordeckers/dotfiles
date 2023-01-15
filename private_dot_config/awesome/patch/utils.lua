@@ -3,17 +3,34 @@ local awful = require 'awful'
 local naughty = require 'naughty'
 local inspect = require 'inspect'
 local ruled = require 'ruled'
+local gears = require 'gears'
+local pango = require('lgi').Pango
+local beautiful = require 'beautiful'
 
 local config = require 'patch.config'
+local deferred = require 'deferred'
 
 local M = {}
 
 function M.debug(text, title, urgency)
   return naughty.notification {
-    urgency = urgency or 'info',
+    -- urgency = urgency or 'info',
     title = title or 'DebugMsg',
     message = type(text) == 'text' and text or inspect(text),
+    timeout = 0,
   }
+end
+
+function M.fdebug(text, fout)
+  fout = fout or '/tmp/awesome.user.log'
+  local fh = io.open(fout, 'a+')
+  if not fh then
+    error('Unable to open file handle at ' .. fout)
+  end
+
+  fh:write(type(text) == 'text' and text or inspect(text))
+  fh:write '\n'
+  fh:close()
 end
 
 --- Returns an iterator to cycle through clients.
@@ -117,6 +134,126 @@ function M.scratchpad()
       skip_taskbar = true,
     })
   end
+end
+
+--[[ ---@field style? normal The new font style
+---@field variant? number The new font variant
+---@field stretch? number The new font stretch ]]
+
+---@class FontChange
+---@field size? number The new font size
+---@field font_family? string The new font family
+---@field weight? number The new font weight
+---@field size_multiplier? number The font size multiplier
+
+---@param changes FontChange
+function M.edit_font(changes)
+  changes = changes or {}
+
+  changes.size = changes.size or nil
+  changes.font_family = changes.font_family or nil
+  -- changes.style = changes.style or nil
+  -- changes.variant = changes.variant or nil
+  changes.weight = changes.weight or nil
+  -- changes.stretch = changes.stretch or nil
+
+  changes.base_font = changes.base_font or beautiful.font
+  changes.size_multiplier = changes.size_multiplier or 1
+
+  local font = pango.FontDescription.from_string(changes.base_font)
+
+  if changes.size then
+    font:set_size(changes.size)
+  end
+  if changes.font_family then
+    font:set_family(changes.font_family)
+  end
+  if changes.weight then
+    font:set_weight(changes.weight)
+  end
+  -- if changes.style then font:set_style(changes.style) end
+  -- if changes.variant then font:set_variant(changes.variant) end
+  -- if changes.stretch then font:set_stretch(changes.stretch) end
+
+  font:set_size(font:get_size() * changes.size_multiplier)
+
+  return font:to_string()
+end
+
+M.screen = {}
+
+local function exec(cmd, raw)
+  local f = assert(io.popen(cmd, 'r'))
+  local s = assert(f:read '*a')
+  f:close()
+  if raw then
+    return s
+  end
+  s = string.gsub(s, '^%s+', '')
+  s = string.gsub(s, '%s+$', '')
+  s = string.gsub(s, '[\n\r]+', ' ')
+  return s
+end
+
+local screens = nil
+function M.screen.brightness(change)
+  screens = screens or exec [[
+		/usr/bin/ddcutil --sleep-multiplier 0.1 detect -t | grep "/dev/i2c" | awk -F- '{ print $2 }'
+	]]
+
+  if type(change) ~= 'number' then
+    return
+  end
+  if change == 0 then
+    return
+  end
+
+  local sign = change < 0 and '-' or '+'
+  local count = math.abs(change)
+
+  local cmd_base = {
+    '/usr/bin/ddcutil',
+    -- '--sleep-multiplier 0.5',
+    'setvcp 10',
+    '-b',
+  }
+
+  for screen in screens:gmatch '%d+' do
+    local cmd = table.concat(gears.table.join(cmd_base, { screen, sign, count }), ' ')
+    awful.spawn.with_shell(cmd)
+    -- M.debug { cmd = cmd }
+  end
+end
+
+M.table = {}
+function M.table.find(collection, predicate)
+  if type(collection) ~= 'table' then
+    return nil
+  end
+
+  for index, value in pairs(collection) do
+    if predicate(value, index, collection) then
+      return value, index
+    end
+  end
+
+  return nil
+end
+
+function M.table.filter(collection, predicate)
+  if type(collection) ~= 'table' then
+    return {}
+  end
+
+  local filtered = {}
+
+  for index, value in pairs(collection) do
+    if predicate(value, index, collection) then
+      table.insert(filtered, value)
+    end
+  end
+
+  return filtered
 end
 
 return M

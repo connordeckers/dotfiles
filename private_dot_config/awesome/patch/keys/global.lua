@@ -189,6 +189,16 @@ local applications = {
     group = 'terminal',
   },
 
+  {
+    mods = {},
+    key = 'Print',
+    action = function()
+      awful.spawn(config.screenshot)
+    end,
+    description = 'Take a screenshot',
+    group = 'screen',
+  },
+
   -- Menubar
   -- { mods = { config.modkey, 'Shift' }, key = 'p', action = menubar.show,  description = 'show the menubar', group = 'launcher' },
   {
@@ -203,33 +213,51 @@ local applications = {
 }
 
 local management = {
-  { mods = { config.modkey }, key = 's', action = require('awful.hotkeys_popup').show_help, description = 'show help', group = 'awesome' },
-  { mods = { 'Control', 'Shift' }, key = 'r', action = awesome.restart, description = 'reload awesome', group = 'awesome' },
-  { mods = { config.modkey, 'Control', 'Shift' }, key = 'q', action = awesome.quit, description = 'quit awesome', group = 'awesome' },
   {
     mods = { config.modkey },
-    key = 'r',
-    action = function()
-      awful.screen.focused().mypromptbox:run()
-    end,
-    description = 'run prompt',
-    group = 'launcher',
-  },
-
-  {
-    mods = { config.modkey },
-    key = 'x',
-    action = function()
-      awful.prompt.run {
-        prompt = 'Run Lua code: ',
-        textbox = awful.screen.focused().mypromptbox.widget,
-        exe_callback = awful.util.eval,
-        history_path = awful.util.get_cache_dir() .. '/history_eval',
-      }
-    end,
-    description = 'lua execute prompt',
+    key = 's',
+    action = require('patch.hotkeys').show,
+    description = 'show help',
     group = 'awesome',
   },
+  {
+    mods = { 'Shift', 'Mod1' },
+    key = 'r',
+    action = awesome.restart,
+    description = 'reload awesome',
+    group = 'awesome',
+  },
+  {
+    mods = { config.modkey, 'Control', 'Shift' },
+    key = 'q',
+    action = awesome.quit,
+    description = 'quit awesome',
+    group = 'awesome',
+  },
+  -- {
+  --   mods = { config.modkey },
+  --   key = 'r',
+  --   action = function()
+  --     awful.screen.focused().mypromptbox:run()
+  --   end,
+  --   description = 'run prompt',
+  --   group = 'launcher',
+  -- },
+
+  -- {
+  --   mods = { config.modkey },
+  --   key = 'x',
+  --   action = function()
+  --     awful.prompt.run {
+  --       prompt = 'Run Lua code: ',
+  --       textbox = awful.screen.focused().mypromptbox.widget,
+  --       exe_callback = awful.util.eval,
+  --       history_path = awful.util.get_cache_dir() .. '/history_eval',
+  --     }
+  --   end,
+  --   description = 'lua execute prompt',
+  --   group = 'awesome',
+  -- },
 }
 
 local keys = gears.table.join(layout, navigation, applications, management)

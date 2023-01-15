@@ -1,2 +1,3 @@
 .homeencrypt.key.txt.age
 .zsh_history
+.config/nvim/after/queries/**

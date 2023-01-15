@@ -1,15 +1,47 @@
 local awful = require 'awful'
-local wibox = require 'wibox'
-local gears = require 'gears'
-local utils = require 'patch.utils'
 local beautiful = require 'beautiful'
-
--- Notification library
 local naughty = require 'naughty'
+local wibox = require 'wibox'
 
 naughty.connect_signal('request::display', function(n)
-  naughty.layout.box { notification = n }
+  -- n.title = string.format('<b>%s</b>', n.title, 'haha')
+  -- n.widget_template = {
+  --   {
+  --     {
+  --       {
+  --         {
+  --           naughty.widget.icon,
+  --           {
+  --             naughty.widget.title,
+  --             naughty.widget.message,
+  --             spacing = 4,
+  --             layout = wibox.layout.fixed.vertical,
+  --           },
+  --           fill_space = true,
+  --           spacing = 4,
+  --           layout = wibox.layout.fixed.horizontal,
+  --         },
+  --         naughty.list.actions,
+  --         spacing = 10,
+  --         layout = wibox.layout.fixed.vertical,
+  --       },
+  --       margins = beautiful.notification_margin or 10,
+  --       widget = wibox.container.margin,
+  --     },
+  --
+  --     id = 'background_role',
+  --     widget = naughty.container.background,
+  --   },
+  --   strategy = 'max',
+  --   width = beautiful.notification_max_width or beautiful.xresources.apply_dpi(500),
+  --   widget = wibox.container.constraint,
+  -- }
+
+  naughty.layout.box {
+    notification = n,
+  }
 end)
+
 -- Signal function to execute when a new client appears.
 client.connect_signal('manage', function(c)
   -- Set the windows at the slave,
@@ -21,51 +53,6 @@ client.connect_signal('manage', function(c)
     awful.placement.no_offscreen(c)
   end
 end)
-
--- Add a titlebar if titlebars_enabled is set to true in the rules.
--- client.connect_signal('request::titlebars', function(c)
---   -- buttons for the titlebar
---   local buttons = gears.table.join(
---     awful.button({}, 1, function()
---       c:emit_signal('request::activate', 'titlebar', { raise = true })
---       awful.mouse.client.move(c)
---     end),
---     awful.button({}, 3, function()
---       c:emit_signal('request::activate', 'titlebar', { raise = true })
---       awful.mouse.client.resize(c)
---     end)
---   )
---
---   awful.titlebar(c):setup {
---     { -- Left
---       awful.titlebar.widget.iconwidget(c),
---       buttons = buttons,
---       layout = wibox.layout.fixed.horizontal,
---     },
---     { -- Middle
---       { -- Title
---         align = 'center',
---         widget = awful.titlebar.widget.titlewidget(c),
---       },
---       buttons = buttons,
---       layout = wibox.layout.flex.horizontal,
---     },
---     { -- Right
---       awful.titlebar.widget.floatingbutton(c),
---       awful.titlebar.widget.maximizedbutton(c),
---       awful.titlebar.widget.stickybutton(c),
---       awful.titlebar.widget.ontopbutton(c),
---       awful.titlebar.widget.closebutton(c),
---       layout = wibox.layout.fixed.horizontal(),
---     },
---     layout = wibox.layout.align.horizontal,
---   }
--- end)
-
--- Enable sloppy focus, so that focus follows mouse.
--- client.connect_signal('mouse::enter', function(c)
---   c:emit_signal('request::activate', 'mouse_enter', { raise = false })
--- end)
 
 client.connect_signal('focus', function(c)
   c.border_color = beautiful.border_focus

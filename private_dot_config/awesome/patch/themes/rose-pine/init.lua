@@ -11,15 +11,28 @@ local palettes = require 'patch.themes.rose-pine.variants'
 -- Main
 local M = {}
 
+---@param palette 'main' | 'moon' | 'dawn'
+function M.palette(palette)
+  palette = palette or 'main'
+  return palettes[palette]
+end
+
 ---@param args { palette: 'main' | 'moon' | 'dawn', additions: table<string,string|number|boolean>, highlight: 'love' | 'gold' | 'rose' | 'pine' | 'foam' | 'iris', opacity: number }
 function M.setup(args)
   local palette = args.palette or 'main'
   local additions = args.additions or {}
   local highlight = args.highlight or 'foam'
   local opacity = args.opacity or 1.0
-
-  local theme = {}
   local colors = palettes[palette]
+
+  local theme = {
+    meta = {
+      opacity = opacity,
+      highlight = highlight,
+      palette_name = palette,
+      palette = colors,
+    },
+  }
 
   local function rgba(color)
     local alpha = g_color.change_opacity(color, opacity)
@@ -69,19 +82,8 @@ function M.setup(args)
 
   theme.taglist_spacing = theme.useless_gap
 
-  -- Widgets
-  -- You can add as many variables as
-  -- you wish and access them by using
-  -- beautiful.variable in your rc.lua
-  --theme.fg_widget        = "#AECF96"
-  --theme.fg_center_widget = "#88A175"
-  --theme.fg_end_widget    = "#FF5656"
-  --theme.bg_widget        = "#494B4F"
-  --theme.border_widget    = "#3F3F3F"
-
   -- Mouse finder
   theme.mouse_finder_color = hl
-  -- mouse_finder_[timeout|animate_timeout|radius|factor]
 
   return gears.table.join(theme, additions)
 end

@@ -18,9 +18,8 @@ local tray = wibox.widget {
   halign = 'center',
   widget = wibox.container.place,
 }
-tray.widget.base_size = config.theme.menubar_height * 0.6
 
-local widget_spacer = wibox.widget.textbox(string.rep('  ', 2))
+tray.widget.base_size = config.theme.menubar_height * 0.6
 
 local focused_name = wibox.widget {
   markup = client.focus and client.focus.name or '',
@@ -155,12 +154,12 @@ local function draw_bar(s)
     },
     focused_name,
     { -- Right widgets
-      layout = wibox.layout.fixed.horizontal,
       tray,
-      widget_spacer,
       mytextclock,
       logout_menu(),
       s.mylayoutbox,
+      layout = wibox.layout.fixed.horizontal,
+      spacing = 10,
     },
   }
 end

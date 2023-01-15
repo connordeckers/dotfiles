@@ -7,10 +7,21 @@ local icons = require 'patch.themes.icons'
 local dpi = require('beautiful.xresources').apply_dpi
 local utils = require 'patch.utils'
 
+local submodules = {
+  notifications = require 'patch.theme-overrides.notifications',
+  runDialog = require 'patch.theme-overrides.run-dialog',
+}
+
 -- Themes define colours, icons, font and wallpapers.
 local function apply_theme()
   -- The spacing around windows and other UI components
   local padding = dpi(3)
+
+  local theme_base = theme.setup {
+    palette = 'moon',
+    highlight = 'iris',
+    opacity = 0.8,
+  }
 
   local changes = gears.table.join(icons, {
     -- The gap between windows
@@ -34,14 +45,15 @@ local function apply_theme()
 
     -- The spacing around our menu bar
     menubar_margins = { top = padding * 2, bottom = padding * 2, left = padding * 2, right = padding * 2 },
-  })
 
-  beautiful.init(theme.setup {
-    palette = 'moon',
-    additions = changes,
-    highlight = 'iris',
-    opacity = 0.8,
-  })
+    -- The menubar colours
+    wibar_opacity = 0.8,
+    wibar_bg = theme_base.meta.palette.base,
+    wibar_fg = theme_base.meta.palette.text,
+    systray_bg = theme_base.meta.palette.base,
+  }, submodules.notifications.setup(theme_base), submodules.runDialog)
+
+  beautiful.init(gears.table.join(theme_base, changes))
 
   config.theme = beautiful.get()
 end

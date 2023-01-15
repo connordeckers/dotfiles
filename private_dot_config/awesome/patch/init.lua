@@ -7,18 +7,13 @@ pcall(require, 'luarocks.loader')
 require 'patch.error_handling'
 require 'patch.layouts'
 
-local utils = require 'patch.utils'
-
 require 'patch.theme'
 require 'patch.signals'
 require 'patch.keys'
 require 'patch.rules'
 require 'patch.autostart'
 
--- require 'patch.widgets'
-
-require 'patch.bar'
 require 'patch.menubar'
 
 -- Once we've found our clients, hide our scratchpad if it exists
-client.connect_signal('scanned', utils.hide_scratchpad)
+client.connect_signal('scanned', require('patch.utils').hide_scratchpad)

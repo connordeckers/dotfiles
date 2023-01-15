@@ -97,6 +97,9 @@ path=(
 	# Where PNPM is installed.
 	$PNPM_HOME
 
+	# Go path
+	$(/usr/bin/go env GOPATH)
+
 	# The rest of the existing path
 	$path
 )

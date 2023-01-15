@@ -25,8 +25,8 @@ local logout_menu_widget = wibox.widget {
     margins = {
       top = 6,
       bottom = 6,
-      left = 12,
-      right = 12,
+      -- left = 12,
+      -- right = 12,
     },
     layout = wibox.container.margin,
   },

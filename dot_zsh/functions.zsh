@@ -87,6 +87,8 @@ _launch_tmux() {
 	if [ ! -z $VIM ]; then return; fi
 	if [ ! -z $SSH_CLIENT ]; then return; fi
 
+	if [ "$TERM" = "linux" ]; then return; fi
+
 	tmux_cmd=(command tmux)
 
 	if [[ -e "$ZSH_TMUX_CONFIG" ]]; then tmux_cmd+=(-f "$ZSH_TMUX_CONFIG"); fi

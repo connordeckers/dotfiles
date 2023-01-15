@@ -102,6 +102,7 @@ LSPConfig = {
       'vimls',
       'yamlls',
       'rust_analyzer',
+      'pyright',
     },
 
     -- These LSP servers have additional configuration applied.
@@ -121,6 +122,7 @@ LSPConfig = {
 
                 -- AwesomeWM bindings
                 'awesome',
+                'mouse',
                 'client',
                 'screen',
                 'root',
@@ -292,6 +294,7 @@ use {
       null.builtins.diagnostics.cpplint,
       null.builtins.diagnostics.gitlint,
       null.builtins.diagnostics.hadolint,
+      -- null.builtins.diagnostics.flake8,
 
       -- Completion
       null.builtins.completion.tags,
@@ -300,6 +303,8 @@ use {
       null.builtins.formatting.prettier.with { filetypes = LSPConfig.prettier_filetypes, timeout = 5000 },
       null.builtins.formatting.stylua,
       null.builtins.formatting.clang_format,
+      null.builtins.formatting.black,
+      null.builtins.formatting.isort,
     }
 
     -- LspFormatting AutoCommand group

@@ -7,14 +7,12 @@ local wibox = require 'wibox'
 -- Tell the menubar what terminal to use when running a shell command
 menubar.utils.terminal = config.terminal
 
+local field = awful.widget.prompt()
+
 -- Set up the default args of the prompt when it opens
 menubar.prompt_args = {
   prompt = 'Search: ',
-  textbox = wibox.widget {
-    widget = wibox.widget.textbox,
-    halign = 'center',
-    valign = 'center',
-  },
+  textbox = field.widget,
 }
 
 -- Display the overlay on top of the bar

@@ -20,4 +20,6 @@ props.modkey = 'Mod4'
 
 props.theme = beautiful.get()
 
+props.screenshot = 'flameshot gui'
+
 return props
