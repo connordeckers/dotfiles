@@ -176,6 +176,17 @@ use {
   },
 
   config = function()
+    vim.opt.foldmethod = 'expr'
+    vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+
+    local autocmd = require('patch.utils').nvim_create_augroups
+
+    autocmd {
+      open_folds = {
+        { 'BufReadPost,FileReadPost', '*', 'normal zR' },
+      },
+    }
+
     require('nvim-treesitter.configs').setup {
       autotag = { enable = true },
       highlight = { enable = true },
@@ -195,6 +206,15 @@ use {
           fallback_cmd_normal = nil, -- fallback command when no pair found, can be nil
           longest_partner = false, -- whether to delete the longest or the shortest pair when multiple found.
           -- E.g. whether to delete the angle bracket or whole tag in  <pair> </pair>
+        },
+      },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = '<CR>',
+          node_incremental = '<CR>',
+          scope_incremental = '<S-CR>',
+          node_decremental = '<BS>',
         },
       },
       textobjects = {

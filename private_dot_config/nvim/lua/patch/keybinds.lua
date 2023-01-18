@@ -69,6 +69,11 @@ local normalmaps = {
     require('nvim-tree').toggle()
   end,
 
+  -- Toggle zen mode
+  ['<leader>zz'] = function()
+    require('zen-mode').toggle()
+  end,
+
   -- Save the file
   -- Only write the file if it's actually changed.
   ['<leader>w'] = vim.cmd.update,
@@ -94,7 +99,16 @@ local normalmaps = {
   },
 
   -- Quickly fold code
-  ['<Leader>fa'] = 'za',
+
+  -- Close all folds
+  ['<Leader>ffa'] = 'zM',
+
+  -- Open all folds
+  ['<Leader>fua'] = 'zR',
+
+  -- Fold under cursor
+  ['('] = 'zc',
+  [')'] = 'zo',
 
   -- Diagnostics
   ['<Leader>tr'] = function()
