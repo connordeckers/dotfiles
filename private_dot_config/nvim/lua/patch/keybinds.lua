@@ -16,6 +16,7 @@ vim.g.mapleader = leader
 vim.g.maplocalleader = leader
 
 local function yank_comment_paste() end
+
 local function insert_jsdoc_comment()
   if vim.bo.filetype == 'typescript' then
     comment.comment.blockwise.current {
@@ -113,10 +114,6 @@ local normalmaps = {
   -- Diagnostics
   ['<Leader>tr'] = function()
     require('trouble').toggle()
-  end,
-
-  ['<leader>df'] = function()
-    tscomment.insert.before.fn ''
   end,
 
   ['<leader>cd'] = function()
@@ -222,6 +219,10 @@ local normalmaps = {
     tb.grep_string()
   end,
 
+  ['<leader>fb'] = function()
+    require('oil').open_float()
+  end,
+
   ['<leader>tj'] = function()
     tb.jumplist(as_dropdown)
   end,
@@ -265,6 +266,14 @@ local normalmaps = {
   --  Misc bindings
   -------------------------------
 
+  -- Open structural rename
+  ['<leader>sr'] = {
+    mode = { 'n', 'x' },
+    action = function()
+      require('ssr').open()
+    end,
+  },
+
   -- Show the lua scratchpad
   ['<leader>sb'] = require('patch.plugins.utilities.scratch').toggle,
 
@@ -283,7 +292,7 @@ local normalmaps = {
 
   -- When pasting over a word, delete the word under the selection into the blackhole buffer
   -- This lets us keep our "primary" paste object in memory
-  ['p'] = { mode = 'x', action = '"_dP' },
+  ['p'] = { mode = 'x', action = '"_dP', options = { noremap = true } },
 
   -- Open git view
   ['<Leader>g'] = require('neogit').open,

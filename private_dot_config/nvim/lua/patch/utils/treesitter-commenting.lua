@@ -113,7 +113,7 @@ function M.insert.before.fn(msg)
 
   -- vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { comment_str, string.rep(' ', col) })
   vim.api.nvim_buf_set_lines(0, row, row, false, { line })
-  vim.api.nvim_win_set_cursor(0, { row + 1, indent + (cursor_index - 1 or line:len()) })
+  vim.api.nvim_win_set_cursor(0, { row + 1, indent + (cursor_index and (cursor_index - 1) or line:len()) })
 
   vim.cmd 'startinsert'
 end

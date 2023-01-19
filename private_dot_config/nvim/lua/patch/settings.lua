@@ -65,8 +65,7 @@ vim.opt.splitright = true
 vim.opt.signcolumn = 'number'
 vim.opt.number = true
 vim.opt.foldcolumn = '0' -- Hide fold column until we can supress nested numbers
--- vim.opt.foldcolumn = 'auto:2'
--- vim.opt.foldlevel = 30
+vim.opt.foldlevel = 99 -- Don't autofold, let us do it manually
 
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
