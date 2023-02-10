@@ -8,3 +8,6 @@ local use = packer.use
 use 'fladson/vim-kitty'
 use 'isobit/vim-caddyfile'
 use 'alker0/chezmoi.vim'
+
+use 'elkowar/yuck.vim'
+use 'gpanders/nvim-parinfer'

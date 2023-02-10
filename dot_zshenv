@@ -78,6 +78,9 @@ export PNPM_HOME=$XDG_DATA_HOME/pnpm
 export BOB_NVIM_BASE=$XDG_DATA_HOME/neovim/bin
 
 path=( 
+	# Lets us globally manage the python version
+	$(pyenv root)/shims
+
 	# Check the local node_modules binaries folder (if exists) first.
 	# 		This is insecure, but as a web dev, /significantly/ more practical
 	# 		than using npx or prefixing all calls with the node_modules path.

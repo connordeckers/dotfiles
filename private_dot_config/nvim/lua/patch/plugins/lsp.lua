@@ -102,6 +102,7 @@ LSPConfig = {
       'vimls',
       'yamlls',
       'rust_analyzer',
+      'nginx',
       'pyright',
     },
 
