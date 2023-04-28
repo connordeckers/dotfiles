@@ -1,0 +1,245 @@
+# .zshrc config
+{{/* Determine the os information into easy vars */}}
+{{- $wsl := contains "WSL2" .chezmoi.kernel.osrelease -}}
+{{- $linux := eq .chezmoi.os "linux" -}}
+{{- $arch := eq .chezmoi.osRelease.id "arch" -}}
+
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+fpath+=~/.zfunc
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME=""
+
+# Some Vim binding management
+# TODO: Can we customize keybindings?
+VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+VI_MODE_SET_CURSOR=true
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+	{{ if eq .chezmoi.osRelease.id "arch" }}archlinux {{ end }}common-aliases git-escape-magic pj rsync
+	sudo systemd vi-mode zsh-autosuggestions fast-syntax-highlighting
+	# tmux 
+)
+# Source the main .oh-my-zsh scripts
+source $ZSH/oh-my-zsh.sh
+
+# changes to blinking bar
+echo -e -n "\x1b[\x35 q" 
+
+{{ if lookPath "feh" }}
+# Choose a random wallpaper
+random-wallpaper() {
+	DIR=$HOME/Pictures/wallpapers/
+	SAVED=$DIR/.wallpaper
+	
+	IMG=$(/usr/bin/ls "$DIR" | shuf | head -n 1)
+
+	ln -sf "$IMG" "$SAVED"
+
+	feh --bg-fill "$SAVED"
+}
+{{ end }}
+
+{{ if $wsl }}
+# Show the target file in Windows Explorer
+files() {
+	DIR=${1:-$PWD}
+	REF=$(wslpath -w "$DIR")
+	explorer.exe "$REF"
+}
+{{ end }}
+
+{{ if lookPath "fzf" }}
+fe() { 
+  editpath=$(find . -type f | fzf)
+  if [[ "$editpath" != "" ]]; then $EDITOR $editpath; fi
+}
+{{ end }}
+
+{{ if lookPath "powerline-go" }}
+zmodload zsh/datetime
+function preexec() { __TIMER=$EPOCHREALTIME }
+
+## Set up the powerline-go bar
+powerline_precmd() {
+	MODULES_LEFT="ssh,host,cwd,vi-mode"
+	MODULES_RIGHT="duration,git"
+	CWD_MODE="fancy"
+	THEME="default"
+
+	## Handle timer
+	local __ERRCODE=$?
+	local __DURATION=0
+
+	if [ -n $__TIMER ]; then 
+		local __ERT=$EPOCHREALTIME
+		__DURATION="$(($__ERT - ${__TIMER:-__ERT}))"
+	fi
+
+	ARGS=(
+		"-east-asian-width"
+		"-shell zsh"
+		#"-newline"
+		"-hostname-only-if-ssh"
+		"-cwd-mode $CWD_MODE"
+		"-modules $MODULES_LEFT"
+		"-modules-right $MODULES_RIGHT"
+		"-theme $THEME"
+		"-duration $__DURATION"
+		"-error $__ERRCODE"
+	)
+
+	#echo "powerline-go$(printf " %s" "${ARGS[@]}")"
+	eval $(powerline-go$(printf " %s" "${ARGS[@]}") -eval)
+
+	unset __TIMER
+}
+
+install_powerline_precmd() {
+  for s in "${precmd_functions[@]}"; do
+    if [ "$s" = "powerline_precmd" ]; then return; fi
+  done
+  precmd_functions+=(powerline_precmd)
+}
+# Set up the powerline prompt styling
+if [ "$TERM" != "linux" ]; then install_powerline_precmd; fi
+{{ end }}
+
+consumption () {
+ sudo du -chax --max-depth=1 $1 | grep -E "^[0-9\.]*[MG]"
+}
+
+claim () { sudo chown -R $USER:$USER $1 }
+mkcd () { mkdir -p $1 && cd $1 }
+
+{{ if $arch }}
+rollback_update() {
+	if [[ $1 == '' ]]; then
+		print 'Date must be supplied, relative or absolute accepted.'
+		return
+	fi
+
+	# Get a unique ID to keep our good mirrorlist 
+	timestamp=$(date +%s)
+
+	# Rename the mirrorlist with our timestamp
+	sudo mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist."$timestamp"
+
+	# Create a new mirrorlist file to tee into
+	sudo touch /etc/pacman.d/mirrorlist
+
+	# Get a date object from the timestamp, as year month and day
+	year=$(date --date $1 "+%Y")
+	month=$(date --date $1 "+%m")
+	day=$(date --date $1 "+%d")
+
+	# Tee the archive of the mirror into the mirrorlist file
+	echo "Server=https://archive.archlinux.org/repos/$year/$month/$day/\$repo/os/\$arch" | sudo tee /etc/pacman.d/mirrorlist
+
+	# Force pacman to update the cache (yy forces it to refetch even if it considers itself up to date)
+	# and uu forces it to allow packages to downgrade
+	sudo pacman -Syyuu
+
+	# Once the downgrade is done, revert our changes to the mirrorlist
+	sudo rm /etc/pacman.d/mirrorlist
+	sudo mv /etc/pacman.d/mirrorlist."$timestamp" /etc/pacman.d/mirrorlist
+	
+	# Update the mirrorlist, but not the packages themselves
+	sudo pacman -Syy
+}
+{{ end }}
+
+clean_path() {
+  export PATH=$(echo $PATH | sed 's|:|\n|g' | awk '!x[$0]++' | sed ':a; N; $!ba; s|\n|:|g')
+}
+
+##########
+# Aliases
+##########
+
+if [[ ! -z $WAYLAND_DISPLAY ]]; then
+	alias copy="wl-copy"
+	alias paste="wl-paste"
+else
+{{- if $wsl }}
+	alias copy="xclip -selection c"
+	alias paste="xclip -selection c -o"
+{{- else if $linux }}
+	alias copy="clip.exe"
+	alias paste="clip.exe -p"
+{{ end }}
+fi
+
+# Preferred editor for local and remote sessions
+alias e=$EDITOR
+
+alias mkdir="mkdir -p"
+unalias -m fd
+
+alias ls='ls -GhvX --group-directories-first --color=auto'
+alias l='ls -lGh1vX --group-directories-first --color=auto'
+alias ll='ls -lAGh1vX --group-directories-first --color=auto'
+alias sizeof='du -sh --apparent-size'
+alias netw="ip -4 -br -c addr"
+
+{{ if lookPath "docker" }}alias dc="docker compose"{{ end }}
+{{ if lookPath "nvim" }}alias vim="nvim"{{ end }}
+{{ if lookPath "pnpm" }}alias npm="pnpm"{{ end }}
+
+################
+## Handle Tmux
+################
+
+# Lets launch tmux automatically.
+{{ if lookPath "/usr/bin/tmux" }}
+# CONFIGURATION VARIABLES
+# Automatically start tmux
+: ${ZSH_TMUX_AUTOSTART:=false}
+# Only autostart once. If set to false, tmux will attempt to
+# autostart every time your zsh configs are reloaded.
+: ${ZSH_TMUX_AUTOSTART_ONCE:=true}
+# Automatically close the terminal when tmux exits
+: ${ZSH_TMUX_AUTOQUIT:=$ZSH_TMUX_AUTOSTART}
+# Set the configuration path
+: ${ZSH_TMUX_CONFIG:=$HOME/.tmux.conf}
+
+_launch_tmux() {
+	# Autostart if not already in tmux and enabled.
+	# Heavy inspiration taken from https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/tmux
+	if [ ! -z $TMUX ]; then return; fi
+	if [ ! -z $VIM ]; then return; fi
+	if [ ! -z $SSH_CLIENT ]; then return; fi
+
+	if [ "$TERM" = "linux" ]; then return; fi
+
+	tmux_cmd=(command tmux)
+
+	if [[ -e "$ZSH_TMUX_CONFIG" ]]; then tmux_cmd+=(-f "$ZSH_TMUX_CONFIG"); fi
+	
+	tmux_cmd+=(new-session)
+	if [[ -n "$ZSH_TMUX_DEFAULT_SESSION_NAME" ]]; then 
+		tmux_cmd+=(-s $ZSH_TMUX_DEFAULT_SESSION_NAME) 
+	fi
+
+	$tmux_cmd
+
+  if [[ "$ZSH_TMUX_AUTOQUIT" == "true" ]]; then exit; fi
+}
+
+_launch_tmux
+{{ end }}
+
+# Remove directory background colours to ensure that values are readable
+hash dircolors &>/dev/null && eval "$(dircolors -p | \
+    sed 's/ 4[0-9];/ 01;/; s/;4[0-9];/;01;/g; s/;4[0-9] /;01 /' | \
+    dircolors /dev/stdin)"
+

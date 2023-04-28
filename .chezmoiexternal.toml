@@ -41,7 +41,7 @@
     url = "https://github.com/wbthomason/packer.nvim.git"
     refreshPeriod = "8h"
 
-[".config/nvim/after/"]
+[".config/nvim/"]
     type = "archive"
     url = "https://github.com/nvim-treesitter/nvim-treesitter/archive/master.tar.gz"
     stripComponents = 1

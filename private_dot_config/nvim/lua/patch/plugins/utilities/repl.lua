@@ -1,4 +1,0 @@
--- local packer = require 'packer'
--- local use = packer.use
---
--- use 'metakirby5/codi.vim'

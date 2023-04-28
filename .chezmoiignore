@@ -1,3 +1,10 @@
 .homeencrypt.key.txt.age
 .zsh_history
-.config/nvim/after/queries/**
+
+{{ if contains "WSL2" .chezmoi.kernel.osrelease }}
+.config/autostart
+.config/bspwm
+.config/kitty
+.config/picom
+.config/polybar
+{{ end }}
