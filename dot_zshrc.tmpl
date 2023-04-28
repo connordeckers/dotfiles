@@ -171,11 +171,11 @@ if [[ ! -z $WAYLAND_DISPLAY ]]; then
 	alias paste="wl-paste"
 else
 {{- if $wsl }}
-	alias copy="xclip -selection c"
-	alias paste="xclip -selection c -o"
-{{- else if $linux }}
 	alias copy="clip.exe"
 	alias paste="clip.exe -p"
+{{- else if $linux }}
+	alias copy="xclip -selection c"
+	alias paste="xclip -selection c -o"
 {{ end }}
 fi
 
