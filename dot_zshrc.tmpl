@@ -195,12 +195,12 @@ alias netw="ip -4 -br -c addr"
 {{ if lookPath "nvim" }}alias vim="nvim"{{ end }}
 {{ if lookPath "pnpm" }}alias npm="pnpm"{{ end }}
 
+{{ if lookPath "/usr/bin/tmux" }}
 ################
 ## Handle Tmux
 ################
 
 # Lets launch tmux automatically.
-{{ if lookPath "/usr/bin/tmux" }}
 # CONFIGURATION VARIABLES
 # Automatically start tmux
 : ${ZSH_TMUX_AUTOSTART:=false}
