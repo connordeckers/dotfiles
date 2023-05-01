@@ -19,6 +19,16 @@ local fmta = require('luasnip.extras.fmt').fmta
 local types = require 'luasnip.util.types'
 local conds = require 'luasnip.extras.expand_conditions'
 
+local function kebabCase(args, parent, user_args)
+  local matching = args[1][1]
+  local firstLetter = string.sub(matching, 1, 1)
+  local restOfWord = string.gsub(string.sub(matching, 2), '%u', function(c)
+    return '-' .. c
+  end)
+
+  return string.lower(firstLetter .. restOfWord)
+end
+
 local collection = {
   snippet('af', {
     text { '(async () => {', '\t' },
@@ -44,6 +54,113 @@ local collection = {
     text { '', ' */', '' },
     insert(0),
   }),
+
+  snippet(
+    'component',
+    fmt(
+      [[
+@customElement("mylo-mate-{dashed}")
+export class {name} extends LitElement {{
+	/**************************************
+	 * Properties
+	 **************************************/
+
+	/**************************************
+	 * Methods: lifecycle
+	 **************************************/
+
+	constructor() {{ 
+	  super(); 
+	}}
+
+	/**************************************
+	 * Methods: render
+	 **************************************/
+
+	render() {{
+		return html`<p>Component "{name}" works!</p>`;
+	}}
+
+	/**************************************
+	 * Methods: other
+	 **************************************/
+
+}}
+		]],
+      {
+        name = insert(1, 'ClassName'),
+        dashed = func(kebabCase, { 1 }),
+      },
+      { repeat_duplicates = true }
+    )
+  ),
+
+  snippet(
+    'module',
+    fmt(
+      [[
+import {{ Augmentation, Module }} from "@helpers";
+
+@Augmentation({{ 
+	target: [""], 
+	testURLs: [],  
+	config: {{
+		category: "",
+		key: "",
+		label: "",
+		type: "boolean",
+		default: true,
+		description: null
+	}}
+}})
+export class {name} extends Module {{
+
+	/**************************************
+	* Properties
+	**************************************/
+
+	/**************************************
+	* Methods: testing
+	**************************************/
+
+	test__pre(): boolean {{
+		return true;
+	}}
+
+	test__post(): boolean {{
+		return false;
+	}}
+
+	shouldRun(): boolean {{
+		return true;
+	}}
+
+	/**************************************
+	* Methods: lifecycle
+	**************************************/
+
+	/** Run when the feature is enabled. See {{@link shouldRun}}. */
+	async enabled() {{
+		console.log(`Running module "{name}"`)
+	}}
+
+	/** Run when the feature is disabled, after having been enabled in this page load. */
+	disabled() {{}}
+
+	async prepare() {{
+
+	}}
+
+	/**************************************
+	* Methods: other
+	**************************************/
+
+
+}}
+		]],
+      { name = insert(1, 'ClassName') }
+    )
+  ),
 }
 
 return collection

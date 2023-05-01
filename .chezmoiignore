@@ -1,5 +1,6 @@
 .homeencrypt.key.txt.age
 .zsh_history
+.oh-my-zsh/cache/
 
 {{ if contains "WSL2" .chezmoi.kernel.osrelease }}
 .config/autostart
