@@ -14,11 +14,6 @@ fpath+=~/.zfunc
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME=""
 
-# Some Vim binding management
-# TODO: Can we customize keybindings?
-VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
-VI_MODE_SET_CURSOR=true
-
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
@@ -26,14 +21,20 @@ VI_MODE_SET_CURSOR=true
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
 	{{ if eq .chezmoi.osRelease.id "arch" }}archlinux {{ end }}common-aliases git-escape-magic pj rsync
-	sudo systemd vi-mode zsh-autosuggestions fast-syntax-highlighting
+	sudo systemd {{ if not (stat "/usr/share/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh") }} vi-mode{{end}} zsh-autosuggestions fast-syntax-highlighting
 	# tmux 
 )
 # Source the main .oh-my-zsh scripts
 source $ZSH/oh-my-zsh.sh
+{{ if stat "/usr/share/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh" }}
+source /usr/share/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+{{else}}
+VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+VI_MODE_SET_CURSOR=true
 
 # changes to blinking bar
 echo -e -n "\x1b[\x35 q" 
+{{end}}
 
 {{ if lookPath "feh" }}
 # Choose a random wallpaper
@@ -71,7 +72,7 @@ function preexec() { __TIMER=$EPOCHREALTIME }
 
 ## Set up the powerline-go bar
 powerline_precmd() {
-	MODULES_LEFT="ssh,host,cwd,vi-mode"
+	MODULES_LEFT="ssh,host,cwd"
 	MODULES_RIGHT="duration,git"
 	CWD_MODE="fancy"
 	THEME="default"
@@ -114,10 +115,7 @@ install_powerline_precmd() {
 if [ "$TERM" != "linux" ]; then install_powerline_precmd; fi
 {{ end }}
 
-consumption () {
- sudo du -chax --max-depth=1 $1 | grep -E "^[0-9\.]*[MG]"
-}
-
+consumption () { sudo du -chax --max-depth=1 $1 | grep -E "^[0-9\.]*[MG]" }
 claim () { sudo chown -R $USER:$USER $1 }
 mkcd () { mkdir -p $1 && cd $1 }
 

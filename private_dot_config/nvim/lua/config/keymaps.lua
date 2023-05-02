@@ -73,7 +73,7 @@ end)
 map('<leader>w', vim.cmd.update)
 
 -- Toggle line numbers
-map('<leader>l', function()
+map('<leader>ln', function()
   vim.opt.number = not (vim.opt.number:get())
 end)
 
@@ -82,8 +82,17 @@ map('<Leader><Leader>', ':%s/\\<<C-r>=expand("<cword>")<CR>\\>//g<Left><Left>')
 
 -- Format the file
 map('<Leader>p', {
-  { mode = 'n', action = function() require('utils.format').format_buffer() end, },
-  { mode = 'x', action = function() vim.lsp.buf.range_formatting {} end,
+  {
+    mode = 'n',
+    action = function()
+      require('utils.format').format_buffer()
+    end,
+  },
+  {
+    mode = 'x',
+    action = function()
+      vim.lsp.buf.range_formatting {}
+    end,
     options = { silent = true, buffer = true },
   },
 })

@@ -376,6 +376,7 @@ return {
     keys = {
       { '<C-t>', '<cmd>tabnew<cr>' }, -- New tab
       { '<Leader>q', '<cmd>BufferClose<cr>' }, -- Close the current buffer
+      { '<Leader>Q', '<cmd>BufferClose!<cr>' }, -- Close the current buffer
       { '<Tab>', '<cmd>BufferNext<cr>' }, -- Next tab
       { '<S-Tab>', '<cmd>BufferPrevious<cr>' }, -- Previous tab
     },
