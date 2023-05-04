@@ -324,13 +324,13 @@ return {
       { '<C-p>', telescope 'buffers' },
 
       -- Show diagnostics
-      { '<leader>ldg', telescope 'diagnostics' },
+      { '<leader>dg', telescope 'diagnostics' },
       { '<leader>lr', telescope 'lsp_references' }, -- Lists LSP references for word under the cursor
-      { '<leader>lic', telescope 'lsp_incoming_calls' }, -- Lists LSP incoming calls for word under the cursor
-      { '<leader>loc', telescope 'lsp_outgoing_calls' }, -- Lists LSP outgoing calls for word under the cursor
+      { '<leader>lci', telescope 'lsp_incoming_calls' }, -- Lists LSP incoming calls for word under the cursor
+      { '<leader>lco', telescope 'lsp_outgoing_calls' }, -- Lists LSP outgoing calls for word under the cursor
       { '<leader>ls', telescope 'lsp_document_symbols' }, -- Lists LSP document symbols in the current buffer
-      { '<leader>lws', telescope 'lsp_workspace_symbols' }, -- Lists LSP document symbols in the current workspace
-      { '<leader>ldw', telescope 'lsp_dynamic_workspace_symbols' }, -- Dynamically Lists LSP for all workspace symbols
+      -- { '<leader>lws', telescope 'lsp_workspace_symbols' }, -- Lists LSP document symbols in the current workspace
+      { '<leader>ws', telescope 'lsp_dynamic_workspace_symbols' }, -- Dynamically Lists LSP for all workspace symbols
       { '<leader>li', telescope 'lsp_implementations' }, -- Goto the implementation of the word under the cursor if there's only one, otherwise show all options in Telescope
       { '<leader>ld', telescope 'lsp_definitions' }, -- Goto the definition of the word under the cursor, if there's only one, otherwise show all options in Telescope
       { '<leader>lt', telescope 'lsp_type_definitions' }, -- Goto the definition of the type of the word under the cursor, if there's only one, otherwise show all options in Telescope

@@ -255,6 +255,13 @@ return {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       -- 'lvimuser/lsp-inlayhints.nvim',
+      {
+        'marilari88/twoslash-queries.nvim',
+        opts = {
+          multi_line = true, -- to print types in multi line mode
+          is_enabled = true, -- to keep enabled at startup
+        },
+      },
     },
 
     opts = {
@@ -301,28 +308,33 @@ return {
         ['vimls'] = {},
 
         ['tsserver'] = {
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayEnumMemberValueHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayParameterNameHints = 'all',
-                includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+          on_attach = function(client, bufnr)
+            require('twoslash-queries').attach(client, bufnr)
+          end,
+          params = {
+            settings = {
+              typescript = {
+                inlayHints = {
+                  includeInlayEnumMemberValueHints = true,
+                  includeInlayFunctionLikeReturnTypeHints = true,
+                  includeInlayFunctionParameterTypeHints = true,
+                  includeInlayParameterNameHints = 'all',
+                  includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+                  includeInlayPropertyDeclarationTypeHints = true,
+                  includeInlayVariableTypeHints = true,
+                  includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+                },
               },
-            },
-            completions = {
-              -- Complete functions with their parameter signature.
-              --
-              -- This functionality relies on LSP client resolving the completion using the `completionItem/resolve` call. If the
-              -- client can't do that before inserting the completion then it's not safe to enable it as it will result in some
-              -- completions having a snippet type without actually being snippets, which can then cause problems when inserting them.
-              --
-              -- @default false
-              completeFunctionCalls = true,
+              completions = {
+                -- Complete functions with their parameter signature.
+                --
+                -- This functionality relies on LSP client resolving the completion using the `completionItem/resolve` call. If the
+                -- client can't do that before inserting the completion then it's not safe to enable it as it will result in some
+                -- completions having a snippet type without actually being snippets, which can then cause problems when inserting them.
+                --
+                -- @default false
+                completeFunctionCalls = true,
+              },
             },
           },
         },
@@ -332,27 +344,29 @@ return {
         ['pyright'] = {},
 
         -- Qt
-        ['qmlls'] = { cmd = { 'qmlls6' } },
+        ['qmlls'] = { params = { cmd = { 'qmlls6' } } },
 
         -- Lua
 
         ['lua_ls'] = {
-          settings = {
-            Lua = {
-              diagnostics = {
-                -- Get the language server to recognize the `vim` global
-                globals = { 'vim' },
-              },
-              workspace = {
-                -- Make the server aware of Neovim runtime files
-                library = vim.tbl_deep_extend('force', {}, vim.api.nvim_get_runtime_file('', true)),
+          params = {
+            settings = {
+              Lua = {
+                diagnostics = {
+                  -- Get the language server to recognize the `vim` global
+                  globals = { 'vim' },
+                },
+                workspace = {
+                  -- Make the server aware of Neovim runtime files
+                  library = vim.tbl_deep_extend('force', {}, vim.api.nvim_get_runtime_file('', true)),
 
-                -- Don't check for third party tools
-                checkThirdParty = false,
-              },
+                  -- Don't check for third party tools
+                  checkThirdParty = false,
+                },
 
-              -- Do not send telemetry data
-              telemetry = { enable = false },
+                -- Do not send telemetry data
+                telemetry = { enable = false },
+              },
             },
           },
         },
@@ -397,31 +411,17 @@ return {
           })
         end
 
-        -- require('lsp-inlayhints').on_attach(client, bufnr)
+        if opts.config[client.name] and opts.config[client.name].on_attach then
+          opts.config[client.name].on_attach(client, bufnr)
+        end
       end
 
       -- Add additional capabilities supported by nvim-cmp
       local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local default_server_opts = { on_attach = on_attach, capabilities = capabilities }
 
-      -- require('typescript').setup(vim.tbl_deep_extend('force', {
-      --   disable_commands = true,
-      --   disable_formatting = true,
-      --   debug = false,
-      --   go_to_source_definition = { fallback = true },
-      -- }, { server = default_server_opts }))
-
-      -- local default_config = {}
-      -- for _, key in pairs(opts.config.default) do
-      --   default_config[key] = {}
-      -- end
-
-      -- The servers to configure
-      -- local lsp_servers = vim.tbl_deep_extend('force', {}, default_config, opts.config.extended)
-
-      -- for lsp_server, config in pairs(lsp_servers) do
       for lsp_server, config in pairs(opts.config) do
-        require('lspconfig')[lsp_server].setup(vim.tbl_deep_extend('force', default_server_opts, config))
+        require('lspconfig')[lsp_server].setup(vim.tbl_deep_extend('force', default_server_opts, config.params or {}))
       end
     end,
   },
