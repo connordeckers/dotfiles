@@ -339,7 +339,14 @@ return {
           },
         },
 
-        ['yamlls'] = {},
+        ['yamlls'] = {
+          settings = {
+            yaml = {
+              -- FIX mapKeyOrder warning
+              keyOrdering = false,
+            },
+          },
+        },
         ['rust_analyzer'] = {},
         ['pyright'] = {},
 

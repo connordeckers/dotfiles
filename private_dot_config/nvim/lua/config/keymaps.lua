@@ -37,7 +37,7 @@ end
 
 local function run_system_call()
   -- Ask for prompt value, run as system call
-  local utils = require 'patch.utils.string-utils'
+  local utils = require 'utils.string-utils'
   local insertCursorAfter = true
 
   local bufnr = vim.api.nvim_get_current_buf()
