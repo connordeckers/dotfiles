@@ -8,7 +8,7 @@ return {
     init = function()
       vim.cmd.colorscheme 'catppuccin'
     end,
-    config = {
+    opts = {
       flavour = 'frappe', -- latte, frappe, macchiato, mocha
       background = { -- :h background
         light = 'latte',
@@ -25,6 +25,21 @@ return {
         telescope = true,
         notify = false,
         mini = false,
+        native_lsp = {
+          enabled = true,
+          virtual_text = {
+            errors = { 'italic' },
+            hints = { 'italic' },
+            warnings = { 'italic' },
+            information = { 'italic' },
+          },
+          underlines = {
+            errors = { 'underline' },
+            hints = { 'underline' },
+            warnings = { 'underline' },
+            information = { 'underline' },
+          },
+        },
         -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
       },
     },
@@ -36,7 +51,7 @@ return {
   -- Make things PRETTY
   {
     'stevearc/dressing.nvim',
-    config = {
+    opts = {
       input = {
         -- Can be 'left', 'right', or 'center'
         prompt_align = 'center',
@@ -68,6 +83,7 @@ return {
   -- local banned_messages = { 'No information available', 'multiple different client offset_encodings' }
   {
     'folke/noice.nvim',
+    event = 'VeryLazy',
     dependencies = {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
       'MunifTanjim/nui.nvim',
@@ -75,8 +91,9 @@ return {
       --   `nvim-notify` is only needed, if you want to use the notification view.
       --   If not available, we use `mini` as the fallback
       'rcarriga/nvim-notify',
-    },
-    config = {
+    }, --,
+
+    opts = {
       cmdline = {
         enabled = true, -- enables the Noice cmdline UI
 
@@ -157,18 +174,12 @@ return {
           view = 'mini',
         },
       }, --- @see section on routes
-
-      ---@type table<string, NoiceFilter>
-      status = {}, --- @see section on statusline components
-
-      ---@type NoiceFormatOptions
-      format = {}, --- @see section on formatting
     },
   },
-
   -- Zen mode
   {
     'folke/zen-mode.nvim',
+    cmd = { 'ZenMode' },
     keys = {
       {
         '<leader>zz',
@@ -180,7 +191,7 @@ return {
     dependencies = {
       {
         'folke/twilight.nvim',
-        config = {
+        opts = {
           dimming = {
             alpha = 0.25, -- amount of dimming
             -- we try to get the foreground from the highlight groups or fallback color
@@ -193,7 +204,7 @@ return {
         },
       },
     },
-    config = {
+    opts = {
       window = {
         backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
         -- height and width can be:
@@ -232,7 +243,7 @@ return {
   {
     'petertriho/nvim-scrollbar',
     event = { 'BufReadPre', 'BufNewFile' },
-    config = {
+    opts = {
       show = true,
       show_in_active_only = false,
       set_highlights = true,
@@ -325,21 +336,25 @@ return {
   -- Status and buffer bar
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = { 'smiteshp/nvim-navic', 'nvim-tree/nvim-web-devicons' },
-    config = {
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    event = 'VeryLazy',
+    opts = {
       options = {
         icons_enabled = true,
-        theme = 'auto',
-        -- theme = 'rose-pine',
+        theme = 'catppuccin',
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         disabled_filetypes = { 'NvimTree' },
-        always_divide_middle = true,
-        globalstatus = false,
+        always_divide_middle = false,
+        globalstatus = true,
       },
       sections = {
         lualine_a = { 'mode' },
-        lualine_b = { 'branch', 'diff', 'diagnostics' },
+        lualine_b = {
+          'branch',
+          'diff',
+          -- 'diagnostics',
+        },
         lualine_c = { { 'filename', path = 1, file_status = true } },
         lualine_x = {
           'filesize',
@@ -369,18 +384,41 @@ return {
   -- Tab management
   -------------------
   {
-    'romgrk/barbar.nvim',
+    'akinsho/bufferline.nvim',
+    version = '*',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    config = {},
-    lazy = false,
+    event = 'VeryLazy',
     keys = {
       { '<C-t>', '<cmd>tabnew<cr>' }, -- New tab
-      { '<Leader>q', '<cmd>BufferClose<cr>' }, -- Close the current buffer
-      { '<Leader>Q', '<cmd>BufferClose!<cr>' }, -- Close the current buffer
-      { '<Tab>', '<cmd>BufferNext<cr>' }, -- Next tab
-      { '<S-Tab>', '<cmd>BufferPrevious<cr>' }, -- Previous tab
+      { '<Leader>q', '<cmd>bdelete<cr>' }, -- Close the current buffer
+      { '<Leader>Q', '<cmd>bdelete!<cr>' }, -- Close the current buffer
+      { '<Tab>', vim.cmd.bnext }, -- Next tab
+      { '<S-Tab>', vim.cmd.bprev }, -- Previous tab
+    },
+    cmd = { 'BufferLineCloseLeft', 'BufferLineCloseRight' },
+    opts = {
+      options = {
+        right_mouse_command = nil, -- can be a string | function | false, see "Mouse actions"
+        left_mouse_command = 'buffer %d', -- can be a string | function, | false see "Mouse actions"
+        middle_mouse_command = nil, -- can be a string | function, | false see "Mouse actions"
+        diagnostics = 'nvim_lsp',
+        indicator = { style = 'none' },
+      },
     },
   },
+  -- {
+  --   'romgrk/barbar.nvim',
+  --   dependencies = { 'nvim-tree/nvim-web-devicons' },
+  --   opts = {},
+  --   lazy = false,
+  --   keys = {
+  --     { '<C-t>', '<cmd>tabnew<cr>' }, -- New tab
+  --     { '<Leader>q', '<cmd>BufferClose<cr>' }, -- Close the current buffer
+  --     { '<Leader>Q', '<cmd>BufferClose!<cr>' }, -- Close the current buffer
+  --     { '<Tab>', '<cmd>BufferNext<cr>' }, -- Next tab
+  --     { '<S-Tab>', '<cmd>BufferPrevious<cr>' }, -- Previous tab
+  --   },
+  -- },
 
   {
     'utilyre/barbecue.nvim',
@@ -390,7 +428,7 @@ return {
       'smiteshp/nvim-navic',
       'nvim-tree/nvim-web-devicons', -- optional
     },
-    config = {
+    opts = {
       ---whether to attach navic to language servers automatically
       ---@type boolean
       attach_navic = true,

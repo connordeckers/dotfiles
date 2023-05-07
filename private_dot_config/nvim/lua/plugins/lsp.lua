@@ -249,7 +249,7 @@ return {
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
-      { 'folke/neoconf.nvim', cmd = 'Neoconf', config = true },
+      { 'folke/neoconf.nvim', cmd = 'Neoconf' },
       { 'folke/neodev.nvim', opts = { experimental = { pathStrict = true } } },
 
       'williamboman/mason.nvim',
@@ -429,7 +429,7 @@ return {
   {
     'windwp/nvim-autopairs',
     event = { 'BufReadPre', 'BufNewFile' },
-    config = {
+    opts = {
       check_ts = true,
       ts_config = {
         javascript = { 'template_string' },

@@ -59,7 +59,7 @@ return {
       },
     },
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    config = {
+    opts = {
       position = 'bottom', -- position of the list can be: bottom, top, left, right
       height = 10, -- height of the trouble list when position is top or bottom
       width = 50, -- width of the list when position is left or right
@@ -109,7 +109,7 @@ return {
       'NvimTreeCollapseKeepBuffers',
     },
 
-    config = {
+    opts = {
       -- Changes how files within the same directory are sorted.
       -- Can be one of `name`, `case_sensitive`, `modification_time`, `extension` or a
       -- function.
@@ -336,7 +336,7 @@ return {
       { '<leader>lt', telescope 'lsp_type_definitions' }, -- Goto the definition of the type of the word under the cursor, if there's only one, otherwise show all options in Telescope
     },
 
-    config = {
+    opts = {
       defaults = { mappings = { i = { ['<C-h>'] = 'which_key' } }, initial_mode = 'normal' },
       pickers = {
         find_files = { find_command = { 'fd', '--type', 'f', '--strip-cwd-prefix' } },
@@ -360,30 +360,113 @@ return {
   },
 
   -- Tmux pane navigation assistant
+  -- {
+  --   'connordeckers/tmux-navigator.nvim',
+  --
+  --   keys = {
+  --     { '<C-h>', navigate 'left', desc = 'Move to the panel on the left' }, -- Move left
+  --     { '<C-j>', navigate 'down', desc = 'Move to the panel below' }, -- Move down
+  --     { '<C-k>', navigate 'up', desc = 'Move to the panel above' }, -- Move up
+  --     { '<C-l>', navigate 'right', desc = 'Move to the panel on the right' }, -- Move right
+  --   },
+  --
+  --   opts = {
+  --     enabled = true,
+  --     DisableMapping = true,
+  --     DisableWhenZoomed = true,
+  --   },
+  -- },
   {
-    'connordeckers/tmux-navigator.nvim',
-
+    'mrjones2014/smart-splits.nvim',
+    lazy = false,
     keys = {
-      { '<C-h>', navigate 'left', desc = 'Move to the panel on the left' }, -- Move left
-      { '<C-j>', navigate 'down', desc = 'Move to the panel below' }, -- Move down
-      { '<C-k>', navigate 'up', desc = 'Move to the panel above' }, -- Move up
-      { '<C-l>', navigate 'right', desc = 'Move to the panel on the right' }, -- Move right
-    },
-
-    config = {
-      enabled = true,
-      DisableMapping = true,
-      DisableWhenZoomed = true,
+      -- recommended mappings
+      -- resizing splits
+      -- these keymaps will also accept a range,
+      -- for example `10<A-h>` will `resize_left` by `(10 * config.default_amount)`
+      {
+        '<A-h>',
+        function()
+          require('smart-splits').resize_left()
+        end,
+      },
+      {
+        '<A-j>',
+        function()
+          require('smart-splits').resize_down()
+        end,
+      },
+      {
+        '<A-k>',
+        function()
+          require('smart-splits').resize_up()
+        end,
+      },
+      {
+        '<A-l>',
+        function()
+          require('smart-splits').resize_right()
+        end,
+      },
+      -- moving between splits
+      {
+        '<C-h>',
+        function()
+          require('smart-splits').move_cursor_left()
+        end,
+      },
+      {
+        '<C-j>',
+        function()
+          require('smart-splits').move_cursor_down()
+        end,
+      },
+      {
+        '<C-k>',
+        function()
+          require('smart-splits').move_cursor_up()
+        end,
+      },
+      {
+        '<C-l>',
+        function()
+          require('smart-splits').move_cursor_right()
+        end,
+      },
+      -- swapping buffers between windows
+      {
+        '<leader><leader>h',
+        function()
+          require('smart-splits').swap_buf_left()
+        end,
+      },
+      {
+        '<leader><leader>j',
+        function()
+          require('smart-splits').swap_buf_down()
+        end,
+      },
+      {
+        '<leader><leader>k',
+        function()
+          require('smart-splits').swap_buf_up()
+        end,
+      },
+      {
+        '<leader><leader>l',
+        function()
+          require('smart-splits').swap_buf_right()
+        end,
+      },
     },
   },
-
   -- Rooter changes the working directory to the project root when you open a file or directory.
   'airblade/vim-rooter',
 
   -- Some nice git features
   {
     'lewis6991/gitsigns.nvim',
-    config = {
+    opts = {
       signcolumn = false,
       numhl = true,
       linehl = false,
@@ -421,7 +504,7 @@ return {
     'kylechui/nvim-surround',
     event = 'BufRead',
     dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
-    config = {},
+    opts = {},
   },
 
   -- Lightspeed navigation, but better!
@@ -446,7 +529,7 @@ return {
         end,
       },
     },
-    config = {
+    opts = {
       min_width = 50,
       min_height = 5,
       keymaps = {
@@ -516,7 +599,7 @@ return {
         expr = true,
       },
     },
-    config = {
+    opts = {
       ---Add a space b/w comment and the line
       ---@type boolean|fun():boolean
       padding = true,
