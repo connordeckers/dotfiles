@@ -72,11 +72,6 @@ function preexec() { __TIMER=$EPOCHREALTIME }
 
 ## Set up the powerline-go bar
 powerline_precmd() {
-	MODULES_LEFT="ssh,host,cwd"
-	MODULES_RIGHT="duration,git"
-	CWD_MODE="fancy"
-	THEME="default"
-
 	## Handle timer
 	local __ERRCODE=$?
 	local __DURATION=0
@@ -86,21 +81,7 @@ powerline_precmd() {
 		__DURATION="$(($__ERT - ${__TIMER:-__ERT}))"
 	fi
 
-	ARGS=(
-		"-east-asian-width"
-		"-shell zsh"
-		#"-newline"
-		"-hostname-only-if-ssh"
-		"-cwd-mode $CWD_MODE"
-		"-modules $MODULES_LEFT"
-		"-modules-right $MODULES_RIGHT"
-		"-theme $THEME"
-		"-duration $__DURATION"
-		"-error $__ERRCODE"
-	)
-
-	#echo "powerline-go$(printf " %s" "${ARGS[@]}")"
-	eval $(powerline-go$(printf " %s" "${ARGS[@]}") -eval)
+	eval $(powerline-go -duration $__DURATION -error $__ERRCODE)
 
 	unset __TIMER
 }

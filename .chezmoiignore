@@ -1,6 +1,8 @@
 .homeencrypt.key.txt.age
 .zsh_history
 .oh-my-zsh/cache/
+.config/tmux/plugins
+.config/tmux/sidebar
 
 {{ if contains "WSL2" .chezmoi.kernel.osrelease }}
 .config/autostart
