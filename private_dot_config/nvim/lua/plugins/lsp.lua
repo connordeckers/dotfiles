@@ -558,6 +558,9 @@ return {
 
       -- Snippet engines
       'saadparwaiz1/cmp_luasnip',
+
+      -- Icons
+      'onsails/lspkind.nvim',
     },
 
     config = function()
@@ -576,34 +579,6 @@ return {
 
       -- Set completeopt to have a better completion experience
       vim.o.completeopt = 'menu,menuone,noselect'
-
-      local icons = {
-        Text = '',
-        Method = '',
-        Function = '',
-        Constructor = '⌘',
-        Field = 'ﰠ',
-        Variable = '',
-        Class = 'ﴯ',
-        Interface = '',
-        Module = '',
-        Property = 'ﰠ',
-        Unit = '塞',
-        Value = '',
-        Enum = '',
-        Keyword = '廓',
-        Snippet = '',
-        Color = '',
-        File = '',
-        Reference = '',
-        Folder = '',
-        EnumMember = '',
-        Constant = '',
-        Struct = 'פּ',
-        Event = '',
-        Operator = '',
-        TypeParameter = '',
-      }
 
       cmp.setup {
         snippet = {
@@ -634,11 +609,13 @@ return {
 
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
-          format = function(_, vim_item)
-            vim_item.menu = vim_item.kind
-            vim_item.kind = icons[vim_item.kind]
+          format = function(entry, vim_item)
+            local kind = require('lspkind').cmp_format { mode = 'symbol_text', maxwidth = 50, ellipsis_char = '...' }(entry, vim_item)
+            local strings = vim.split(kind.kind, '%s', { trimempty = true })
+            kind.kind = ' ' .. (strings[1] or '') .. ' '
+            kind.menu = '    (' .. (strings[2] or '') .. ')'
 
-            return vim_item
+            return kind
           end,
         },
 

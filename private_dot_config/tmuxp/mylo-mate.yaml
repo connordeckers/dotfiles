@@ -1,0 +1,11 @@
+session_name: mylo-mate
+windows:
+  - window_name: v3
+    start_directory: /home/connor/dev/utas/@mylo-mate/v3
+    layout: f454,190x64,0,0{125x64,0,0,1,64x64,126,0[64x17,126,0,4,64x46,126,18,5]}
+    panes:
+      - shell_command:
+        - nvim
+        focus: true
+      - webpack
+      - zsh

@@ -68,6 +68,8 @@ map('<Esc>', function()
   vim.cmd.echo() -- clear short-message
 end)
 
+map('<Leader><Esc>', { action = '<C-\\><C-n>', mode = 't' })
+
 -- Save the file
 -- Only write the file if it's actually changed.
 map('<leader>w', vim.cmd.update)
