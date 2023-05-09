@@ -4,25 +4,25 @@
 #     Where user-specific configurations should be written (analogous to /etc).
 #     Should default to $HOME/.config.
 
-set -x XDG_CONFIG_HOME $HOME/.config
+set XDG_CONFIG_HOME $HOME/.config
 
 # XDG_CACHE_HOME
 #     Where user-specific non-essential (cached) data should be written (analogous to /var/cache).
 #     Should default to $HOME/.cache.
 
-set -x XDG_CACHE_HOME $HOME/.cache
+set XDG_CACHE_HOME $HOME/.cache
 
 # XDG_DATA_HOME
 #     Where user-specific data files should be written (analogous to /usr/share).
 #     Should default to $HOME/.local/share.
 
-set -x XDG_DATA_HOME $HOME/.local/share
+set XDG_DATA_HOME $HOME/.local/share
 
 # XDG_STATE_HOME
 #     Where user-specific state files should be written (analogous to /var/lib).
 #     Should default to $HOME/.local/state.
 
-set -x XDG_STATE_HOME $HOME/.local/state
+set XDG_STATE_HOME $HOME/.local/state
 
 # XDG_RUNTIME_DIR
 #     Used for non-essential, user-specific data files such as sockets, named pipes, etc.
@@ -41,7 +41,7 @@ set -x XDG_STATE_HOME $HOME/.local/state
 # 		Where user-created bin applications are stored.
 # 		This is a non-standard location, and is added for ease of use later on.
 
-set -x XDG_BIN_HOME $HOME/.local/bin
+set XDG_BIN_HOME $HOME/.local/bin
 
 ###############################
 ### Set up user env variables
@@ -80,11 +80,11 @@ set -x OPENAI_API_KEY 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
 ##########################
 
 
-# Check the local node_modules binaries folder (if exists) first.
-# 		This is insecure, but as a web dev, /significantly/ more practical
-# 		than using npx or prefixing all calls with the node_modules path.
-fish_add_path ./node_modules/.bin
-
+# # Check the local node_modules binaries folder (if exists) first.
+# # 		This is insecure, but as a web dev, /significantly/ more practical
+# # 		than using npx or prefixing all calls with the node_modules path.
+set -x PATH ./node_modules/.bin $PATH
+#
 # A known reference to where npm stores its globally installed packages.
 # 		Having it stored within the users home directory means that `npm i -g` 
 # 		doesn't require sudo priviledges
@@ -101,4 +101,3 @@ fish_add_path $PNPM_HOME
  
 # Go path
 fish_add_path (/usr/bin/go env GOPATH)/bin
-

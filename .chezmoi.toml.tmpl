@@ -1,0 +1,9 @@
+encryption = "age"
+[age]
+	identity = "~/.homeencrypt.key.txt"
+	recipient = "age1mr5s9cvf3qlmsecaf0ly8z9r7tjm3qzlwavulg6z89adhmkxxvrsevsykn"
+
+[data]
+	email = "dronnoc@gmail.com"
+	github_username = "connordeckers"
+	target = {{ if eq .chezmoi.hostname "SHS-B9BXKR3"}}"work"{{else}}"personal"{{end}}

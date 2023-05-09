@@ -9,6 +9,36 @@ local rounded_border = {
   { '│', 'FloatBorder' },
 }
 
+local nerd_font_v2_2_2 = {
+  -- if you change or add symbol here
+  -- replace corresponding line in readme
+  Text = '',
+  Method = '',
+  Function = '',
+  Constructor = '',
+  Field = 'ﰠ',
+  Variable = '',
+  Class = 'ﴯ',
+  Interface = '',
+  Module = '',
+  Property = 'ﰠ',
+  Unit = '塞',
+  Value = '',
+  Enum = '',
+  Keyword = '',
+  Snippet = '',
+  Color = '',
+  File = '',
+  Reference = '',
+  Folder = '',
+  EnumMember = '',
+  Constant = '',
+  Struct = 'פּ',
+  Event = '',
+  Operator = '',
+  TypeParameter = '',
+}
+
 return {
   {
     'Exafunction/codeium.vim',
@@ -614,6 +644,8 @@ return {
             mode = 'symbol', -- show only symbol annotations
             maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
             ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+
+            symbol_map = nerd_font_v2_2_2,
 
             -- The function below will be called before any actual modifications from lspkind
             -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
