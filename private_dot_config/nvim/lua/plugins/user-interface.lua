@@ -46,10 +46,10 @@ return {
   },
 
   -- Handle the icons
-  {
-    'nvim-tree/nvim-web-devicons',
-    tag = 'nerd-v2-compat',
-  },
+  -- {
+  --   'nvim-tree/nvim-web-devicons',
+  --   tag = 'nerd-v2-compat',
+  -- },
 
   -- Make it easier to use search functionality
   { 'junegunn/vim-slash', event = 'BufRead' },
@@ -342,7 +342,10 @@ return {
   -- Status and buffer bar
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = { {
+      'nvim-tree/nvim-web-devicons',
+      tag = 'nerd-v2-compat',
+    } },
     event = 'VeryLazy',
     opts = {
       options = {
@@ -392,7 +395,10 @@ return {
   {
     'akinsho/bufferline.nvim',
     version = '*',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = { {
+      'nvim-tree/nvim-web-devicons',
+      tag = 'nerd-v2-compat',
+    } },
     event = 'VeryLazy',
     keys = {
       { '<C-t>', '<cmd>tabnew<cr>' }, -- New tab
@@ -432,7 +438,10 @@ return {
     dependencies = {
       'neovim/nvim-lspconfig',
       'smiteshp/nvim-navic',
-      'nvim-tree/nvim-web-devicons', -- optional
+      {
+        'nvim-tree/nvim-web-devicons',
+        tag = 'nerd-v2-compat',
+      }, -- optional
     },
     opts = {
       ---whether to attach navic to language servers automatically

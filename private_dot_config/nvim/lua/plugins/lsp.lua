@@ -40,47 +40,96 @@ local nerd_font_v2_2_2 = {
 }
 
 return {
-  {
-    'Exafunction/codeium.vim',
-    cmd = { 'Codeium' },
-    keys = {
-      {
-        '<C-w>',
-        function()
-          vim.fn['codeium#CycleCompletions'](-1)
-        end,
-        mode = 'i',
-        expr = true,
-      },
+  -- {
+  --   'zbirenbaum/copilot.lua',
+  --   cmd = { 'Copilot' },
+  --   event = { 'InsertEnter' },
+  --   opts = {
+  --     panel = {
+  --       enabled = true,
+  --       auto_refresh = true,
+  --       keymap = {
+  --         jump_prev = 'K',
+  --         jump_next = 'J',
+  --         accept = '<CR>',
+  --         refresh = 'R',
+  --         open = false,
+  --       },
+  --       layout = {
+  --         position = 'bottom', -- | top | left | right
+  --         ratio = 0.3,
+  --       },
+  --     },
+  --     suggestion = {
+  --       enabled = true,
+  --       auto_trigger = false,
+  --       debounce = 75,
+  --       keymap = {
+  --         accept = '<C-l>',
+  --         accept_word = false,
+  --         accept_line = false,
+  --         next = '<C-j>',
+  --         prev = '<C-k>',
+  --         dismiss = '<C-h>',
+  --       },
+  --     },
+  --     filetypes = {
+  --       yaml = false,
+  --       markdown = false,
+  --       help = false,
+  --       gitcommit = false,
+  --       gitrebase = false,
+  --       hgcommit = false,
+  --       svn = false,
+  --       cvs = false,
+  --       ['.'] = false,
+  --     },
+  --     copilot_node_command = 'node', -- Node.js version must be > 16.x
+  --     server_opts_overrides = {},
+  --   },
+  -- },
 
-      {
-        '<C-s>',
-        function()
-          vim.fn['codeium#CycleCompletions'](1)
-        end,
-        mode = 'i',
-        expr = true,
-      },
-
-      {
-        '<C-a>',
-        function()
-          return vim.fn['codeium#Clear']()
-        end,
-        mode = 'i',
-        expr = true,
-      },
-
-      {
-        '<C-d>',
-        function()
-          return vim.fn['codeium#Accept']()
-        end,
-        mode = 'i',
-        expr = true,
-      },
-    },
-  },
+  -- {
+  --   'Exafunction/codeium.vim',
+  --   cmd = { 'Codeium' },
+  --   keys = {
+  --     {
+  --       '<C-w>',
+  --       function()
+  --         vim.fn['codeium#CycleCompletions'](-1)
+  --       end,
+  --       mode = 'i',
+  --       expr = true,
+  --     },
+  --
+  --     {
+  --       '<C-s>',
+  --       function()
+  --         vim.fn['codeium#CycleCompletions'](1)
+  --       end,
+  --       mode = 'i',
+  --       expr = true,
+  --     },
+  --
+  --     {
+  --       '<C-a>',
+  --       function()
+  --         return vim.fn['codeium#Clear']()
+  --       end,
+  --       mode = 'i',
+  --       expr = true,
+  --     },
+  --
+  --     {
+  --       '<C-d>',
+  --       function()
+  --         return vim.fn['codeium#Accept']()
+  --       end,
+  --       mode = 'i',
+  --       expr = true,
+  --     },
+  --   },
+  -- },
 
   {
     'nvim-treesitter/nvim-treesitter',
@@ -591,6 +640,17 @@ return {
 
       -- Icons
       'onsails/lspkind.nvim',
+
+      -- Copilot
+      {
+        'zbirenbaum/copilot-cmp',
+        dependencies = {
+          { 'zbirenbaum/copilot.lua', opts = {
+            suggestion = { enabled = false },
+            panel = { enabled = false },
+          } },
+        },
+      },
     },
 
     config = function()
@@ -645,7 +705,7 @@ return {
             maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
             ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
 
-            symbol_map = nerd_font_v2_2_2,
+            symbol_map = vim.tbl_deep_extend('force', {}, nerd_font_v2_2_2, { Copilot = '' }),
 
             -- The function below will be called before any actual modifications from lspkind
             -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
@@ -671,23 +731,17 @@ return {
 
           ['<CR>'] = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false },
 
-          ['<Tab>'] = cmp.mapping(function(fallback)
+          ['<C-j>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            elseif has_words_before() then
-              cmp.confirm { select = true }
             else
               fallback()
             end
           end, { 'i', 's' }),
 
-          ['<S-Tab>'] = cmp.mapping(function(fallback)
+          ['<C-k>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
             else
               fallback()
             end
@@ -707,11 +761,12 @@ return {
         },
 
         sources = cmp.config.sources {
+          { name = 'copilot', group_index = 2 },
+          { name = 'nvim_lsp', group_index = 2 },
+          { name = 'path', group_index = 2 },
           { name = 'luasnip', max_item_count = 4 },
-          { name = 'nvim_lsp' },
           --{ name = "nvim_lua" },
-          -- { name = 'nvim_lsp_signature_help' },
-          { name = 'path' },
+          { name = 'nvim_lsp_signature_help', group_index = 2 },
           --{ name = "buffer" },
         },
 
