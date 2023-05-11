@@ -253,7 +253,7 @@ return {
       show = true,
       show_in_active_only = false,
       set_highlights = true,
-      folds = 1000, -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
+      folds = false, -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
       max_lines = false, -- disables if no. of lines in buffer exceeds this
       handle = {
         text = ' ',
@@ -333,6 +333,8 @@ return {
         },
       },
       handlers = {
+        cursor = true,
+        gitsigns = true,
         diagnostic = true,
         search = false, -- Requires hlslens to be loaded, will run require("scrollbar.handlers.search").setup() for you
       },

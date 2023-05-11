@@ -161,10 +161,9 @@ return {
       'JoosepAlviste/nvim-ts-context-commentstring',
     },
 
+    -- init = function()
+    -- end,
     config = function()
-      vim.opt.foldmethod = 'expr'
-      vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
-
       -- local autocmd = require('patch.utils').nvim_create_augroups
 
       -- autocmd {

@@ -10,12 +10,6 @@ local function telescope(method, opts)
   end
 end
 
-local function navigate(method)
-  return function()
-    require('tmux-navigator.controls').navigate[method]()
-  end
-end
-
 return {
   -- Swap buffers with each other
   {
@@ -301,6 +295,7 @@ return {
       -- Show file finder
       { '<leader>tf', telescope 'find_files' },
       { '<leader>th', telescope('find_files', { hidden = true }) },
+      { '<leader>to', telescope 'oldfiles' },
 
       -- Show grep finder
       { '<leader>tg', telescope 'live_grep' },
@@ -325,6 +320,7 @@ return {
 
       -- Show diagnostics
       { '<leader>dg', telescope 'diagnostics' },
+      { '<leader>lq', telescope 'quickfix' },
       { '<leader>lr', telescope 'lsp_references' }, -- Lists LSP references for word under the cursor
       { '<leader>lci', telescope 'lsp_incoming_calls' }, -- Lists LSP incoming calls for word under the cursor
       { '<leader>lco', telescope 'lsp_outgoing_calls' }, -- Lists LSP outgoing calls for word under the cursor
@@ -339,11 +335,13 @@ return {
     opts = {
       defaults = { mappings = { i = { ['<C-h>'] = 'which_key' } }, initial_mode = 'normal' },
       pickers = {
-        find_files = { find_command = { 'fd', '--type', 'f', '--strip-cwd-prefix' } },
+        find_files = { find_command = { 'fd', '--type', 'f', '--strip-cwd-prefix' }, initial_mode = 'insert' },
+        live_grep = { initial_mode = 'insert' },
         diagnostics = { theme = 'dropdown' },
         jumplist = { theme = 'dropdown' },
         registers = { theme = 'dropdown' },
         buffers = { theme = 'dropdown' },
+        -- quickfix = { theme = 'dropdown' },
 
         lsp_references = { theme = 'dropdown' }, -- Lists LSP references for word under the cursor
         lsp_incoming_calls = { theme = 'dropdown' }, -- Lists LSP incoming calls for word under the cursor
@@ -613,8 +611,8 @@ return {
       ---Could be a regex string or a function that returns a regex string.
       ---Example: Use '^$' to ignore empty lines
       ---@type string|fun():string
-      ignore = nil,
-      -- ignore = '^$',
+      -- ignore = nil,
+      ignore = '^$',
 
       ---Create basic (operator-pending) and extended mappings for NORMAL + VISUAL mode
       ---NOTE: If `mappings = false` then the plugin won't create any mappings

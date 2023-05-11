@@ -64,8 +64,14 @@ vim.opt.splitright = true
 -- Show signs in the numbers column, and show the numbers column by default
 vim.opt.signcolumn = 'number'
 vim.opt.number = true
-vim.opt.foldcolumn = '0' -- Hide fold column until we can supress nested numbers
+
+vim.opt.foldlevel = 20
+vim.opt.foldnestmax = 20
 vim.opt.foldenable = false
+
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.opt.foldcolumn = '0' -- Hide fold column until we can supress nested numbers
 
 vim.opt.hlsearch = false
 vim.opt.incsearch = true

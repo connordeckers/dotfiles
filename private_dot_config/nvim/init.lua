@@ -17,6 +17,6 @@ vim.g.maplocalleader = leader
 
 require('lazy').setup 'plugins'
 
-require 'config.settings'
 require 'config.keymaps'
 require 'config.hl-groups'
+require 'config.settings'
