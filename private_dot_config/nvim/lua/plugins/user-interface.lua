@@ -344,10 +344,12 @@ return {
   -- Status and buffer bar
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = { {
-      'nvim-tree/nvim-web-devicons',
-      tag = 'nerd-v2-compat',
-    } },
+    dependencies = {
+      {
+        'nvim-tree/nvim-web-devicons',
+        -- tag = 'nerd-v2-compat',
+      },
+    },
     event = 'VeryLazy',
     opts = {
       options = {
@@ -397,10 +399,12 @@ return {
   {
     'akinsho/bufferline.nvim',
     version = '*',
-    dependencies = { {
-      'nvim-tree/nvim-web-devicons',
-      tag = 'nerd-v2-compat',
-    } },
+    dependencies = {
+      {
+        'nvim-tree/nvim-web-devicons',
+        -- tag = 'nerd-v2-compat',
+      },
+    },
     event = 'VeryLazy',
     keys = {
       { '<C-t>', '<cmd>tabnew<cr>' }, -- New tab
@@ -442,7 +446,7 @@ return {
       'smiteshp/nvim-navic',
       {
         'nvim-tree/nvim-web-devicons',
-        tag = 'nerd-v2-compat',
+        -- tag = 'nerd-v2-compat',
       }, -- optional
     },
     opts = {
@@ -499,35 +503,35 @@ return {
       ---icons for different context entry kinds
       ---`false` to disable kind icons
       ---@type table<string, string>|false
-      kinds = {
-        File = '',
-        Package = '',
-        Module = '',
-        Namespace = '',
-        Macro = '',
-        Class = '',
-        Constructor = '',
-        Field = '',
-        Property = '',
-        Method = '',
-        Struct = '',
-        Event = '',
-        Interface = '',
-        Enum = '',
-        EnumMember = '',
-        Constant = '',
-        Function = '',
-        TypeParameter = '',
-        Variable = '',
-        Operator = '',
-        Null = '',
-        Boolean = '',
-        Number = '',
-        String = '',
-        Key = '',
-        Array = '',
-        Object = '',
-      },
+      -- kinds = {
+      --   File = '',
+      --   Package = '',
+      --   Module = '',
+      --   Namespace = '',
+      --   Macro = '',
+      --   Class = '',
+      --   Constructor = '',
+      --   Field = '',
+      --   Property = '',
+      --   Method = '',
+      --   Struct = '',
+      --   Event = '',
+      --   Interface = '',
+      --   Enum = '',
+      --   EnumMember = '',
+      --   Constant = '',
+      --   Function = '',
+      --   TypeParameter = '',
+      --   Variable = '',
+      --   Operator = '',
+      --   Null = '',
+      --   Boolean = '',
+      --   Number = '',
+      --   String = '',
+      --   Key = '',
+      --   Array = '',
+      --   Object = '',
+      -- },
     },
   },
 }

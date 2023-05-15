@@ -12,6 +12,11 @@ if status is-interactive
 		# visual mode, but due to fish_cursor_default, is redundant here
 		set fish_cursor_visual block
 
+		# Set abbreviations
+		abbr -a --set-cursor='%' -- clone 'git clone git@github.com:%'
+		abbr -a -- dc 'docker compose'
+		abbr -a --position anywhere --function _fish_last_history_item -- !!
+		abbr -a -- cz chezmoi
 
 		# Don't start tmux if running as root
 		if ! fish_is_root_user;
