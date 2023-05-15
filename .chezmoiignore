@@ -3,6 +3,7 @@
 .oh-my-zsh/cache/
 .config/tmux/plugins
 .config/tmux/sidebar
+.config/fish/fish_variables
 
 {{ if contains "WSL2" .chezmoi.kernel.osrelease }}
 .config/autostart

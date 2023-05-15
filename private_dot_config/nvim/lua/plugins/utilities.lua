@@ -41,6 +41,8 @@ return {
     },
   },
 
+  { 'tpope/vim-fugitive' },
+
   -- Diagnostics that are pretty
   {
     'folke/trouble.nvim',
@@ -321,6 +323,9 @@ return {
       -- Show diagnostics
       { '<leader>dg', telescope 'diagnostics' },
       { '<leader>lq', telescope 'quickfix' },
+
+      { '<leader>gs', telescope 'git_status' },
+
       { '<leader>lr', telescope 'lsp_references' }, -- Lists LSP references for word under the cursor
       { '<leader>lci', telescope 'lsp_incoming_calls' }, -- Lists LSP incoming calls for word under the cursor
       { '<leader>lco', telescope 'lsp_outgoing_calls' }, -- Lists LSP outgoing calls for word under the cursor
