@@ -35,6 +35,38 @@ local function map(key, prop)
   end
 end
 
+local function run_lua_call()
+  -- Ask for prompt value, run as system call
+  local utils = require 'utils.string-utils'
+  local insertCursorAfter = true
+
+  local bufnr = vim.api.nvim_get_current_buf()
+  local pos = vim.api.nvim_win_get_cursor(0)
+
+  local row = pos[1] - 1
+  local col = pos[2]
+
+  vim.ui.input({ prompt = 'System command', completion = 'lua' }, function(result)
+    if result == nil then
+      return
+    end
+
+    local cmd = loadstring(result)
+    if not cmd then
+      return
+    end
+
+    local lines = utils.split(vim.fn.trim(cmd()), '\n')
+    vim.api.nvim_buf_set_text(bufnr, row, col, row, col, lines)
+
+    if insertCursorAfter then
+      vim.api.nvim_win_set_cursor(0, { row + #lines, col + string.len(lines[#lines]) })
+    else
+      vim.api.nvim_win_set_cursor(0, { row + 1, col })
+    end
+  end)
+end
+
 local function run_system_call()
   -- Ask for prompt value, run as system call
   local utils = require 'utils.string-utils'

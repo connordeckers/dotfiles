@@ -1,12 +1,20 @@
 local highlights = {
   -- Create an "unused" highlight style
-  ['UnusedToken'] = { italic = true, bold = true, strikethrough = true, underline = false, fg = '#5c6370' },
+  ['DiagnosticUnnecessary'] = { italic = true, bold = true, strikethrough = true, underline = false, fg = '#5c6370' },
 
   -- Provide a background colour for the notification backgrounds.
   ['NotifyBackground'] = { bg = '#FFFFFF' },
 
-  -- ['Float'] = { link = 'Normal' },
-  --
+  -- Dims background when using leap
+  ['LeapBackdrop'] = { link = 'Comment' },
+
+  -- For light themes, set to 'black' or similar.
+  ['LeapMatch'] = { fg = 'white', bold = true, nocombine = true },
+
+  -- Of course, specify some nicer shades instead of the default "red" and "blue".
+  ['LeapLabelPrimary'] = { fg = '#babbf1', bold = true, nocombine = true },
+  ['LeapLabelSecondary'] = { fg = '#babbf1', italic = true, nocombine = true },
+
   ['FloatBorder'] = { link = 'Float' },
   ['FloatTitle'] = { link = 'FloatBorder' },
   ['NormalFloat'] = { link = 'Normal' },

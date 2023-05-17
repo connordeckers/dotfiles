@@ -101,21 +101,21 @@ vim.opt.fillchars:append 'eob: '
 -- Wayland contain carriage returns at the end of the lines (this is a root
 -- issue that needs to be fixed).
 -- https://github.com/neovim/neovim/issues/10223
--- if vim.env.WAYLAND_DISPLAY ~= nil then
---   vim.g.clipboard = {
---     name = 'wayland-strip-carriage',
---     copy = {
---       ['+'] = 'wl-copy --foreground --type text/plain',
---       ['*'] = 'wl-copy --foreground --type text/plain --primary',
---     },
---     paste = {
---       ['+'] = function()
---         return vim.fn.systemlist 'wl-paste --no-newline | tr -d "\r"'
---       end,
---       ['*'] = function()
---         return vim.fn.systemlist 'wl-paste --no-newline --primary | tr -d "\r"'
---       end,
---     },
---     cache_enabled = true,
---   }
--- end
+if vim.env.WAYLAND_DISPLAY ~= nil then
+  vim.g.clipboard = {
+    name = 'wayland-strip-carriage',
+    copy = {
+      ['+'] = 'wl-copy --foreground --type text/plain',
+      ['*'] = 'wl-copy --foreground --type text/plain --primary',
+    },
+    paste = {
+      ['+'] = function()
+        return vim.fn.systemlist 'wl-paste | dos2unix'
+      end,
+      ['*'] = function()
+        return vim.fn.systemlist 'wl-paste --primary | dos2unix'
+      end,
+    },
+    cache_enabled = true,
+  }
+end
