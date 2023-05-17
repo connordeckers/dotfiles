@@ -26,17 +26,7 @@ KEYBINDINGS:
 	 "
 end
 
-function _fay_resources
-	set -l pkg $argv
-	set info (yay -Si $pkg 2>/dev/null)
-	# set files (yay -Fl $pkg 2>/dev/null | string split ' ' -f2)
-
-
-end
-
 function fay
-
-
 	if not set -q fish_fay_history
 		set -g fish_fay_history $XDG_CACHE_HOME/fish/fay_history
 	end
@@ -100,12 +90,12 @@ function fay
 	set -a args "preview-label-pos=top"
 	set -a args "border-label-pos=3"
 	set -a args "border=top"
-	set -a args "preview-label=\"╣$fzf_label╠\""
-	set -a args "border-label=\"┨fay┠\""
+	set -a args "preview-label=╣$fzf_label╠"
+	set -a args "border-label=┨fay┠"
 	set -a args "info=inline"
 	set -a args "scroll-off=20"
 	set -a args "hscroll-off=30"
-	set -a args "ellipsis=\"⣿\""
+	set -a args "ellipsis="
 	set -a args "tiebreak=begin"
 	set -a args "sync"
 	set -a args "multi"
