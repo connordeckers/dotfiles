@@ -41,7 +41,7 @@ return {
     },
   },
 
-  { 'tpope/vim-fugitive' },
+  { 'tpope/vim-fugitive', cmd = { 'Git' } },
 
   -- Diagnostics that are pretty
   {
@@ -492,6 +492,12 @@ return {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
       },
+      'nvim-telescope/telescope-file-browser.nvim',
+      'ahmedkhalf/project.nvim',
+      {
+        'tknightz/telescope-termfinder.nvim',
+        dependencies = { 'akinsho/toggleterm.nvim' },
+      },
     },
     keys = {
       -- Show all telescope builtins
@@ -505,8 +511,8 @@ return {
       -- Show grep finder
       { '<leader>tg', telescope 'live_grep' },
 
-      -- Show document symbols
-      { '<leader>ts', telescope 'symbols' },
+      -- Show fuzzy text search
+      { '<leader>ts', telescope('grep_string', { shorten_path = true, word_match = '-w', only_sort_text = true, search = '' }) },
 
       -- Show notifications
       -- { '<leader>tn', function() require('telescope').extensions.notify.notify(require('telescope.themes').get_dropdown {}) end, },
@@ -522,6 +528,30 @@ return {
 
       -- List open buffers
       { '<C-p>', telescope 'buffers' },
+
+      -- Show project finder
+      {
+        '<leader>tp',
+        function()
+          require('telescope').extensions.projects.projects {}
+        end,
+      },
+
+      -- Show file browser
+      {
+        '<leader>b',
+        function()
+          require('telescope').extensions.file_browser.file_browser {}
+        end,
+      },
+
+      -- Show project finder
+      {
+        '<leader>tl',
+        function()
+          require('telescope').extensions.termfinder.termfinder {}
+        end,
+      },
 
       -- Show diagnostics
       { '<leader>dg', telescope 'diagnostics' },
@@ -568,12 +598,20 @@ return {
           override_file_sorter = true, -- override the file sorter
           case_mode = 'smart_case', -- "smart_case" or "ignore_case" or "respect_case"
         },
+        file_browser = {
+          theme = 'ivy',
+          -- disables netrw and use telescope-file-browser in its place
+          hijack_netrw = true,
+        },
       },
     },
 
     config = function(_, opts)
       require('telescope').setup(opts)
       require('telescope').load_extension 'fzf'
+      require('telescope').load_extension 'projects'
+      require('telescope').load_extension 'file_browser'
+      require('telescope').load_extension 'termfinder'
     end,
   },
 
@@ -678,12 +716,58 @@ return {
       },
     },
   },
-  -- Rooter changes the working directory to the project root when you open a file or directory.
-  'airblade/vim-rooter',
 
+  -- Rooter changes the working directory to the project root when you open a file or directory.
+  -- 'airblade/vim-rooter',
+  {
+    'ahmedkhalf/project.nvim',
+    main = 'project_nvim',
+    event = 'VeryLazy',
+    opts = {
+      -- Manual mode doesn't automatically change your root directory, so you have
+      -- the option to manually do so using `:ProjectRoot` command.
+      manual_mode = false,
+
+      -- Methods of detecting the root directory. **"lsp"** uses the native neovim
+      -- lsp, while **"pattern"** uses vim-rooter like glob pattern matching. Here
+      -- order matters: if one is not detected, the other is used as fallback. You
+      -- can also delete or rearangne the detection methods.
+      detection_methods = { 'lsp', 'pattern' },
+
+      -- All the patterns used to detect root dir, when **"pattern"** is in
+      -- detection_methods
+      patterns = { '.projectroot', '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json' },
+
+      -- Table of lsp clients to ignore by name
+      -- eg: { "efm", ... }
+      ignore_lsp = {},
+
+      -- Don't calculate root dir on specific directories
+      -- Ex: { "~/.cargo/*", ... }
+      exclude_dirs = {},
+
+      -- Show hidden files in telescope
+      show_hidden = false,
+
+      -- When set to false, you will get a message when project.nvim changes your
+      -- directory.
+      silent_chdir = true,
+
+      -- What scope to change the directory, valid options are
+      -- * global (default)
+      -- * tab
+      -- * win
+      scope_chdir = 'global',
+
+      -- Path where project.nvim will store the project history for use in
+      -- telescope
+      datapath = vim.fn.stdpath 'data',
+    },
+  },
   -- Some nice git features
   {
     'lewis6991/gitsigns.nvim',
+    event = 'VeryLazy',
     opts = {
       signcolumn = false,
       numhl = true,
@@ -884,5 +968,34 @@ return {
     'mbbill/undotree',
     cmd = { 'UndotreeToggle' },
     keys = { { '<leader>u', '<cmd>UndotreeToggle<cr>' } },
+  },
+
+  {
+    'akinsho/toggleterm.nvim',
+    keys = { { '<leader>tt' } },
+    opts = {
+      open_mapping = [[<leader>tt]],
+      hide_numbers = true, -- hide the number column in toggleterm buffers
+      start_in_insert = true,
+      insert_mappings = false, -- whether or not the open mapping applies in insert mode
+      terminal_mappings = true, -- whether or not the open mapping applies in the opened terminals
+      persist_size = true,
+      persist_mode = true, -- if set to true (default) the previous terminal mode will be remembered
+      direction = 'float',
+      close_on_exit = true, -- close the terminal window when the process exits
+      -- Change the default shell. Can be a string or a function returning a string
+      shell = vim.o.shell,
+      auto_scroll = true, -- automatically scroll to the bottom on terminal output
+      -- This field is only relevant if direction is set to 'float'
+      float_opts = {
+        -- The border key is *almost* the same as 'nvim_open_win'
+        -- see :h nvim_open_win for details on borders however
+        -- the 'curved' border is a custom border type
+        -- not natively supported but implemented in this plugin.
+        border = 'single',
+        -- like `size`, width and height can be a number or function which is passed the current terminal
+        winblend = 0,
+      },
+    },
   },
 }

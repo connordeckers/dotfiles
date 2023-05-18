@@ -45,18 +45,13 @@ return {
     },
   },
 
-  -- Handle the icons
-  -- {
-  --   'nvim-tree/nvim-web-devicons',
-  --   tag = 'nerd-v2-compat',
-  -- },
-
   -- Make it easier to use search functionality
   { 'junegunn/vim-slash', event = 'BufRead' },
 
   -- Make things PRETTY
   {
     'stevearc/dressing.nvim',
+    event = 'VeryLazy',
     opts = {
       input = {
         -- Can be 'left', 'right', or 'center'
@@ -121,7 +116,7 @@ return {
           -- override the lsp markdown formatter with Noice
           ['vim.lsp.util.stylize_markdown'] = true,
           -- override cmp documentation with Noice (needs the other options to work)
-          ['cmp.entry.get_documentation'] = true,
+          ['cmp.entry.get_documentation'] = false,
         },
 
         hover = {
@@ -344,12 +339,7 @@ return {
   -- Status and buffer bar
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = {
-      {
-        'nvim-tree/nvim-web-devicons',
-        -- tag = 'nerd-v2-compat',
-      },
-    },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     event = 'VeryLazy',
     opts = {
       options = {
@@ -399,12 +389,7 @@ return {
   {
     'akinsho/bufferline.nvim',
     version = '*',
-    dependencies = {
-      {
-        'nvim-tree/nvim-web-devicons',
-        -- tag = 'nerd-v2-compat',
-      },
-    },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     event = 'VeryLazy',
     keys = {
       { '<C-t>', '<cmd>tabnew<cr>' }, -- New tab
@@ -444,10 +429,7 @@ return {
     dependencies = {
       'neovim/nvim-lspconfig',
       'smiteshp/nvim-navic',
-      {
-        'nvim-tree/nvim-web-devicons',
-        -- tag = 'nerd-v2-compat',
-      }, -- optional
+      'nvim-tree/nvim-web-devicons',
     },
     opts = {
       ---whether to attach navic to language servers automatically
