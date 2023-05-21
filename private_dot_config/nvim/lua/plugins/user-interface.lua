@@ -1,3 +1,32 @@
+local default_bg = '#000000'
+
+---@param hex_str string hexadecimal value of a color
+local function hex_to_rgb(hex_str)
+  local hex = '[abcdef0-9][abcdef0-9]'
+  local pat = '^#(' .. hex .. ')(' .. hex .. ')(' .. hex .. ')$'
+  hex_str = string.lower(hex_str)
+
+  assert(string.find(hex_str, pat) ~= nil, 'hex_to_rgb: invalid hex_str: ' .. tostring(hex_str))
+
+  local red, green, blue = string.match(hex_str, pat)
+  return { tonumber(red, 16), tonumber(green, 16), tonumber(blue, 16) }
+end
+
+---@param fg string forecrust color
+---@param bg string background color
+---@param alpha number number between 0 and 1. 0 results in bg, 1 results in fg
+local function blend(fg, bg, alpha)
+  local bg_rgb = hex_to_rgb(bg)
+  local fg_rgb = hex_to_rgb(fg)
+
+  local blendChannel = function(i)
+    local ret = (alpha * fg_rgb[i] + ((1 - alpha) * bg_rgb[i]))
+    return math.floor(math.min(math.max(0, ret), 255) + 0.5)
+  end
+
+  return string.format('#%02X%02X%02X', blendChannel(1), blendChannel(2), blendChannel(3))
+end
+
 return {
   -- Catppuccin theme
   {
@@ -25,6 +54,10 @@ return {
         telescope = true,
         notify = false,
         mini = false,
+        -- indent_blankline = {
+        --   enabled = true,
+        --   colored_indent_levels = true,
+        -- },
         native_lsp = {
           enabled = true,
           virtual_text = {
@@ -42,6 +75,25 @@ return {
         },
         -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
       },
+
+      custom_highlights = function(palette)
+        local function subtle(color)
+          return blend(color, default_bg, 0.5)
+        end
+
+        return {
+          IndentBlanklineChar = { fg = palette.surface0 },
+          IndentBlanklineContextChar = { fg = palette.text },
+          IndentBlanklineContextStart = { sp = palette.text, style = { 'underline' } },
+
+          IndentBlanklineIndent6 = { blend = 0, fg = subtle(palette.yellow) },
+          IndentBlanklineIndent5 = { blend = 0, fg = subtle(palette.red) },
+          IndentBlanklineIndent4 = { blend = 0, fg = subtle(palette.teal) },
+          IndentBlanklineIndent3 = { blend = 0, fg = subtle(palette.peach) },
+          IndentBlanklineIndent2 = { blend = 0, fg = subtle(palette.blue) },
+          IndentBlanklineIndent1 = { blend = 0, fg = subtle(palette.pink) },
+        }
+      end,
     },
   },
 
@@ -514,6 +566,35 @@ return {
       --   Array = '',
       --   Object = '',
       -- },
+    },
+  },
+
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    event = { 'BufReadPost', 'BufNewFile' },
+    opts = {
+      space_char_blankline = ' ',
+      show_current_context = true,
+      -- show_current_context_start = false,
+      char = '▏',
+      context_char = '▏',
+      char_highlight_list = {
+        'IndentBlanklineIndent1',
+        'IndentBlanklineIndent2',
+        'IndentBlanklineIndent3',
+        'IndentBlanklineIndent4',
+        'IndentBlanklineIndent5',
+        'IndentBlanklineIndent6',
+      },
+      space_char_highlight_list = {
+        'IndentBlanklineIndent1',
+        'IndentBlanklineIndent2',
+        'IndentBlanklineIndent3',
+        'IndentBlanklineIndent4',
+        'IndentBlanklineIndent5',
+        'IndentBlanklineIndent6',
+      },
+      show_trailing_blankline_indent = false,
     },
   },
 }

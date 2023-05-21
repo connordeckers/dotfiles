@@ -740,7 +740,7 @@ return {
 
       -- Table of lsp clients to ignore by name
       -- eg: { "efm", ... }
-      ignore_lsp = {},
+      ignore_lsp = { 'lua_ls' },
 
       -- Don't calculate root dir on specific directories
       -- Ex: { "~/.cargo/*", ... }

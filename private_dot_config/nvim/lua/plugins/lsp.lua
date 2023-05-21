@@ -287,10 +287,12 @@ return {
         },
 
         ['yamlls'] = {
-          settings = {
-            yaml = {
-              -- FIX mapKeyOrder warning
-              keyOrdering = false,
+          params = {
+            settings = {
+              yaml = {
+                -- FIX mapKeyOrder warning
+                keyOrdering = false,
+              },
             },
           },
         },
