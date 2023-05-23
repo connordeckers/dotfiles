@@ -41,7 +41,43 @@ return {
     },
   },
 
-  { 'tpope/vim-fugitive', cmd = { 'Git' } },
+  {
+    'tpope/vim-fugitive',
+    cmd = {
+      'G',
+      'Git',
+
+      'GBrowse', -- BrowseCommand
+      'GDelete', -- DeleteCommand
+      'GMove', -- MoveCommand
+      'GRemove', -- RemoveCommand
+      'GRename', -- RenameCommand
+      'GUnlink', -- UnlinkCommand
+      'GcLog', -- LogCommand
+      'Gcd', -- Cd
+      'Gclog', -- LogCommand
+      'Gdiffsplit', -- Diffsplit
+      'Gdrop', -- DropCommand
+      'Ge', -- Open
+      'Gedit', -- Open
+      'Ggrep', -- GrepCommand
+      'Ghdiffsplit', -- Diffsplit
+      'GlLog', -- LogCommand
+      'Glcd', -- Cd
+      'Glgrep', -- GrepCommand
+      'Gllog', -- LogCommand
+      'Gpedit', -- Open
+      'Gr', -- ReadCommand
+      'Gread', -- ReadCommand
+      'Gsplit', -- Open
+      'Gtabedit', -- Open
+      'Gvdiffsplit', -- Diffsplit
+      'Gvsplit', -- Open
+      'Gw', -- WriteCommand
+      'Gwq', -- WqCommand
+      'Gwrite', -- WriteCommand
+    },
+  },
 
   -- Diagnostics that are pretty
   {
@@ -498,6 +534,7 @@ return {
         'tknightz/telescope-termfinder.nvim',
         dependencies = { 'akinsho/toggleterm.nvim' },
       },
+      'nvim-telescope/telescope-ui-select.nvim',
     },
     keys = {
       -- Show all telescope builtins
@@ -603,15 +640,34 @@ return {
           -- disables netrw and use telescope-file-browser in its place
           hijack_netrw = true,
         },
+        ['ui-select'] = {
+          theme = 'cursor',
+        },
       },
     },
 
     config = function(_, opts)
+      local themed_extensions = {}
+      for ext, props in pairs(opts.extensions) do
+        if props.theme then
+          local ready, theme = pcall(require, 'telescope.themes')
+          if ready then
+            local themed, res = pcall(theme['get_' .. props.theme], props)
+            if themed then
+              themed_extensions[ext] = res
+            end
+          end
+        end
+      end
+
+      opts = vim.tbl_deep_extend('force', opts, { extensions = themed_extensions })
+
       require('telescope').setup(opts)
       require('telescope').load_extension 'fzf'
       require('telescope').load_extension 'projects'
       require('telescope').load_extension 'file_browser'
       require('telescope').load_extension 'termfinder'
+      require('telescope').load_extension 'ui-select'
     end,
   },
 
@@ -793,13 +849,13 @@ return {
     },
   },
 
-  -- {
-  --   'sindrets/diffview.nvim',
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim',
-  --     'nvim-tree/nvim-web-devicons',
-  --   },
-  -- },
+  {
+    'sindrets/diffview.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons',
+    },
+  },
 
   -- Surround text with other text. Neat!
   {

@@ -77,9 +77,6 @@ set -x PROJECT_PATHS (
 	end
 )
 
-# OpenAI API key
-set -x OPENAI_API_KEY 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
-
 ##########################
 # Set up our PATH entries
 ##########################
