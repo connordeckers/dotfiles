@@ -85,7 +85,9 @@ set -x PROJECT_PATHS (
 # # Check the local node_modules binaries folder (if exists) first.
 # # 		This is insecure, but as a web dev, /significantly/ more practical
 # # 		than using npx or prefixing all calls with the node_modules path.
-set -x PATH ./node_modules/.bin $PATH
+if not contains ./node_modules/.bin $PATH
+	set -x PATH ./node_modules/.bin $PATH
+end
 #
 # A known reference to where npm stores its globally installed packages.
 # 		Having it stored within the users home directory means that `npm i -g` 

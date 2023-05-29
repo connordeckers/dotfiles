@@ -249,7 +249,12 @@ return {
         ['html'] = {},
         ['jsonls'] = {},
         ['cssmodules_ls'] = {},
-        ['clangd'] = {},
+        ['ccls'] = {},
+        -- ['clangd'] = {
+        --   capabilities = {
+        --     offsetEncoding = 'utf-32',
+        --   },
+        -- },
         ['dockerls'] = {},
         ['emmet_ls'] = {},
         ['vimls'] = {},
@@ -377,7 +382,10 @@ return {
       local default_server_opts = { on_attach = on_attach, capabilities = capabilities }
 
       for lsp_server, config in pairs(opts.config) do
-        require('lspconfig')[lsp_server].setup(vim.tbl_deep_extend('force', default_server_opts, config.params or {}))
+        local overridden_capabilities = vim.tbl_deep_extend('force', capabilities, config.capabilities or {})
+        local props = vim.tbl_deep_extend('force', default_server_opts, { capabilities = overridden_capabilities }, config.params or {})
+
+        require('lspconfig')[lsp_server].setup(props)
       end
     end,
   },
@@ -601,7 +609,7 @@ return {
 
           ['<CR>'] = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false },
 
-          ['<C-j>'] = cmp.mapping(function(fallback)
+          ['<A-j>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
             else
@@ -609,7 +617,7 @@ return {
             end
           end, { 'i', 's' }),
 
-          ['<C-k>'] = cmp.mapping(function(fallback)
+          ['<A-k>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
             else

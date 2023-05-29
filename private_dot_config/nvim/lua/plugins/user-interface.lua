@@ -97,6 +97,19 @@ return {
     },
   },
 
+  {
+    'lukas-reineke/headlines.nvim',
+    dependencies = 'nvim-treesitter/nvim-treesitter',
+    opts = {
+      markdown = {
+        fat_headlines = true,
+        fat_headline_upper_string = '▅',
+        fat_headline_lower_string = '▀',
+      },
+    },
+    event = 'BufRead',
+  },
+
   -- Make it easier to use search functionality
   { 'junegunn/vim-slash', event = 'BufRead' },
 
@@ -129,6 +142,19 @@ return {
 
         -- Options for built-in selector
         builtin = { border = 'rounded' },
+
+        -- Priority list of preferred vim.select implementations
+        backend = { 'telescope', 'fzf_lua', 'fzf', 'builtin', 'nui' },
+
+        get_config = function(opts)
+          local has_telescope, themes = pcall(require, 'telescope.themes')
+          if has_telescope and opts.kind == 'codeaction' then
+            return {
+              backend = 'telescope',
+              telescope = themes.get_cursor { initial_mode = 'normal' },
+            }
+          end
+        end,
       },
     },
   },
@@ -211,6 +237,8 @@ return {
               { find = 'Diagnosing' },
               { find = 'Processing full semantic tokens' },
               { find = 'No information available' },
+              { find = 'multiple different client offset_encodings' },
+              { find = 'not indexed' },
             },
           },
           opts = { skip = true },
@@ -408,7 +436,7 @@ return {
         lualine_b = {
           'branch',
           'diff',
-          -- 'diagnostics',
+          'diagnostics',
         },
         lualine_c = { { 'filename', path = 1, file_status = true } },
         lualine_x = {

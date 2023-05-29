@@ -119,3 +119,22 @@ if vim.env.WAYLAND_DISPLAY ~= nil then
     cache_enabled = true,
   }
 end
+
+-- if vim.env.DISPLAY ~= nil then
+--   vim.g.clipboard = {
+--     name = 'xclip-strip-carriage',
+--     copy = {
+--       ['+'] = 'xclip -i -selection clipboard',
+--       ['*'] = 'xclip -i -selection primary',
+--     },
+--     paste = {
+--       ['+'] = function()
+--         return vim.fn.systemlist 'xclip -o -selection clipboard | dos2unix'
+--       end,
+--       ['*'] = function()
+--         return vim.fn.systemlist 'xclip -o -selection primary | dos2unix'
+--       end,
+--     },
+--     cache_enabled = true,
+--   }
+-- end

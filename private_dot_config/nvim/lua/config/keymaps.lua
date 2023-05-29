@@ -112,7 +112,7 @@ map('<leader>ln', function()
 end)
 
 -- Replace the word under the cursor
-map('<Leader><Leader>', ':%s/\\<<C-r>=expand("<cword>")<CR>\\>//g<Left><Left>')
+-- map('<Leader><Leader>', ':%s/\\<<C-r>=expand("<cword>")<CR>\\>//g<Left><Left>')
 
 -- Format the file
 map('<Leader>p', {

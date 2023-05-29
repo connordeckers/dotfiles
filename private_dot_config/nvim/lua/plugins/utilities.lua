@@ -4,12 +4,6 @@ local function swap_buffer(direction)
   end
 end
 
-local function telescope(method, opts)
-  return function()
-    require('telescope.builtin')[method](opts)
-  end
-end
-
 return {
   -- Swap buffers with each other
   {
@@ -21,6 +15,9 @@ return {
       { '<C-w><C-l>', swap_buffer 'l' },
     },
   },
+
+  -- Markdown preview and rendering
+  { 'ellisonleao/glow.nvim', config = true, cmd = 'Glow' },
 
   -- Allows the windows to be shifted with ease.
   {
@@ -43,39 +40,11 @@ return {
 
   {
     'tpope/vim-fugitive',
-    cmd = {
-      'G',
-      'Git',
-
-      'GBrowse', -- BrowseCommand
-      'GDelete', -- DeleteCommand
-      'GMove', -- MoveCommand
-      'GRemove', -- RemoveCommand
-      'GRename', -- RenameCommand
-      'GUnlink', -- UnlinkCommand
-      'GcLog', -- LogCommand
-      'Gcd', -- Cd
-      'Gclog', -- LogCommand
-      'Gdiffsplit', -- Diffsplit
-      'Gdrop', -- DropCommand
-      'Ge', -- Open
-      'Gedit', -- Open
-      'Ggrep', -- GrepCommand
-      'Ghdiffsplit', -- Diffsplit
-      'GlLog', -- LogCommand
-      'Glcd', -- Cd
-      'Glgrep', -- GrepCommand
-      'Gllog', -- LogCommand
-      'Gpedit', -- Open
-      'Gr', -- ReadCommand
-      'Gread', -- ReadCommand
-      'Gsplit', -- Open
-      'Gtabedit', -- Open
-      'Gvdiffsplit', -- Diffsplit
-      'Gvsplit', -- Open
-      'Gw', -- WriteCommand
-      'Gwq', -- WqCommand
-      'Gwrite', -- WriteCommand
+    event = 'VeryLazy',
+    keys = {
+      '<leader>gc',
+      '<cmd>Git commit<cr>',
+      desc = 'Commit currently staged files',
     },
   },
 
@@ -513,164 +482,6 @@ return {
     },
   },
 
-  ---------------
-  -- Telescope --
-  ---------------
-  {
-    'nvim-telescope/telescope.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons',
-      'nvim-telescope/telescope-symbols.nvim',
-      'BurntSushi/ripgrep',
-      'nvim-treesitter/nvim-treesitter',
-      {
-        'nvim-telescope/telescope-fzf-native.nvim',
-        build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
-      },
-      'nvim-telescope/telescope-file-browser.nvim',
-      'ahmedkhalf/project.nvim',
-      {
-        'tknightz/telescope-termfinder.nvim',
-        dependencies = { 'akinsho/toggleterm.nvim' },
-      },
-      'nvim-telescope/telescope-ui-select.nvim',
-    },
-    keys = {
-      -- Show all telescope builtins
-      { '<leader>tb', telescope 'builtin' },
-
-      -- Show file finder
-      { '<leader>tf', telescope 'find_files' },
-      { '<leader>th', telescope('find_files', { hidden = true }) },
-      { '<leader>to', telescope 'oldfiles' },
-
-      -- Show grep finder
-      { '<leader>tg', telescope 'live_grep' },
-
-      -- Show fuzzy text search
-      { '<leader>ts', telescope('grep_string', { shorten_path = true, word_match = '-w', only_sort_text = true, search = '' }) },
-
-      -- Show notifications
-      -- { '<leader>tn', function() require('telescope').extensions.notify.notify(require('telescope.themes').get_dropdown {}) end, },
-
-      -- Grep current string under cursor within workspace
-      { '<leader>ff', telescope 'grep_string' },
-
-      -- Show jumplist
-      { '<leader>tj', telescope 'jumplist' },
-
-      -- List registers
-      { '"', telescope 'registers' },
-
-      -- List open buffers
-      { '<C-p>', telescope 'buffers' },
-
-      -- Show project finder
-      {
-        '<leader>tp',
-        function()
-          require('telescope').extensions.projects.projects {}
-        end,
-      },
-
-      -- Show file browser
-      {
-        '<leader>b',
-        function()
-          require('telescope').extensions.file_browser.file_browser {}
-        end,
-      },
-
-      -- Show project finder
-      {
-        '<leader>tl',
-        function()
-          require('telescope').extensions.termfinder.termfinder {}
-        end,
-      },
-
-      -- Show diagnostics
-      { '<leader>dg', telescope 'diagnostics' },
-      { '<leader>lq', telescope 'quickfix' },
-
-      { '<leader>gs', telescope 'git_status' },
-
-      { '<leader>lr', telescope 'lsp_references' }, -- Lists LSP references for word under the cursor
-      { '<leader>lci', telescope 'lsp_incoming_calls' }, -- Lists LSP incoming calls for word under the cursor
-      { '<leader>lco', telescope 'lsp_outgoing_calls' }, -- Lists LSP outgoing calls for word under the cursor
-      { '<leader>ls', telescope 'lsp_document_symbols' }, -- Lists LSP document symbols in the current buffer
-      -- { '<leader>lws', telescope 'lsp_workspace_symbols' }, -- Lists LSP document symbols in the current workspace
-      { '<leader>ws', telescope 'lsp_dynamic_workspace_symbols' }, -- Dynamically Lists LSP for all workspace symbols
-      { '<leader>li', telescope 'lsp_implementations' }, -- Goto the implementation of the word under the cursor if there's only one, otherwise show all options in Telescope
-      { '<leader>ld', telescope 'lsp_definitions' }, -- Goto the definition of the word under the cursor, if there's only one, otherwise show all options in Telescope
-      { '<leader>lt', telescope 'lsp_type_definitions' }, -- Goto the definition of the type of the word under the cursor, if there's only one, otherwise show all options in Telescope
-    },
-
-    opts = {
-      defaults = { mappings = { i = { ['<C-h>'] = 'which_key' } }, initial_mode = 'normal' },
-      pickers = {
-        find_files = { find_command = { 'fd', '--type', 'f', '--strip-cwd-prefix' }, initial_mode = 'insert' },
-        live_grep = { initial_mode = 'insert' },
-        diagnostics = { theme = 'dropdown' },
-        jumplist = { theme = 'dropdown' },
-        registers = { theme = 'dropdown' },
-        buffers = { theme = 'dropdown' },
-        -- quickfix = { theme = 'dropdown' },
-
-        lsp_references = { theme = 'dropdown' }, -- Lists LSP references for word under the cursor
-        lsp_incoming_calls = { theme = 'dropdown' }, -- Lists LSP incoming calls for word under the cursor
-        lsp_outgoing_calls = { theme = 'dropdown' }, -- Lists LSP outgoing calls for word under the cursor
-        lsp_document_symbols = { theme = 'dropdown' }, -- Lists LSP document symbols in the current buffer
-        lsp_workspace_symbols = { theme = 'dropdown' }, -- Lists LSP document symbols in the current workspace
-        lsp_dynamic_workspace_symbols = { theme = 'dropdown' }, -- Dynamically Lists LSP for all workspace symbols
-        lsp_implementations = { theme = 'dropdown' }, -- Goto the implementation of the word under the cursor if there's only one, otherwise show all options in Telescope
-        lsp_definitions = { theme = 'dropdown' }, -- Goto the definition of the word under the cursor, if there's only one, otherwise show all options in Telescope
-        lsp_type_definitions = { theme = 'dropdown' }, -- Goto the definition of the type of the word under the cursor, if there's only one, otherwise show all options in Telescope
-      },
-      extensions = {
-        fzf = {
-          fuzzy = true, -- false will only do exact matching
-          override_generic_sorter = true, -- override the generic sorter
-          override_file_sorter = true, -- override the file sorter
-          case_mode = 'smart_case', -- "smart_case" or "ignore_case" or "respect_case"
-        },
-        file_browser = {
-          theme = 'ivy',
-          -- disables netrw and use telescope-file-browser in its place
-          hijack_netrw = true,
-        },
-        ['ui-select'] = {
-          theme = 'cursor',
-        },
-      },
-    },
-
-    config = function(_, opts)
-      local themed_extensions = {}
-      for ext, props in pairs(opts.extensions) do
-        if props.theme then
-          local ready, theme = pcall(require, 'telescope.themes')
-          if ready then
-            local themed, res = pcall(theme['get_' .. props.theme], props)
-            if themed then
-              themed_extensions[ext] = res
-            end
-          end
-        end
-      end
-
-      opts = vim.tbl_deep_extend('force', opts, { extensions = themed_extensions })
-
-      require('telescope').setup(opts)
-      require('telescope').load_extension 'fzf'
-      require('telescope').load_extension 'projects'
-      require('telescope').load_extension 'file_browser'
-      require('telescope').load_extension 'termfinder'
-      require('telescope').load_extension 'ui-select'
-    end,
-  },
-
   -- Tmux pane navigation assistant
   -- {
   --   'connordeckers/tmux-navigator.nvim',
@@ -796,7 +607,7 @@ return {
 
       -- Table of lsp clients to ignore by name
       -- eg: { "efm", ... }
-      ignore_lsp = { 'lua_ls' },
+      ignore_lsp = {},
 
       -- Don't calculate root dir on specific directories
       -- Ex: { "~/.cargo/*", ... }
@@ -849,13 +660,13 @@ return {
     },
   },
 
-  {
-    'sindrets/diffview.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons',
-    },
-  },
+  -- {
+  --   'sindrets/diffview.nvim',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     'nvim-tree/nvim-web-devicons',
+  --   },
+  -- },
 
   -- Surround text with other text. Neat!
   {
@@ -1020,11 +831,11 @@ return {
   -- Continuously updated session files
   { 'tpope/vim-obsession', cmd = 'Obsess' },
 
-  {
-    'mbbill/undotree',
-    cmd = { 'UndotreeToggle' },
-    keys = { { '<leader>u', '<cmd>UndotreeToggle<cr>' } },
-  },
+  -- {
+  --   'mbbill/undotree',
+  --   cmd = { 'UndotreeToggle' },
+  --   keys = { { '<leader>u', '<cmd>UndotreeToggle<cr>' } },
+  -- },
 
   {
     'akinsho/toggleterm.nvim',
