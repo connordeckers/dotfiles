@@ -105,7 +105,7 @@ tide_status_bg_color 2E3436
 tide_status_bg_color_failure CC0000
 tide_status_color 4E9A06
 tide_status_color_failure FFFF00
-tide_status_icon ✔
+tide_status_icon 
 tide_status_icon_failure ✘
 tide_terraform_bg_color 800080
 tide_terraform_color 000000

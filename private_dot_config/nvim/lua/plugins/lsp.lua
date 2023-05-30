@@ -1,3 +1,27 @@
+local function lazy_load(package, method)
+  return function(...)
+    local success, pkg = pcall(require, package)
+    if success then
+      pkg[method](...)
+    end
+  end
+end
+
+local function with(package, callback)
+  local exists, pkg = pcall(require, package)
+  if not exists then
+    return nil
+  end
+
+  return callback(pkg)
+end
+
+local function lazy(obj, args)
+  return function()
+    obj(args)
+  end
+end
+
 local rounded_border = {
   { '╭', 'FloatBorder' },
   { '─', 'FloatBorder' },
@@ -12,7 +36,9 @@ local rounded_border = {
 return {
   {
     'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
+    build = function()
+      require('nvim-treesitter.install').update { with_sync = true }
+    end,
     event = { 'BufReadPre', 'BufNewFile' },
     cmd = {
       'TSInstall',
@@ -193,9 +219,10 @@ return {
   },
 
   {
-    'neovim/nvim-lspconfig',
+    'junnplus/lsp-setup.nvim',
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
+      'neovim/nvim-lspconfig',
       { 'folke/neoconf.nvim', cmd = 'Neoconf' },
       { 'folke/neodev.nvim', opts = { experimental = { pathStrict = true } } },
 
@@ -212,86 +239,68 @@ return {
     },
 
     opts = {
-      -- Format the document on write
-      format_on_save = true,
-
-      -- Highlight the token under the cursor on cursor-hold
-      highlightTokenUnderCursor = true,
-
-      keymaps = {
+      -- Default mappings
+      -- gD = 'lua vim.lsp.buf.declaration()',
+      -- gd = 'lua vim.lsp.buf.definition()',
+      -- gt = 'lua vim.lsp.buf.type_definition()',
+      -- gi = 'lua vim.lsp.buf.implementation()',
+      -- gr = 'lua vim.lsp.buf.references()',
+      -- K = 'lua vim.lsp.buf.hover()',
+      -- ['<C-k>'] = 'lua vim.lsp.buf.signature_help()',
+      -- ['<space>rn'] = 'lua vim.lsp.buf.rename()',
+      -- ['<space>ca'] = 'lua vim.lsp.buf.code_action()',
+      -- ['<space>f'] = 'lua vim.lsp.buf.formatting()',
+      -- ['<space>e'] = 'lua vim.diagnostic.open_float()',
+      -- ['[d'] = 'lua vim.diagnostic.goto_prev()',
+      -- [']d'] = 'lua vim.diagnostic.goto_next()',
+      default_mappings = false,
+      mappings = {
         -- The below are handled by Telescope.nvim
-        -- ['gD'] = vim.lsp.buf.declaration,
-        -- ['gd'] = vim.lsp.buf.definition,
-        -- ['gi'] = vim.lsp.buf.implementation,
-        -- ['gT'] = vim.lsp.buf.type_definition,
-        -- ['gr'] = vim.lsp.buf.references,
+        --  - vim.lsp.buf.declaration,
+        --  - vim.lsp.buf.definition,
+        --  - vim.lsp.buf.implementation,
+        --  - vim.lsp.buf.type_definition,
+        --  - vim.lsp.buf.references,
         --
-        -- This is instead handled by noice
-        -- ['K'] = vim.lsp.buf.hover,
-        ['K'] = function()
-          require('noice.lsp').hover()
-        end,
+        ['K'] = lazy_load('noice.lsp', 'hover'),
         ['<leader>rn'] = vim.lsp.buf.rename,
         ['<C-space>'] = vim.lsp.buf.code_action,
-        ['<leader>f'] = function()
-          vim.lsp.buf.format { timeout_ms = 2500 }
-        end,
-        -- ["<C-K>"] = vim.lsp.buf.signature_help,
-        -- ['<leader>wa'] = vim.lsp.buf.add_workspace_folder,
-        -- ['<leader>wr'] = vim.lsp.buf.remove_workspace_folder,
-        -- ['<leader>wl'] = function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
+        ['<leader>f'] = lazy(vim.lsp.buf.format, { timeout_ms = 2500 }),
       },
 
-      config = {
-        ['angularls'] = {},
-        ['bashls'] = {},
-        ['cssls'] = {},
-        ['html'] = {},
-        ['jsonls'] = {},
-        ['cssmodules_ls'] = {},
-        ['ccls'] = {},
-        -- ['clangd'] = {
-        --   capabilities = {
-        --     offsetEncoding = 'utf-32',
-        --   },
-        -- },
-        ['dockerls'] = {},
-        ['emmet_ls'] = {},
-        ['vimls'] = {},
+      inlay_hints = {
+        enabled = true,
+        parameter_hints = true,
+        type_hints = true,
+        highlight = 'LspInlayHint',
+        priority = 0,
+      },
 
-        ['tsserver'] = {
-          on_attach = function(client, bufnr)
-            require('twoslash-queries').attach(client, bufnr)
-          end,
-          params = {
-            settings = {
-              typescript = {
-                inlayHints = {
-                  includeInlayEnumMemberValueHints = true,
-                  includeInlayFunctionLikeReturnTypeHints = true,
-                  includeInlayFunctionParameterTypeHints = true,
-                  includeInlayParameterNameHints = 'all',
-                  includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-                  includeInlayPropertyDeclarationTypeHints = true,
-                  includeInlayVariableTypeHints = true,
-                  includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-                },
-              },
-              completions = {
-                -- Complete functions with their parameter signature.
-                --
-                -- This functionality relies on LSP client resolving the completion using the `completionItem/resolve` call. If the
-                -- client can't do that before inserting the completion then it's not safe to enable it as it will result in some
-                -- completions having a snippet type without actually being snippets, which can then cause problems when inserting them.
-                --
-                -- @default false
-                completeFunctionCalls = true,
+      servers = {
+        -- Shell languages
+        bashls = {},
+
+        -- Editor specific features
+        lua_ls = {
+          settings = {
+            Lua = {
+              hint = {
+                enable = true,
+                arrayIndex = 'Auto',
+                await = true,
+                paramName = 'All',
+                paramType = true,
+                semicolon = 'SameLine',
+                setType = false,
               },
             },
           },
         },
+        vimls = {},
 
-        ['yamlls'] = {
+        -- System languages
+        dockerls = {},
+        yamlls = {
           params = {
             settings = {
               yaml = {
@@ -301,67 +310,69 @@ return {
             },
           },
         },
-        ['rust_analyzer'] = {},
-        ['pyright'] = {},
+        rust_analyzer = {},
+        pyright = {},
 
-        -- Qt
-        ['qmlls'] = { params = { cmd = { 'qmlls6' } } },
-
-        -- Lua
-
-        ['lua_ls'] = {
-          params = {
-            settings = {
-              Lua = {
-                diagnostics = {
-                  -- Get the language server to recognize the `vim` global
-                  globals = { 'vim' },
-                },
-                workspace = {
-                  -- Make the server aware of Neovim runtime files
-                  library = vim.tbl_deep_extend('force', {}, vim.api.nvim_get_runtime_file('', true)),
-
-                  -- Don't check for third party tools
-                  checkThirdParty = false,
-                },
-
-                -- Do not send telemetry data
-                telemetry = { enable = false },
+        -- Web languages
+        angularls = {},
+        cssls = {},
+        html = {},
+        jsonls = {},
+        cssmodules_ls = {},
+        emmet_ls = {},
+        tsserver = {
+          settings = {
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+            javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
               },
             },
           },
         },
       },
-    },
-
-    config = function(_, opts)
-      local lsp = vim.lsp.buf
-
-      -- LspFormatting AutoCommand group
-      local lspFormatAUGroup = vim.api.nvim_create_augroup('LspFormatting', {})
-
-      -- Mappings.
-      -- Use an on_attach function to only map the following keys
-      -- after the language server attaches to the current buffer
-      local on_attach = function(client, bufnr)
-        for map, action in pairs(opts.keymaps) do
-          vim.keymap.set('n', map, action, { noremap = true, silent = true, buffer = bufnr })
+      capabilities = vim.lsp.protocol.make_client_capabilities(),
+      on_attach = function(client, bufnr)
+        if client.name == 'tsserver' then
+          with('twoslash-queries', function(twoslash)
+            twoslash.attach(client, bufnr)
+          end)
         end
 
-        local navic_exists, navic = pcall(require, 'nvim-navic')
         -- Add support for the symbol path
-        if navic_exists and client.server_capabilities.documentSymbolProvider then
-          navic.attach(client, bufnr)
+        if client.server_capabilities.documentSymbolProvider then
+          with('nvim-navic', function(navic)
+            navic.attach(client, bufnr)
+          end)
         end
 
         -- Add the autocommands for highlighting under the cursor
-        if opts.highlightTokenUnderCursor and client.supports_method 'textDocument/documentHighlight' then
-          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, { callback = lsp.document_highlight, buffer = bufnr })
-          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, { callback = lsp.clear_references, buffer = bufnr })
+        if client.supports_method 'textDocument/documentHighlight' then
+          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, { callback = vim.lsp.buf.document_highlight, buffer = bufnr })
+          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, { callback = vim.lsp.buf.clear_references, buffer = bufnr })
         end
 
         -- Add the autocommands for formatting on save
-        if opts.format_on_save and client.supports_method 'textDocument/formatting' then
+        if client.supports_method 'textDocument/formatting' then
+          local lspFormatAUGroup = vim.api.nvim_create_augroup('LspFormatting', {})
           vim.api.nvim_clear_autocmds { group = lspFormatAUGroup, buffer = bufnr }
           vim.api.nvim_create_autocmd('BufWritePre', {
             group = lspFormatAUGroup,
@@ -371,23 +382,8 @@ return {
             end,
           })
         end
-
-        if opts.config[client.name] and opts.config[client.name].on_attach then
-          opts.config[client.name].on_attach(client, bufnr)
-        end
-      end
-
-      -- Add additional capabilities supported by nvim-cmp
-      local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-      local default_server_opts = { on_attach = on_attach, capabilities = capabilities }
-
-      for lsp_server, config in pairs(opts.config) do
-        local overridden_capabilities = vim.tbl_deep_extend('force', capabilities, config.capabilities or {})
-        local props = vim.tbl_deep_extend('force', default_server_opts, { capabilities = overridden_capabilities }, config.params or {})
-
-        require('lspconfig')[lsp_server].setup(props)
-      end
-    end,
+      end,
+    },
   },
 
   {
@@ -539,11 +535,6 @@ return {
 
       local compare = cmp.config.compare
       local TriggerEvent = require('cmp.types').cmp.TriggerEvent
-
-      local has_words_before = function()
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match '%s' == nil
-      end
 
       -- Set completeopt to have a better completion experience
       vim.o.completeopt = 'menu,menuone,noselect'

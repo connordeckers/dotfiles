@@ -24,6 +24,10 @@ local highlights = {
 
   NavicSeparator = { link = 'Normal' },
   BarbecueSeparator = { link = 'Normal' },
+
+  LspInlayHint = { fg = '#626880', bg = 'NONE', italic = true },
+  -- LspVirtualText = { fg = '#626880', italic = true },
+  LspVirtualText = { link = 'LspInlayHint' },
 }
 
 local create_highlights = function()

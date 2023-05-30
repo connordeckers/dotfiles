@@ -188,6 +188,13 @@ return {
       commands = {},
 
       lsp = {
+        progress = {
+          format_done = {
+            { ' ', hl_group = 'NoiceLspProgressSpinner' },
+            { '{data.progress.title} ', hl_group = 'NoiceLspProgressTitle' },
+            { '{data.progress.client} ', hl_group = 'NoiceLspProgressClient' },
+          },
+        },
         override = {
           -- override the default lsp markdown formatter with Noice
           ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
@@ -221,6 +228,7 @@ return {
 
       ---@type NoiceConfigViews
       views = {
+        virtualtext = { hl_group = 'LspVirtualText' },
         mini = {
           win_options = {
             winblend = 0, -- Make background transparent for nice acrylic finish
@@ -250,6 +258,8 @@ return {
               { find = 'Pattern not found' },
               { find = 'cwd:' },
               { find = 'written' },
+              { find = 'before #' },
+              { find = 'after #' },
             },
           },
           view = 'mini',
@@ -561,39 +571,6 @@ return {
         ---@type string
         separator = '',
       },
-
-      ---icons for different context entry kinds
-      ---`false` to disable kind icons
-      ---@type table<string, string>|false
-      -- kinds = {
-      --   File = '',
-      --   Package = '',
-      --   Module = '',
-      --   Namespace = '',
-      --   Macro = '',
-      --   Class = '',
-      --   Constructor = '',
-      --   Field = '',
-      --   Property = '',
-      --   Method = '',
-      --   Struct = '',
-      --   Event = '',
-      --   Interface = '',
-      --   Enum = '',
-      --   EnumMember = '',
-      --   Constant = '',
-      --   Function = '',
-      --   TypeParameter = '',
-      --   Variable = '',
-      --   Operator = '',
-      --   Null = '',
-      --   Boolean = '',
-      --   Number = '',
-      --   String = '',
-      --   Key = '',
-      --   Array = '',
-      --   Object = '',
-      -- },
     },
   },
 

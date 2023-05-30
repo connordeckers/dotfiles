@@ -42,9 +42,11 @@ return {
     'tpope/vim-fugitive',
     event = 'VeryLazy',
     keys = {
-      '<leader>gc',
-      '<cmd>Git commit<cr>',
-      desc = 'Commit currently staged files',
+      {
+        '<leader>gc',
+        '<cmd>Git commit<cr>',
+        desc = 'Commit currently staged files',
+      },
     },
   },
 
