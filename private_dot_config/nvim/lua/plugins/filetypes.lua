@@ -3,6 +3,7 @@ return {
   --- Syntax highlighting ---
   {
     'codethread/qmk.nvim',
+    ft = { 'c' },
     opts = {
       name = 'LAYOUT',
       layout = {

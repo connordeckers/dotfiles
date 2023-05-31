@@ -70,12 +70,7 @@ set -x BOB_NVIM_BASE $XDG_DATA_HOME/bob/nvim-bin
 set -x FZF_DEFAULT_COMMAND 'rg --files --follow'
 
 # Where to find projects when using the `pj` command
-set -x POSSIBLE_PROJECT_PATHS ~/dev/personal ~/dev/utas ~/dev
-set -x PROJECT_PATHS (
-	for p in $POSSIBLE_PROJECT_PATHS
-		if test -d $p; echo $p; end
-	end
-)
+set -x PROJECT_PATHS ~/dev
 
 ##########################
 # Set up our PATH entries

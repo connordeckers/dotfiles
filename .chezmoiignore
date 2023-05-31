@@ -4,6 +4,9 @@
 .config/tmux/plugins
 .config/tmux/sidebar
 .config/fish/fish_variables
+.config/fish/plugins
+.config/kitty/themes
+.config/kitty/kitty-themes
 
 {{ if contains "WSL2" .chezmoi.kernel.osrelease }}
 .config/autostart

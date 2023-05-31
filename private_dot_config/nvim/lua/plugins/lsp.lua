@@ -1,27 +1,3 @@
-local function lazy_load(package, method)
-  return function(...)
-    local success, pkg = pcall(require, package)
-    if success then
-      pkg[method](...)
-    end
-  end
-end
-
-local function with(package, callback)
-  local exists, pkg = pcall(require, package)
-  if not exists then
-    return nil
-  end
-
-  return callback(pkg)
-end
-
-local function lazy(obj, args)
-  return function()
-    obj(args)
-  end
-end
-
 local rounded_border = {
   { '╭', 'FloatBorder' },
   { '─', 'FloatBorder' },
@@ -34,12 +10,11 @@ local rounded_border = {
 }
 
 return {
+  { 'folke/neodev.nvim', opts = {}, ft = { 'lua' } },
+
   {
     'nvim-treesitter/nvim-treesitter',
-    build = function()
-      require('nvim-treesitter.install').update { with_sync = true }
-    end,
-    event = { 'BufReadPre', 'BufNewFile' },
+    event = { 'BufReadPost', 'BufNewFile' },
     cmd = {
       'TSInstall',
       'TSInstallSync',
@@ -66,102 +41,112 @@ return {
       'JoosepAlviste/nvim-ts-context-commentstring',
     },
 
-    config = function()
-      require('nvim-treesitter.configs').setup {
-        autotag = { enable = true },
-        highlight = { enable = true },
-        pairs = {
+    opts = {
+      -- Automatically install missing parsers when entering buffer
+      -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+      auto_install = true,
+
+      autotag = { enable = true },
+      highlight = { enable = true },
+      pairs = {
+        enable = true,
+        disable = {},
+        highlight_pair_events = {}, -- e.g. {"CursorMoved"}, -- when to highlight the pairs, use {} to deactivate highlighting
+        highlight_self = false, -- whether to highlight also the part of the pair under cursor (or only the partner)
+        goto_right_end = false, -- whether to go to the end of the right partner or the beginning
+        fallback_cmd_normal = "call matchit#Match_wrapper('',1,'n')", -- What command to issue when we can't find a pair (e.g. "normal! %")
+        keymaps = {
+          goto_partner = '<leader>%',
+          delete_balanced = 'X',
+        },
+        delete_balanced = {
+          only_on_first_char = false, -- whether to trigger balanced delete when on first character of a pair
+          fallback_cmd_normal = nil, -- fallback command when no pair found, can be nil
+          longest_partner = false, -- whether to delete the longest or the shortest pair when multiple found.
+          -- E.g. whether to delete the angle bracket or whole tag in  <pair> </pair>
+        },
+      },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = '<CR>',
+          node_incremental = '<CR>',
+          scope_incremental = '<S-CR>',
+          node_decremental = '<BS>',
+        },
+      },
+      textobjects = {
+        select = {
           enable = true,
-          disable = {},
-          highlight_pair_events = {}, -- e.g. {"CursorMoved"}, -- when to highlight the pairs, use {} to deactivate highlighting
-          highlight_self = false, -- whether to highlight also the part of the pair under cursor (or only the partner)
-          goto_right_end = false, -- whether to go to the end of the right partner or the beginning
-          fallback_cmd_normal = "call matchit#Match_wrapper('',1,'n')", -- What command to issue when we can't find a pair (e.g. "normal! %")
+
+          -- Automatically jump forward to textobj, similar to targets.vim
+          lookahead = true,
+
           keymaps = {
-            goto_partner = '<leader>%',
-            delete_balanced = 'X',
-          },
-          delete_balanced = {
-            only_on_first_char = false, -- whether to trigger balanced delete when on first character of a pair
-            fallback_cmd_normal = nil, -- fallback command when no pair found, can be nil
-            longest_partner = false, -- whether to delete the longest or the shortest pair when multiple found.
-            -- E.g. whether to delete the angle bracket or whole tag in  <pair> </pair>
+            -- You can use the capture groups defined in textobjects.scm
+            ['af'] = '@function.outer',
+            ['if'] = '@function.inner',
+            ['ac'] = '@class.outer',
+            ['ic'] = '@class.inner',
+            ['aC'] = '@conditional.outer',
+            ['iC'] = '@conditional.inner',
+            ['aS'] = '@tag.self-closing',
+            ['ap'] = '@json.property',
           },
         },
-        incremental_selection = {
+      },
+      refactor = {
+        -- Highlights definition and usages of the current symbol under the cursor.
+        highlight_definitions = {
+          enable = true,
+          -- Set to false if you have an `updatetime` of ~100.
+          clear_on_cursor_move = true,
+        },
+
+        -- Renames the symbol under the cursor within the current scope (and current file).
+        -- Disabled; prefer using LSP, as it can rename the same symbol outside this file.
+        smart_rename = { enable = false },
+
+        -- Provides "go to definition" for the symbol under the cursor, and lists the definitions from the current file.
+        -- If you use goto_definition_lsp_fallback instead of goto_definition in the config below vim.lsp.buf.definition
+        -- is used if nvim-treesitter can not resolve the variable. goto_next_usage/goto_previous_usage go to the next usage
+        -- of the identifier under the cursor.
+        navigation = {
           enable = true,
           keymaps = {
-            init_selection = '<CR>',
-            node_incremental = '<CR>',
-            scope_incremental = '<S-CR>',
-            node_decremental = '<BS>',
+            goto_definition = 'gnd',
+            list_definitions = 'gnD',
+            list_definitions_toc = 'gO',
+            goto_next_usage = '<a-*>',
+            goto_previous_usage = '<a-#>',
           },
         },
-        textobjects = {
-          select = {
-            enable = true,
+      },
 
-            -- Automatically jump forward to textobj, similar to targets.vim
-            lookahead = true,
+      context_commentstring = {
+        enable = true,
+        enable_autocmd = false,
+      },
 
-            keymaps = {
-              -- You can use the capture groups defined in textobjects.scm
-              ['af'] = '@function.outer',
-              ['if'] = '@function.inner',
-              ['ac'] = '@class.outer',
-              ['ic'] = '@class.inner',
-              ['aC'] = '@conditional.outer',
-              ['iC'] = '@conditional.inner',
-              ['aS'] = '@tag.self-closing',
-              ['ap'] = '@json.property',
-            },
-          },
-        },
-        refactor = {
-          -- Highlights definition and usages of the current symbol under the cursor.
-          highlight_definitions = {
-            enable = true,
-            -- Set to false if you have an `updatetime` of ~100.
-            clear_on_cursor_move = true,
-          },
+      -- View treesitter information directly in Neovim!
+      playground = {
+        enable = true,
+        updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+      },
+    },
 
-          -- Renames the symbol under the cursor within the current scope (and current file).
-          -- Disabled; prefer using LSP, as it can rename the same symbol outside this file.
-          smart_rename = { enable = false },
+    config = function(_, opts)
+      require('nvim-treesitter.configs').setup(opts)
+    end,
 
-          -- Provides "go to definition" for the symbol under the cursor, and lists the definitions from the current file.
-          -- If you use goto_definition_lsp_fallback instead of goto_definition in the config below vim.lsp.buf.definition
-          -- is used if nvim-treesitter can not resolve the variable. goto_next_usage/goto_previous_usage go to the next usage
-          -- of the identifier under the cursor.
-          navigation = {
-            enable = true,
-            keymaps = {
-              goto_definition = 'gnd',
-              list_definitions = 'gnD',
-              list_definitions_toc = 'gO',
-              goto_next_usage = '<a-*>',
-              goto_previous_usage = '<a-#>',
-            },
-          },
-        },
-
-        context_commentstring = {
-          enable = true,
-          enable_autocmd = false,
-        },
-
-        -- View treesitter information directly in Neovim!
-        playground = {
-          enable = true,
-          updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
-        },
-      }
+    build = function()
+      require('nvim-treesitter.install').update { with_sync = true }
     end,
   },
 
   {
     'jose-elias-alvarez/null-ls.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
+    event = { 'BufReadPost', 'BufNewFile' },
     dependencies = {
       'williamboman/mason.nvim',
       { 'jayp0521/mason-null-ls.nvim', opts = {
@@ -219,10 +204,9 @@ return {
   },
 
   {
-    'junnplus/lsp-setup.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
+    'neovim/nvim-lspconfig',
+    event = { 'BufReadPost', 'BufNewFile' },
     dependencies = {
-      'neovim/nvim-lspconfig',
       { 'folke/neoconf.nvim', cmd = 'Neoconf' },
       { 'folke/neodev.nvim', opts = { experimental = { pathStrict = true } } },
 
@@ -239,68 +223,86 @@ return {
     },
 
     opts = {
-      -- Default mappings
-      -- gD = 'lua vim.lsp.buf.declaration()',
-      -- gd = 'lua vim.lsp.buf.definition()',
-      -- gt = 'lua vim.lsp.buf.type_definition()',
-      -- gi = 'lua vim.lsp.buf.implementation()',
-      -- gr = 'lua vim.lsp.buf.references()',
-      -- K = 'lua vim.lsp.buf.hover()',
-      -- ['<C-k>'] = 'lua vim.lsp.buf.signature_help()',
-      -- ['<space>rn'] = 'lua vim.lsp.buf.rename()',
-      -- ['<space>ca'] = 'lua vim.lsp.buf.code_action()',
-      -- ['<space>f'] = 'lua vim.lsp.buf.formatting()',
-      -- ['<space>e'] = 'lua vim.diagnostic.open_float()',
-      -- ['[d'] = 'lua vim.diagnostic.goto_prev()',
-      -- [']d'] = 'lua vim.diagnostic.goto_next()',
-      default_mappings = false,
-      mappings = {
+      -- Format the document on write
+      format_on_save = true,
+
+      -- Highlight the token under the cursor on cursor-hold
+      highlightTokenUnderCursor = true,
+
+      keymaps = {
         -- The below are handled by Telescope.nvim
-        --  - vim.lsp.buf.declaration,
-        --  - vim.lsp.buf.definition,
-        --  - vim.lsp.buf.implementation,
-        --  - vim.lsp.buf.type_definition,
-        --  - vim.lsp.buf.references,
+        -- ['gD'] = vim.lsp.buf.declaration,
+        -- ['gd'] = vim.lsp.buf.definition,
+        -- ['gi'] = vim.lsp.buf.implementation,
+        -- ['gT'] = vim.lsp.buf.type_definition,
+        -- ['gr'] = vim.lsp.buf.references,
         --
-        ['K'] = lazy_load('noice.lsp', 'hover'),
+        -- This is instead handled by noice
+        -- ['K'] = vim.lsp.buf.hover,
+        ['K'] = function()
+          require('noice.lsp').hover()
+        end,
         ['<leader>rn'] = vim.lsp.buf.rename,
         ['<C-space>'] = vim.lsp.buf.code_action,
-        ['<leader>f'] = lazy(vim.lsp.buf.format, { timeout_ms = 2500 }),
+        ['<leader>f'] = function()
+          vim.lsp.buf.format { timeout_ms = 2500 }
+        end,
+        -- ["<C-K>"] = vim.lsp.buf.signature_help,
+        -- ['<leader>wa'] = vim.lsp.buf.add_workspace_folder,
+        -- ['<leader>wr'] = vim.lsp.buf.remove_workspace_folder,
+        -- ['<leader>wl'] = function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
       },
 
-      inlay_hints = {
-        enabled = true,
-        parameter_hints = true,
-        type_hints = true,
-        highlight = 'LspInlayHint',
-        priority = 0,
-      },
+      config = {
+        ['angularls'] = {},
+        ['bashls'] = {},
+        ['cssls'] = {},
+        ['html'] = {},
+        ['jsonls'] = {},
+        ['cssmodules_ls'] = {},
+        ['ccls'] = {},
+        -- ['clangd'] = {
+        --   capabilities = {
+        --     offsetEncoding = 'utf-32',
+        --   },
+        -- },
+        ['dockerls'] = {},
+        ['emmet_ls'] = {},
+        ['vimls'] = {},
 
-      servers = {
-        -- Shell languages
-        bashls = {},
-
-        -- Editor specific features
-        lua_ls = {
-          settings = {
-            Lua = {
-              hint = {
-                enable = true,
-                arrayIndex = 'Auto',
-                await = true,
-                paramName = 'All',
-                paramType = true,
-                semicolon = 'SameLine',
-                setType = false,
+        ['tsserver'] = {
+          on_attach = function(client, bufnr)
+            require('twoslash-queries').attach(client, bufnr)
+          end,
+          params = {
+            settings = {
+              typescript = {
+                inlayHints = {
+                  includeInlayEnumMemberValueHints = true,
+                  includeInlayFunctionLikeReturnTypeHints = true,
+                  includeInlayFunctionParameterTypeHints = true,
+                  includeInlayParameterNameHints = 'all',
+                  includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+                  includeInlayPropertyDeclarationTypeHints = true,
+                  includeInlayVariableTypeHints = true,
+                  includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+                },
+              },
+              completions = {
+                -- Complete functions with their parameter signature.
+                --
+                -- This functionality relies on LSP client resolving the completion using the `completionItem/resolve` call. If the
+                -- client can't do that before inserting the completion then it's not safe to enable it as it will result in some
+                -- completions having a snippet type without actually being snippets, which can then cause problems when inserting them.
+                --
+                -- @default false
+                completeFunctionCalls = true,
               },
             },
           },
         },
-        vimls = {},
 
-        -- System languages
-        dockerls = {},
-        yamlls = {
+        ['yamlls'] = {
           params = {
             settings = {
               yaml = {
@@ -310,69 +312,67 @@ return {
             },
           },
         },
-        rust_analyzer = {},
-        pyright = {},
+        ['rust_analyzer'] = {},
+        ['pyright'] = {},
 
-        -- Web languages
-        angularls = {},
-        cssls = {},
-        html = {},
-        jsonls = {},
-        cssmodules_ls = {},
-        emmet_ls = {},
-        tsserver = {
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = 'all',
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-            javascript = {
-              inlayHints = {
-                includeInlayParameterNameHints = 'all',
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
+        -- Qt
+        ['qmlls'] = { params = { cmd = { 'qmlls6' } } },
+
+        -- Lua
+
+        ['lua_ls'] = {
+          params = {
+            settings = {
+              Lua = {
+                diagnostics = {
+                  -- Get the language server to recognize the `vim` global
+                  globals = { 'vim' },
+                },
+                workspace = {
+                  -- Make the server aware of Neovim runtime files
+                  library = vim.tbl_deep_extend('force', {}, vim.api.nvim_get_runtime_file('', true)),
+
+                  -- Don't check for third party tools
+                  checkThirdParty = false,
+                },
+
+                -- Do not send telemetry data
+                telemetry = { enable = false },
               },
             },
           },
         },
       },
-      capabilities = vim.lsp.protocol.make_client_capabilities(),
-      on_attach = function(client, bufnr)
-        if client.name == 'tsserver' then
-          with('twoslash-queries', function(twoslash)
-            twoslash.attach(client, bufnr)
-          end)
+    },
+
+    config = function(_, opts)
+      local lsp = vim.lsp.buf
+
+      -- LspFormatting AutoCommand group
+      local lspFormatAUGroup = vim.api.nvim_create_augroup('LspFormatting', {})
+
+      -- Mappings.
+      -- Use an on_attach function to only map the following keys
+      -- after the language server attaches to the current buffer
+      local on_attach = function(client, bufnr)
+        for map, action in pairs(opts.keymaps) do
+          vim.keymap.set('n', map, action, { noremap = true, silent = true, buffer = bufnr })
         end
 
+        local navic_exists, navic = pcall(require, 'nvim-navic')
         -- Add support for the symbol path
-        if client.server_capabilities.documentSymbolProvider then
-          with('nvim-navic', function(navic)
-            navic.attach(client, bufnr)
-          end)
+        if navic_exists and client.server_capabilities.documentSymbolProvider then
+          navic.attach(client, bufnr)
         end
 
         -- Add the autocommands for highlighting under the cursor
-        if client.supports_method 'textDocument/documentHighlight' then
-          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, { callback = vim.lsp.buf.document_highlight, buffer = bufnr })
-          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, { callback = vim.lsp.buf.clear_references, buffer = bufnr })
+        if opts.highlightTokenUnderCursor and client.supports_method 'textDocument/documentHighlight' then
+          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, { callback = lsp.document_highlight, buffer = bufnr })
+          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, { callback = lsp.clear_references, buffer = bufnr })
         end
 
         -- Add the autocommands for formatting on save
-        if client.supports_method 'textDocument/formatting' then
-          local lspFormatAUGroup = vim.api.nvim_create_augroup('LspFormatting', {})
+        if opts.format_on_save and client.supports_method 'textDocument/formatting' then
           vim.api.nvim_clear_autocmds { group = lspFormatAUGroup, buffer = bufnr }
           vim.api.nvim_create_autocmd('BufWritePre', {
             group = lspFormatAUGroup,
@@ -382,13 +382,28 @@ return {
             end,
           })
         end
-      end,
-    },
+
+        if opts.config[client.name] and opts.config[client.name].on_attach then
+          opts.config[client.name].on_attach(client, bufnr)
+        end
+      end
+
+      -- Add additional capabilities supported by nvim-cmp
+      local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+      local default_server_opts = { on_attach = on_attach, capabilities = capabilities }
+
+      for lsp_server, config in pairs(opts.config) do
+        local overridden_capabilities = vim.tbl_deep_extend('force', capabilities, config.capabilities or {})
+        local props = vim.tbl_deep_extend('force', default_server_opts, { capabilities = overridden_capabilities }, config.params or {})
+
+        require('lspconfig')[lsp_server].setup(props)
+      end
+    end,
   },
 
   {
     'windwp/nvim-autopairs',
-    event = { 'BufReadPre', 'BufNewFile' },
+    event = { 'BufReadPost', 'BufNewFile' },
     opts = {
       check_ts = true,
       ts_config = {
@@ -439,8 +454,20 @@ return {
   },
 
   {
+    'jay-babu/mason-nvim-dap.nvim',
+    event = { 'BufReadPost', 'BufNewFile' },
+    opts = {},
+    dependencies = {
+      { 'mfussenegger/nvim-dap' },
+      { 'theHamsta/nvim-dap-virtual-text', opts = {} },
+      { 'rcarriga/nvim-dap-ui' },
+      { 'LiadOz/nvim-dap-repl-highlights' },
+    },
+  },
+
+  {
     'L3MON4D3/LuaSnip',
-    event = { 'BufReadPre', 'BufNewFile' },
+    event = { 'BufReadPost', 'BufNewFile' },
     dependencies = { 'honza/vim-snippets' },
     config = function()
       local types = require 'luasnip.util.types'
@@ -494,7 +521,7 @@ return {
   -- Autocompletion plugin
   {
     'hrsh7th/nvim-cmp',
-    event = { 'BufReadPre', 'BufNewFile' },
+    event = { 'BufReadPost', 'BufNewFile' },
     dependencies = {
       'LuaSnip',
       -- LSP source for nvim-cmp
@@ -535,6 +562,11 @@ return {
 
       local compare = cmp.config.compare
       local TriggerEvent = require('cmp.types').cmp.TriggerEvent
+
+      local has_words_before = function()
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match '%s' == nil
+      end
 
       -- Set completeopt to have a better completion experience
       vim.o.completeopt = 'menu,menuone,noselect'

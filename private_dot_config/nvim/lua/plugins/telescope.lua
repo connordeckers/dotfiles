@@ -101,6 +101,7 @@ return {
       'cljoly/telescope-repo.nvim',
       'chip/telescope-software-licenses.nvim',
       'debugloop/telescope-undo.nvim',
+      { 'nvim-telescope/telescope-dap.nvim', dependencies = { 'mfussenegger/nvim-dap' } },
     },
     keys = keys,
     opts = {
@@ -194,6 +195,7 @@ return {
       require('telescope').load_extension 'software-licenses'
       require('telescope').load_extension 'undo'
       require('telescope').load_extension 'find_pickers'
+      require('telescope').load_extension 'dap'
     end,
   },
 }
