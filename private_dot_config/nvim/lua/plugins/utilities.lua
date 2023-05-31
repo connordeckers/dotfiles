@@ -559,30 +559,30 @@ return {
         end,
       },
       -- swapping buffers between windows
-      {
-        '<leader><leader>h',
-        function()
-          require('smart-splits').swap_buf_left()
-        end,
-      },
-      {
-        '<leader><leader>j',
-        function()
-          require('smart-splits').swap_buf_down()
-        end,
-      },
-      {
-        '<leader><leader>k',
-        function()
-          require('smart-splits').swap_buf_up()
-        end,
-      },
-      {
-        '<leader><leader>l',
-        function()
-          require('smart-splits').swap_buf_right()
-        end,
-      },
+      -- {
+      --   '<leader><leader>h',
+      --   function()
+      --     require('smart-splits').swap_buf_left()
+      --   end,
+      -- },
+      -- {
+      --   '<leader><leader>j',
+      --   function()
+      --     require('smart-splits').swap_buf_down()
+      --   end,
+      -- },
+      -- {
+      --   '<leader><leader>k',
+      --   function()
+      --     require('smart-splits').swap_buf_up()
+      --   end,
+      -- },
+      -- {
+      --   '<leader><leader>l',
+      --   function()
+      --     require('smart-splits').swap_buf_right()
+      --   end,
+      -- },
     },
   },
 
@@ -646,8 +646,9 @@ return {
       watch_gitdir = { interval = 1000, follow_files = true },
       attach_to_untracked = true,
       current_line_blame = true,
-      current_line_blame_opts = { virt_text = true, virt_text_pos = 'eol', delay = 1000 },
+      current_line_blame_opts = { virt_text = true, virt_text_pos = 'eol', delay = 500 },
       current_line_blame_formatter_opts = { relative_time = false },
+      current_line_blame_formatter = '<summary> (<author> | <author_time:%Y-%m-%d>)',
       sign_priority = 6,
       update_debounce = 150,
       status_formatter = nil,
@@ -662,13 +663,11 @@ return {
     },
   },
 
-  -- {
-  --   'sindrets/diffview.nvim',
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim',
-  --     'nvim-tree/nvim-web-devicons',
-  --   },
-  -- },
+  {
+    'sindrets/diffview.nvim',
+    event = 'VeryLazy',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+  },
 
   -- Surround text with other text. Neat!
   {

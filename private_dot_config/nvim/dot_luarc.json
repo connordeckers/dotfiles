@@ -76,5 +76,6 @@
         "/home/connor/.local/state/nvim/lazy/readme",
         "/home/connor/.config/nvim/lua",
         "/home/connor/.local/share/nvim/mason/packages/lua-language-server/libexec/meta/40e803ac"
-    ]
+    ],
+    "workspace.checkThirdParty": false
 }
