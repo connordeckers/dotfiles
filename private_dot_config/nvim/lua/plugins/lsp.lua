@@ -232,11 +232,12 @@ return {
     event = { 'BufReadPost', 'BufNewFile' },
     dependencies = {
       'neovim/nvim-lspconfig',
-      { 'folke/neoconf.nvim', cmd = 'Neoconf' },
+      { 'folke/neoconf.nvim', cmd = 'Neoconf', lazy = false, opts = {} },
       { 'folke/neodev.nvim', opts = { experimental = { pathStrict = true } } },
 
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
+      'Issafalcon/lsp-overloads.nvim',
       -- 'lvimuser/lsp-inlayhints.nvim',
       {
         'marilari88/twoslash-queries.nvim',
@@ -366,7 +367,13 @@ return {
           end)
         end
 
-        local navic_exists, navic = pcall(require, 'nvim-navic')
+        --- Guard against servers without the signatureHelper capability
+        -- if client.server_capabilities.signatureHelpProvider then
+        --   with('lsp-overloads', function(overload)
+        --     overload.setup(client, {})
+        --   end)
+        -- end
+
         -- Add support for the symbol path
         if client.server_capabilities.documentSymbolProvider then
           with('nvim-navic', function(navic)
