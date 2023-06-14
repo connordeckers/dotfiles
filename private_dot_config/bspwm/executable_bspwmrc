@@ -35,5 +35,3 @@ bspc rule -a zoom state=floating center=on follow=on border=off
 # for_window [class="zoom" title="Zoom Meeting"] floating disable
 
 # $bs $mod+Shift+p [class="Spotify"] scratchpad show, move position center
-
-~/.config/system-start/start.sh &>/dev/null

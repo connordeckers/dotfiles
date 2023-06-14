@@ -17,6 +17,7 @@ if status is-interactive
 	abbr -a -- dc 'docker compose'
 	abbr -a --position anywhere --function _fish_last_history_item -- !!
 	abbr -a -- cz chezmoi
+	abbr -a --position anywhere -- e nvim
 
 	if set -q fish_tmux_autostart; 
 		and $fish_tmux_autostart; 

@@ -49,7 +49,7 @@ local keys = {
 
   { '<leader>tp', extension 'projects', desc = 'Show project finder' },
 
-  { '<leader>b', extension 'file_browser', desc = 'Show file browser' },
+  -- { '<leader>b', extension 'file_browser', desc = 'Show file browser' },
 
   { '<leader>tl', extension 'termfinder', desc = 'Show project finder' },
 

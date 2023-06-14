@@ -4,6 +4,49 @@ local function swap_buffer(direction)
   end
 end
 
+---@class LazyLoadParam
+---@field [1] string Package name
+---@field [2]? string|fun(pkg) What to run
+---@field [3]? any Parameters to pass to function
+---@field args? any Parameters to pass to function
+---@field accept_incoming? boolean Return function that can accept incoming parameters; useful for functions that need to handle values from key event
+
+---@param tbl LazyLoadParam
+local function lazy_load(tbl)
+  return function()
+    local props = {
+      pkg = tbl[1],
+      fn = tbl[2],
+      args = tbl.args or tbl[3],
+      accept_incoming = tbl.accept_incoming or false,
+    }
+
+    if not props.pkg then
+      return nil
+    end
+
+    if not props.fn then
+      return nil
+    end
+
+    local success, pkg = pcall(require, props.pkg)
+    if success then
+      local ret
+      if type(props.fn) == 'function' then
+        ret = props.fn(pkg)
+      else
+        ret = pkg[props.fn](props.args or {})
+      end
+
+      if props.accept_incoming then
+        return function(...)
+          return ret(...)
+        end
+      end
+    end
+  end
+end
+
 return {
   -- Swap buffers with each other
   {
@@ -18,6 +61,62 @@ return {
 
   -- Markdown preview and rendering
   { 'ellisonleao/glow.nvim', config = true, cmd = 'Glow' },
+
+  -- Save code to a pretty screenshot!
+  {
+    'narutoxy/silicon.lua',
+    dev = true,
+    keys = {
+      {
+        '<Leader>bs',
+        lazy_load { 'silicon', 'visualise_api' },
+        mode = { 'v' },
+        desc = 'Generate image of lines in a visual selection',
+      },
+      {
+        '<Leader>bc',
+        lazy_load { 'silicon', 'visualise_api', { to_clip = true } },
+        mode = { 'v' },
+        desc = 'Generate image of lines in a visual selection, copied to the clipboard',
+      },
+      {
+        '<Leader>bb',
+        lazy_load { 'silicon', 'visualise_api', { show_buf = true } },
+        mode = { 'v', 'n' },
+        desc = 'Generate image of a whole buffer, with lines in a visual selection highlighted',
+      },
+      {
+        '<Leader>bv',
+        lazy_load { 'silicon', 'visualise_api', { to_clip = true, visible = true } },
+        mode = { 'n', 'v' },
+        desc = 'Generate visible portion of a buffer',
+      },
+    },
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {
+      theme = 'auto',
+
+      -- auto generate file name based on time (absolute or relative to cwd)
+      output = 'SILICON_${year}-${month}-${date}_${time}.png',
+      roundCorner = true,
+      windowControls = true,
+      windowTitle = function()
+        return vim.fn.expand '%'
+      end,
+      lineNumber = false,
+      font = 'JetBrainsMono Nerd Font',
+      lineOffset = 1, -- from where to start line number
+      linePad = 2, -- padding between lines
+      padHoriz = 30, -- Horizontal padding
+      padVert = 40, -- vertical padding
+      shadowBlurRadius = 10,
+      shadowColor = '#555555',
+      shadowOffsetX = 8,
+      shadowOffsetY = 8,
+      gobble = true,
+      debug = false,
+    },
+  },
 
   -- Allows the windows to be shifted with ease.
   {

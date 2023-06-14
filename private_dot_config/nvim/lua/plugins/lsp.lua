@@ -275,12 +275,12 @@ return {
         ['K'] = lazy_load('noice.lsp', 'hover'),
         ['<leader>rn'] = vim.lsp.buf.rename,
         ['<C-space>'] = vim.lsp.buf.code_action,
-        ['<leader>f'] = lazy(vim.lsp.buf.format, { timeout_ms = 2500 }),
+        -- ['<leader>f'] = lazy(vim.lsp.buf.format, { timeout_ms = 2500 }),
       },
 
       inlay_hints = {
         enabled = false,
-        parameter_hints = true,
+        parameter_hints = false,
         type_hints = true,
         highlight = 'LspInlayHint',
         priority = 0,
@@ -294,6 +294,7 @@ return {
         lua_ls = {
           settings = {
             Lua = {
+              workspace = { checkThirdParty = false },
               hint = {
                 enable = true,
                 arrayIndex = 'Auto',
@@ -364,20 +365,6 @@ return {
         if client.name == 'tsserver' then
           with('twoslash-queries', function(twoslash)
             twoslash.attach(client, bufnr)
-          end)
-        end
-
-        --- Guard against servers without the signatureHelper capability
-        -- if client.server_capabilities.signatureHelpProvider then
-        --   with('lsp-overloads', function(overload)
-        --     overload.setup(client, {})
-        --   end)
-        -- end
-
-        -- Add support for the symbol path
-        if client.server_capabilities.documentSymbolProvider then
-          with('nvim-navic', function(navic)
-            navic.attach(client, bufnr)
           end)
         end
 
@@ -543,17 +530,6 @@ return {
 
       -- Icons
       'onsails/lspkind.nvim',
-
-      -- Copilot
-      {
-        'zbirenbaum/copilot-cmp',
-        dependencies = {
-          { 'zbirenbaum/copilot.lua', opts = {
-            suggestion = { enabled = false },
-            panel = { enabled = false },
-          } },
-        },
-      },
     },
 
     config = function()
@@ -602,8 +578,6 @@ return {
             mode = 'symbol', -- show only symbol annotations
             maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
             ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
-
-            symbol_map = { Copilot = '' },
 
             -- The function below will be called before any actual modifications from lspkind
             -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
@@ -659,7 +633,6 @@ return {
         },
 
         sources = cmp.config.sources {
-          { name = 'copilot', group_index = 2 },
           { name = 'nvim_lsp', group_index = 2 },
           { name = 'path', group_index = 2 },
           { name = 'luasnip', max_item_count = 4 },
