@@ -2,7 +2,6 @@
 .zsh_history
 .oh-my-zsh/cache/
 .config/tmux/plugins
-.config/tmux/sidebar
 .config/fish/fish_variables
 .config/fish/plugins
 .config/kitty/themes

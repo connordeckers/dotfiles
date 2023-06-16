@@ -1,0 +1,10 @@
+#!/bin/env fish
+
+set argc (count $argv)
+set segments $argv[2] 2
+
+set chunks (string split --no-empty / $argv[1])
+set offset (math $segments[1] x -1)
+
+set pathref (string join / $chunks[$offset..])
+tmux rename-window $pathref
