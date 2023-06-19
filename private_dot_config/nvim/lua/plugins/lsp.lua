@@ -222,6 +222,7 @@ return {
           nls.builtins.formatting.clang_format,
           nls.builtins.formatting.black,
           nls.builtins.formatting.isort,
+          nls.builtins.formatting.rustfmt,
         },
       }
     end,
@@ -311,13 +312,15 @@ return {
 
         -- System languages
         dockerls = {},
+        denols = {
+          autostart = false,
+          settings = { cmd_env = { NO_COLOR = false } },
+        },
         yamlls = {
-          params = {
-            settings = {
-              yaml = {
-                -- FIX mapKeyOrder warning
-                keyOrdering = false,
-              },
+          settings = {
+            yaml = {
+              -- FIX mapKeyOrder warning
+              keyOrdering = false,
             },
           },
         },

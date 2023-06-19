@@ -92,6 +92,7 @@ vim.cmd [[
 -- Hide the tildes without dicking around
 vim.opt.fillchars:append 'eob: '
 
+vim.g.markdown_fenced_languages = { 'ts=typescript' }
 -----------------------------------------------------
 -- Clipboard
 -----------------------------------------------------

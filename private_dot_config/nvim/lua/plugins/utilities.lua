@@ -771,7 +771,7 @@ return {
   -- Surround text with other text. Neat!
   {
     'kylechui/nvim-surround',
-    event = 'BufRead',
+    event = 'VeryLazy',
     dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
     opts = {},
   },
