@@ -98,6 +98,11 @@ end
 map('<Esc>', function()
   vim.cmd.noh() -- clear highlights
   vim.cmd.echo() -- clear short-message
+
+  local has_notify, notify_lib = pcall(require, 'notify')
+  if has_notify then
+    notify_lib.dismiss { pending = true, silent = true }
+  end
 end)
 
 map('<Leader><Esc>', { action = '<C-\\><C-n>', mode = 't' })

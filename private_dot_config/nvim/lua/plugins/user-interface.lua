@@ -39,7 +39,8 @@ return {
     end,
     opts = {
       flavour = 'frappe', -- latte, frappe, macchiato, mocha
-      background = { -- :h background
+      background = {
+        -- :h background
         light = 'latte',
         dark = 'mocha',
       },
@@ -247,6 +248,7 @@ return {
               { find = 'No information available' },
               { find = 'multiple different client offset_encodings' },
               { find = 'not indexed' },
+              { find = 'Inlay Hints request failed.' },
             },
           },
           opts = { skip = true },

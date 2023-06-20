@@ -1,10 +1,10 @@
 return {
   {
-    "anuvyklack/hydra.nvim",
-    dev = true,
-    event = "VeryLazy",
+    'anuvyklack/hydra.nvim',
+    -- dev = true,
+    event = 'VeryLazy',
     config = function()
-      local Hydra = require "hydra"
+      local Hydra = require 'hydra'
       Hydra(require 'hydras.gitsigns')
     end,
   },
