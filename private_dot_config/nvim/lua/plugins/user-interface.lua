@@ -53,8 +53,9 @@ return {
         gitsigns = true,
         nvimtree = true,
         telescope = true,
-        notify = false,
-        mini = false,
+        notify = true,
+        mini = true,
+        barbar = true,
         -- indent_blankline = {
         --   enabled = true,
         --   colored_indent_levels = true,
@@ -481,12 +482,17 @@ return {
   {
     'akinsho/bufferline.nvim',
     version = '*',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+      { 'tiagovla/scope.nvim', opts = { restore_state = true } },
+    },
     event = 'VeryLazy',
     keys = {
       { '<C-t>', '<cmd>tabnew<cr>' }, -- New tab
       { '<Leader>q', '<cmd>bdelete<cr>' }, -- Close the current buffer
       { '<Leader>Q', '<cmd>bdelete!<cr>' }, -- Close the current buffer
+      { '<C-Tab>', vim.cmd.tabnext }, -- Next tab
+      { '<C-S-Tab>', vim.cmd.tabprevious }, -- Previous tab
       { '<Tab>', vim.cmd.bnext }, -- Next tab
       { '<S-Tab>', vim.cmd.bprev }, -- Previous tab
     },
@@ -501,19 +507,6 @@ return {
       },
     },
   },
-  -- {
-  --   'romgrk/barbar.nvim',
-  --   dependencies = { 'nvim-tree/nvim-web-devicons' },
-  --   opts = {},
-  --   lazy = false,
-  --   keys = {
-  --     { '<C-t>', '<cmd>tabnew<cr>' }, -- New tab
-  --     { '<Leader>q', '<cmd>BufferClose<cr>' }, -- Close the current buffer
-  --     { '<Leader>Q', '<cmd>BufferClose!<cr>' }, -- Close the current buffer
-  --     { '<Tab>', '<cmd>BufferNext<cr>' }, -- Next tab
-  --     { '<S-Tab>', '<cmd>BufferPrevious<cr>' }, -- Previous tab
-  --   },
-  -- },
 
   {
     'utilyre/barbecue.nvim',

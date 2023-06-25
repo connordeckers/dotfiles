@@ -247,44 +247,15 @@ return {
           is_enabled = true, -- to keep enabled at startup
         },
       },
+      'joeveiga/ng.nvim',
     },
 
     opts = {
-      -- Default mappings
-      -- gD = 'lua vim.lsp.buf.declaration()',
-      -- gd = 'lua vim.lsp.buf.definition()',
-      -- gt = 'lua vim.lsp.buf.type_definition()',
-      -- gi = 'lua vim.lsp.buf.implementation()',
-      -- gr = 'lua vim.lsp.buf.references()',
-      -- K = 'lua vim.lsp.buf.hover()',
-      -- ['<C-k>'] = 'lua vim.lsp.buf.signature_help()',
-      -- ['<space>rn'] = 'lua vim.lsp.buf.rename()',
-      -- ['<space>ca'] = 'lua vim.lsp.buf.code_action()',
-      -- ['<space>f'] = 'lua vim.lsp.buf.formatting()',
-      -- ['<space>e'] = 'lua vim.diagnostic.open_float()',
-      -- ['[d'] = 'lua vim.diagnostic.goto_prev()',
-      -- [']d'] = 'lua vim.diagnostic.goto_next()',
       default_mappings = false,
       mappings = {
-        -- The below are handled by Telescope.nvim
-        --  - vim.lsp.buf.declaration,
-        --  - vim.lsp.buf.definition,
-        --  - vim.lsp.buf.implementation,
-        --  - vim.lsp.buf.type_definition,
-        --  - vim.lsp.buf.references,
-        --
         ['K'] = lazy_load('noice.lsp', 'hover'),
         ['<leader>rn'] = vim.lsp.buf.rename,
         ['<C-space>'] = vim.lsp.buf.code_action,
-        -- ['<leader>f'] = lazy(vim.lsp.buf.format, { timeout_ms = 2500 }),
-      },
-
-      inlay_hints = {
-        enabled = false,
-        parameter_hints = false,
-        type_hints = true,
-        highlight = 'LspInlayHint',
-        priority = 0,
       },
 
       servers = {
@@ -334,34 +305,7 @@ return {
         jsonls = {},
         cssmodules_ls = {},
         emmet_ls = {},
-        tsserver = {
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = 'all',
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-            javascript = {
-              inlayHints = {
-                includeInlayParameterNameHints = 'all',
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-          },
-        },
+        tsserver = {},
       },
       capabilities = vim.lsp.protocol.make_client_capabilities(),
       on_attach = function(client, bufnr)
@@ -391,6 +335,11 @@ return {
         end
       end,
     },
+
+    -- config = function(_, opts)
+    --   vim.lsp.set_log_level 'debug'
+    --   require('lsp-setup').setup(opts)
+    -- end,
   },
 
   {
@@ -623,22 +572,22 @@ return {
           end, { 'i', 's' }),
         },
 
-        sorting = {
-          comparators = {
-            compare.offset,
-            compare.exact,
-            compare.score,
-            compare.kind,
-            compare.sort_text,
-            compare.length,
-            compare.order,
-          },
-        },
+        -- sorting = {
+        --   comparators = {
+        --     compare.offset,
+        --     compare.exact,
+        --     compare.score,
+        --     compare.kind,
+        --     compare.sort_text,
+        --     compare.length,
+        --     compare.order,
+        --   },
+        -- },
 
         sources = cmp.config.sources {
           { name = 'nvim_lsp', group_index = 2 },
           { name = 'path', group_index = 2 },
-          { name = 'luasnip', max_item_count = 4 },
+          { name = 'luasnip', max_item_count = 4, group_index = 3 },
           --{ name = "nvim_lua" },
           { name = 'nvim_lsp_signature_help', group_index = 2 },
           --{ name = "buffer" },
