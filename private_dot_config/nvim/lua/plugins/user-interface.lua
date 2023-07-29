@@ -462,13 +462,13 @@ return {
           -- { noice.mode.get_hl, cond = noice.mode.has },
           -- { noice.search.get_hl, cond = noice.search.has },
         },
-        lualine_z = { 'location' },
+        lualine_z = { 'location', 'fileformat' },
       },
       inactive_sections = {
         lualine_a = {},
         lualine_b = {},
         lualine_c = { 'filename' },
-        lualine_x = { 'location' },
+        lualine_x = { 'location', 'fileformat' },
         lualine_y = {},
         lualine_z = {},
       },
@@ -489,12 +489,13 @@ return {
     event = 'VeryLazy',
     keys = {
       { '<C-t>', '<cmd>tabnew<cr>' }, -- New tab
+      { '<C-q>', vim.cmd.tabclose }, -- Close the current buffer
       { '<Leader>q', '<cmd>bdelete<cr>' }, -- Close the current buffer
       { '<Leader>Q', '<cmd>bdelete!<cr>' }, -- Close the current buffer
       { '<C-Tab>', vim.cmd.tabnext }, -- Next tab
       { '<C-S-Tab>', vim.cmd.tabprevious }, -- Previous tab
       { '<Tab>', vim.cmd.bnext }, -- Next tab
-      { '<S-Tab>', vim.cmd.bprev }, -- Previous tab
+      { '<S-Tab>', vim.cmd.bprevious }, -- Previous tab
     },
     cmd = { 'BufferLineCloseLeft', 'BufferLineCloseRight' },
     opts = {

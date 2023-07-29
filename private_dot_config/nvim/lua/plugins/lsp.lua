@@ -16,12 +16,6 @@ local function with(package, callback)
   return callback(pkg)
 end
 
-local function lazy(obj, args)
-  return function()
-    obj(args)
-  end
-end
-
 local rounded_border = {
   { '╭', 'FloatBorder' },
   { '─', 'FloatBorder' },
@@ -177,7 +171,44 @@ return {
         automatic_installation = true,
         automatic_setup = true,
       } },
-      -- 'jose-elias-alvarez/typescript.nvim',
+      {
+        'jose-elias-alvarez/typescript.nvim',
+        opts = {
+          disable_commands = false, -- prevent the plugin from creating Vim commands
+          debug = false, -- enable debug logging for commands
+          go_to_source_definition = {
+            fallback = true, -- fall back to standard LSP definition on failure
+          },
+
+          server = {
+            capabilities = vim.lsp.protocol.make_client_capabilities(),
+            on_attach = function(client, bufnr)
+              with('twoslash-queries', function(twoslash)
+                twoslash.attach(client, bufnr)
+              end)
+
+              -- Add the autocommands for highlighting under the cursor
+              if client.supports_method 'textDocument/documentHighlight' then
+                vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, { callback = vim.lsp.buf.document_highlight, buffer = bufnr })
+                vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, { callback = vim.lsp.buf.clear_references, buffer = bufnr })
+              end
+
+              -- Add the autocommands for formatting on save
+              if client.supports_method 'textDocument/formatting' then
+                local lspFormatAUGroup = vim.api.nvim_create_augroup('LspFormatting', {})
+                vim.api.nvim_clear_autocmds { group = lspFormatAUGroup, buffer = bufnr }
+                vim.api.nvim_create_autocmd('BufWritePre', {
+                  group = lspFormatAUGroup,
+                  buffer = bufnr,
+                  callback = function()
+                    require('utils.format').format_buffer(bufnr)
+                  end,
+                })
+              end
+            end,
+          },
+        },
+      },
     },
 
     opts = function()
@@ -189,6 +220,7 @@ return {
         sources = {
           -- Code actions
           nls.builtins.code_actions.gitsigns,
+          require 'typescript.extensions.null-ls.code-actions',
 
           -- Diagnostics
           nls.builtins.diagnostics.cmake_lint,
@@ -239,6 +271,7 @@ return {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'Issafalcon/lsp-overloads.nvim',
+      -- 'jose-elias-alvarez/typescript.nvim',
       -- 'lvimuser/lsp-inlayhints.nvim',
       {
         'marilari88/twoslash-queries.nvim',
@@ -305,7 +338,34 @@ return {
         jsonls = {},
         cssmodules_ls = {},
         emmet_ls = {},
-        tsserver = {},
+        -- tsserver = {
+        -- settings = {
+        --   typescript = {
+        --     inlayHints = {
+        --       includeInlayParameterNameHints = 'all',
+        --       includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        --       includeInlayFunctionParameterTypeHints = true,
+        --       includeInlayVariableTypeHints = true,
+        --       includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+        --       includeInlayPropertyDeclarationTypeHints = true,
+        --       includeInlayFunctionLikeReturnTypeHints = true,
+        --       includeInlayEnumMemberValueHints = true,
+        --     },
+        --   },
+        --   javascript = {
+        --     inlayHints = {
+        --       includeInlayParameterNameHints = 'all',
+        --       includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        --       includeInlayFunctionParameterTypeHints = true,
+        --       includeInlayVariableTypeHints = true,
+        --       includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+        --       includeInlayPropertyDeclarationTypeHints = true,
+        --       includeInlayFunctionLikeReturnTypeHints = true,
+        --       includeInlayEnumMemberValueHints = true,
+        --     },
+        --   },
+        -- },
+        -- },
       },
       capabilities = vim.lsp.protocol.make_client_capabilities(),
       on_attach = function(client, bufnr)

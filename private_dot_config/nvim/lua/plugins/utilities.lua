@@ -142,9 +142,9 @@ return {
     event = 'VeryLazy',
     keys = {
       {
-        '<leader>gc',
+        '<leader>gg',
         '<cmd>Git commit<cr>',
-        desc = 'Commit currently staged files',
+        { desc = 'Commit currently staged files' },
       },
     },
   },
@@ -741,7 +741,6 @@ return {
       numhl = true,
       linehl = false,
       word_diff = false,
-      keymaps = {},
       watch_gitdir = { interval = 1000, follow_files = true },
       attach_to_untracked = true,
       current_line_blame = true,
@@ -765,6 +764,9 @@ return {
   {
     'sindrets/diffview.nvim',
     event = 'VeryLazy',
+    keys = {
+      { '<leader>dd', '<cmd>DiffviewOpen<cr>' },
+    },
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
 
@@ -964,5 +966,17 @@ return {
         winblend = 0,
       },
     },
+  },
+
+  {
+    'chrisgrieser/nvim-spider',
+    lazy = true,
+    keys = {
+      { 'w', "<cmd>lua require('spider').motion('w')<CR>", mode = { 'n', 'o', 'x' }, { desc = 'Spider-w' } },
+      { 'e', "<cmd>lua require('spider').motion('e')<CR>", mode = { 'n', 'o', 'x' }, { desc = 'Spider-e' } },
+      { 'b', "<cmd>lua require('spider').motion('b')<CR>", mode = { 'n', 'o', 'x' }, { desc = 'Spider-b' } },
+      { 'ge', "<cmd>lua require('spider').motion('ge')<CR>", mode = { 'n', 'o', 'x' }, { desc = 'Spider-ge' } },
+    },
+    opts = {},
   },
 }
