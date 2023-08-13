@@ -93,7 +93,7 @@ return {
       'BurntSushi/ripgrep',
       'nvim-treesitter/nvim-treesitter',
       fzf_native,
-      -- 'nvim-telescope/telescope-file-browser.nvim',
+      'nvim-telescope/telescope-file-browser.nvim',
       'ahmedkhalf/project.nvim',
       { 'tknightz/telescope-termfinder.nvim', dependencies = { 'akinsho/toggleterm.nvim' } },
 
@@ -189,7 +189,7 @@ return {
       require('telescope').setup(opts)
       require('telescope').load_extension 'fzf'
       require('telescope').load_extension 'projects'
-      -- require('telescope').load_extension 'file_browser'
+      require('telescope').load_extension 'file_browser'
       require('telescope').load_extension 'termfinder'
       require('telescope').load_extension 'repo'
       require('telescope').load_extension 'software-licenses'

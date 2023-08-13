@@ -4,11 +4,14 @@ set -g set-titles-string "#W"
 set -g focus-events on
 set -sg escape-time 10
 
+# set -g status 2
+# setw -g status-format[1] ''
+
 set -g mode-keys vi
 
 # Allow true colours (as recommended by neovim)
-# set -sa terminal-features ',xterm*:RGB'
-set -sa terminal-features ',xterm*:Tc'
+# set-option -sa terminal-features ',xterm*:RGB'
+set-option -sa terminal-features ',xterm*:Tc'
 
 set -g status-position top
 
@@ -18,7 +21,3 @@ setw -g pane-base-index 1
 
 # Ensure window index numbers get reordered on delete.
 set -g renumber-windows on
-{{ if env "WAYLAND_DISPLAY" }}
-# Use our wayland clipboard with tmux
-set -g copy-command 'wl-copy'
-{{- end -}}

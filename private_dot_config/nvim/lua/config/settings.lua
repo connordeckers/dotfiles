@@ -1,5 +1,5 @@
--- vim.g.loaded_netrw = 1
--- vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 vim.opt.termguicolors = true
 
@@ -25,8 +25,6 @@ vim.opt.updatetime = 300
 
 -- Don't pass messages to |ins-completion-menu|.
 vim.opt.shortmess:append { c = true }
-
--- Hide CRLF line endings
 
 -- Set tabstop size
 local tabsize = 2

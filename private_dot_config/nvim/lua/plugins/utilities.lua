@@ -1,61 +1,14 @@
-local function swap_buffer(direction)
-  return function()
-    require('swap-buffers').swap_buffers(direction)
-  end
-end
-
----@class LazyLoadParam
----@field [1] string Package name
----@field [2]? string|fun(pkg) What to run
----@field [3]? any Parameters to pass to function
----@field args? any Parameters to pass to function
----@field accept_incoming? boolean Return function that can accept incoming parameters; useful for functions that need to handle values from key event
-
----@param tbl LazyLoadParam
-local function lazy_load(tbl)
-  return function()
-    local props = {
-      pkg = tbl[1],
-      fn = tbl[2],
-      args = tbl.args or tbl[3],
-      accept_incoming = tbl.accept_incoming or false,
-    }
-
-    if not props.pkg then
-      return nil
-    end
-
-    if not props.fn then
-      return nil
-    end
-
-    local success, pkg = pcall(require, props.pkg)
-    if success then
-      local ret
-      if type(props.fn) == 'function' then
-        ret = props.fn(pkg)
-      else
-        ret = pkg[props.fn](props.args or {})
-      end
-
-      if props.accept_incoming then
-        return function(...)
-          return ret(...)
-        end
-      end
-    end
-  end
-end
+local lazy_load = require 'utils'.import.lazy_load
 
 return {
   -- Swap buffers with each other
   {
     'caenrique/swap-buffers.nvim',
     keys = {
-      { '<C-w><C-h>', swap_buffer 'h' },
-      { '<C-w><C-j>', swap_buffer 'j' },
-      { '<C-w><C-k>', swap_buffer 'k' },
-      { '<C-w><C-l>', swap_buffer 'l' },
+      { '<C-w><C-h>', lazy_load { 'swap-buffers', 'swap-buffers', 'h' } },
+      { '<C-w><C-j>', lazy_load { 'swap-buffers', 'swap-buffers', 'j' } },
+      { '<C-w><C-k>', lazy_load { 'swap-buffers', 'swap-buffers', 'k' } },
+      { '<C-w><C-l>', lazy_load { 'swap-buffers', 'swap-buffers', 'l' } },
     },
   },
 
@@ -142,9 +95,9 @@ return {
     event = 'VeryLazy',
     keys = {
       {
-        '<leader>gg',
+        '<leader>gc',
         '<cmd>Git commit<cr>',
-        { desc = 'Commit currently staged files' },
+        desc = 'Commit currently staged files',
       },
     },
   },
@@ -764,9 +717,6 @@ return {
   {
     'sindrets/diffview.nvim',
     event = 'VeryLazy',
-    keys = {
-      { '<leader>dd', '<cmd>DiffviewOpen<cr>' },
-    },
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
 
@@ -922,11 +872,11 @@ return {
 
       ---Pre-hook, called before commenting the line
       ---@type fun(ctx:CommentCtx):any|nil
-      pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      -- pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
 
       ---Post-hook, called after commenting is done
       ---@type fun(ctx: CommentCtx)
-      post_hook = nil,
+      -- post_hook = nil,
     },
   },
 
@@ -966,17 +916,5 @@ return {
         winblend = 0,
       },
     },
-  },
-
-  {
-    'chrisgrieser/nvim-spider',
-    lazy = true,
-    keys = {
-      { 'w', "<cmd>lua require('spider').motion('w')<CR>", mode = { 'n', 'o', 'x' }, { desc = 'Spider-w' } },
-      { 'e', "<cmd>lua require('spider').motion('e')<CR>", mode = { 'n', 'o', 'x' }, { desc = 'Spider-e' } },
-      { 'b', "<cmd>lua require('spider').motion('b')<CR>", mode = { 'n', 'o', 'x' }, { desc = 'Spider-b' } },
-      { 'ge', "<cmd>lua require('spider').motion('ge')<CR>", mode = { 'n', 'o', 'x' }, { desc = 'Spider-ge' } },
-    },
-    opts = {},
   },
 }

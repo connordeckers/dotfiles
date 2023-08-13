@@ -1,0 +1,15 @@
+[submodule "private_dot_config/zsh/oh-my-zsh"]
+	path = private_dot_config/zsh/oh-my-zsh
+	url = https://github.com/ohmyzsh/ohmyzsh
+[submodule "private_dot_config/zsh/patch/plugins/fast-syntax-highlighting"]
+	path = private_dot_config/zsh/patch/plugins/fast-syntax-highlighting
+	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
+[submodule "private_dot_config/zsh/patch/plugins/zsh-autosuggestions"]
+	path = private_dot_config/zsh/patch/plugins/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions
+[submodule "private_dot_config/zsh/patch/plugins/zsh-vi-mode"]
+	path = private_dot_config/zsh/patch/plugins/zsh-vi-mode
+	url = https://github.com/connordeckers/zsh-vi-mode
+[submodule "private_dot_config/zsh/patch/themes/powerlevel10k"]
+	path = private_dot_config/zsh/patch/themes/powerlevel10k
+	url = https://github.com/romkatv/powerlevel10k
