@@ -19,13 +19,12 @@ plugins=(
 	command-not-found 
 	cp 
 	fast-syntax-highlighting 
-	fzf 
+	# fzf 
 	git 
 	git-escape-magic 
 	gitignore 
 	history-substring-search 
 	jump 
-	profiles 
 	sudo 
 	tmux 
 	zsh-autosuggestions 

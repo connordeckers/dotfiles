@@ -96,10 +96,14 @@ export PROJECT_PATHS="~/dev"
 # Keep our path array unique, preventing duplication.
 typeset -aU path
 
-# This is insecure, but as a web dev, /significantly/ more practical
-# than using npx or prefixing all calls with the node_modules path.
-path=('./node_modules/.bin' $path)
-path+=(
+path=(
+	# This is insecure, but as a web dev, /significantly/ more practical
+	# than using npx or prefixing all calls with the node_modules path.
+	'./node_modules/.bin' 
+
+	# Locally compiled rust/cargo binaries
+	$HOME/.cargo/bin
+
 	# The location to find the Bob Neovim binary.
 	$BOB_NVIM_BASE
 
@@ -111,4 +115,16 @@ path+=(
 
 	# Mason LSP packages
 	"$XDG_DATA_HOME/nvim/mason/bin"
+
+	$path
 )
+
+# Add a completions directory
+fpath+=($ZSH_CUSTOM/completions)
+
+# Use the gfx1030 architecture for the AMD 6700 XT
+export HSA_OVERRIDE_GFX_VERSION=10.3.0
+
+# Let us cache pre-built libraries, rather than rebuilding 
+# them each time we need them.
+export RUSTC_WRAPPER=sccache
